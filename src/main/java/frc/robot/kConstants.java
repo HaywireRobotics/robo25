@@ -9,6 +9,7 @@ public class kConstants {
     public static final double kWheelDiameter = 4.00000;
     public static final double kMaxAngularVelocity = 10;
     public static final double kMaxAngularAcceleration = 20;
+    public static final double kInchesToMeters = 0.0254;
 
     public static final double kSwerveDriveKP = 0.0;
     public static final double kSwerveDriveKI = 0.01;
@@ -21,6 +22,10 @@ public class kConstants {
     public static final double kSwerveTurningKD = 0.1;
     public static final double kSwerveTurningKS = 0.2;
     public static final double kSwerveTurningKV = 47.12;
+
+    public static final double kDriveTrainWidth = 24.5 * kInchesToMeters;
+    public static final double kDriveTrainLength = 20 * kInchesToMeters;
+
 
     // Swerve motors
     public static final SparkBaseConfig kSwerveNominalConfig = new SparkMaxConfig().smartCurrentLimit(150).idleMode(IdleMode.kBrake).inverted(false);

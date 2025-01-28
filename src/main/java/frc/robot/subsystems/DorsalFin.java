@@ -33,10 +33,10 @@ public class DorsalFin extends SubsystemBase {
   public static final double kMaxSpeed = 3.0; // 3 meters per second
   public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
-  private final Translation2d m_frontLeftLocation = new Translation2d(0.381, 0.381);
-  private final Translation2d m_frontRightLocation = new Translation2d(0.381, -0.381);
-  private final Translation2d m_backLeftLocation = new Translation2d(-0.381, 0.381);
-  private final Translation2d m_backRightLocation = new Translation2d(-0.381, -0.381);
+  private final Translation2d m_frontLeftLocation = new Translation2d(kConstants.kDriveTrainLength/2, kConstants.kDriveTrainWidth/2);
+  private final Translation2d m_frontRightLocation = new Translation2d(-kConstants.kDriveTrainLength/2, kConstants.kDriveTrainWidth/2);
+  private final Translation2d m_backLeftLocation = new Translation2d(kConstants.kDriveTrainLength/2, -kConstants.kDriveTrainWidth/2);
+  private final Translation2d m_backRightLocation = new Translation2d(-kConstants.kDriveTrainLength/2, -kConstants.kDriveTrainWidth/2);
 
   private final SwerveModule m_frontLeft = new SwerveModule(
     kConstants.kSwerveFrontLeftDriveMotor, 
@@ -59,7 +59,7 @@ public class DorsalFin extends SubsystemBase {
     kConstants.kSwerveBackRightEncoder, 
     kConstants.kSwerveBackRightOffset);
   
-  private final SwerveModule[] m_swerveModules = {m_frontLeft, m_backLeft, m_frontRight, m_backRight};
+  private final SwerveModule[] m_swerveModules = {m_frontLeft, m_frontRight, m_backLeft, m_backRight};
 
   private final String[] swerveModuleNames = {"front left", "back left", "front right", "back right"};
   // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
@@ -72,7 +72,10 @@ public class DorsalFin extends SubsystemBase {
 
   private final SwerveDriveKinematics m_kinematics =
       new SwerveDriveKinematics(
-          m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation);
+          m_frontLeftLocation,
+          m_frontRightLocation,
+          m_backLeftLocation,
+          m_backRightLocation);
 
   private final SwerveDriveOdometry m_odometry =
       new SwerveDriveOdometry(

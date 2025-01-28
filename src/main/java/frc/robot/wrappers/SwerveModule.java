@@ -194,19 +194,19 @@ public class SwerveModule {
   private void driveMotorsAtVoltage(double driveOutput, double turnOutput) {
     if (kConstants.kEnableFeedforwardTuning) appliedDriveVoltage = driveOutput;
     m_driveMotor.setVoltage(driveOutput);
-    SmartDashboard.putNumber("SwerveDriveValue " + m_idForDashboard, driveOutput);
-    SmartDashboard.putNumber("SwerveDriveInput " + m_idForDashboard, getDriveVelocity());
+    SmartDashboard.putNumber("SwerveDriveMotorVoltage " + m_idForDashboard, driveOutput);
+    SmartDashboard.putNumber("SwerveDriveVelocity " + m_idForDashboard, getDriveVelocity());
     m_turningMotor.setVoltage(turnOutput);
-    SmartDashboard.putNumber("SwerveTurnValue " + m_idForDashboard, turnOutput);
+    SmartDashboard.putNumber("SwerveTurnMotorVoltage " + m_idForDashboard, turnOutput);
   }
   public void periodic(){
-    SmartDashboard.putNumber("SwerveDriveMotor " + m_idForDashboard, getDriveEncoderPosition());
+    SmartDashboard.putNumber("SwerveDriveMotorPosition " + m_idForDashboard, getDriveEncoderPosition());
   }
-  public double getDriveVelocity(){
+  public double getDriveVelocity() {
     return applyDriveRatio(getDriveEncoderVelocityRPS());
   }
   public double applyDriveRatio(double encoderValue){
-    return encoderValue / kConstants.kDriveGearRatio * kConstants.kWheelDiameter * Math.PI * 0.0254;
+    return encoderValue / kConstants.kDriveGearRatio * kConstants.kWheelDiameter * Math.PI * kConstants.kInchesToMeters;
   }
   public double getDrivePosition(){
     return applyDriveRatio(getDriveEncoderPosition());
