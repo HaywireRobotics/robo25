@@ -26,6 +26,7 @@ public class DefaultDriveCommand extends Command {
         this.controller = xboxController;
 
         addRequirements(subsystem);
+        SmartDashboard.putBoolean("FieldRelative", m_fieldRelative);
     }
 
     
@@ -40,6 +41,7 @@ public class DefaultDriveCommand extends Command {
 
         leftX = Statics.applyDeadband(leftX, JOYSTICK_DEADBAND);
         leftY = Statics.applyDeadband(leftY, JOYSTICK_DEADBAND);
+        rightX = Statics.applyDeadband(rightX, JOYSTICK_DEADBAND);
         
         m_subsystem.drive(teleopSpeedMultiplier*leftX, teleopSpeedMultiplier*leftY, -teleopSpeedMultiplier*rightX,m_fieldRelative);
         

@@ -88,7 +88,7 @@ public class DorsalFin extends SubsystemBase {
   private final Robot m_robot;
 
   public DorsalFin(Robot robot) {
-    m_gyro.reset();
+    m_gyro.zeroYaw();
     m_robot = robot;
   }
 

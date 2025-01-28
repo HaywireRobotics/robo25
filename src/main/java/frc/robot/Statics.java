@@ -2,7 +2,7 @@ package frc.robot;
 
 public final class Statics {
     public static double applyDeadband(double value, double deadbandSize){
-        if (value < deadbandSize && value > deadbandSize){
+        if (value < deadbandSize && value > -deadbandSize){
             return 0;
         }
         return value;
