@@ -28,7 +28,7 @@ public class kConstants {
     public static final int kSwerveFrontRightTurnMotor = 4;
     public static final int kSwerveFrontRightDriveMotor = 3;
     public static final int kSwerveFrontRightEncoder = 14;
-    public static final double kSwerveFrontRightOffset = 0.607666 + 0.5;
+    public static final double kSwerveFrontRightOffset = 0.607666;
 
     public static final int kSwerveFrontLeftTurnMotor = 7;
     public static final int kSwerveFrontLeftDriveMotor = 8;
@@ -43,7 +43,7 @@ public class kConstants {
     public static final int kSwerveBackLeftTurnMotor = 6;
     public static final int kSwerveBackLeftDriveMotor = 9;
     public static final int kSwerveBackLeftEncoder = 11;
-    public static final double kSwerveBackLeftOffset = 0.065430;
+    public static final double kSwerveBackLeftOffset = 0.065430 + 0.5;
 
 
     // Elevator

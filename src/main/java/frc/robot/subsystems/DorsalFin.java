@@ -155,7 +155,7 @@ public class DorsalFin extends SubsystemBase {
   }
 
   public Rotation2d getRotationAroundUpAxisInRotation2d() {
-    return new Rotation2d(m_gyro.getYaw());
+    return m_gyro.getRotation2d();
   }
 
   public SysIdRoutineLog driveLogs(SysIdRoutineLog logs){
