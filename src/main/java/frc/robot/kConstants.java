@@ -67,8 +67,20 @@ public class kConstants {
     public static final int kIntakeMotor = 20;
     public static final int kIntakeAssemblyMotor = 21;
     public static final int kIndexMotor = 22;
+    public static final double kIntakeAssemblyKP = 1;
+    public static final double kIntakeAssemblyKI = 0;
+    public static final double kIntakeAssemblyKD = 0;
+    public static final double kIntakeAssemblyMaxVelocity = 1;
+    public static final double kIntakeAssemblyMaxAcceleration = 1;
+    public static final double kIntakeAssemblyDownPoint = -1;
+    public static final double kIntakeAssemblyUpPoint = 0;
+    public static final double kEnableIndex = 4;
+    public static final double kEnableIntake = 7;
+    public static final SparkBaseConfig kIntakeAssemblyNominalConfig = new SparkMaxConfig().smartCurrentLimit(95).idleMode(IdleMode.kBrake).inverted(false);
+    
+    public static final SparkBaseConfig kDefaultNeo550NominalConfig = new SparkMaxConfig().smartCurrentLimit(95).idleMode(IdleMode.kBrake).inverted(false);
 
-
+    
     // Feature Flags
     public static final boolean kEnableFeedforwardTuning = true;
 }

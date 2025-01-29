@@ -75,9 +75,9 @@ public class SwerveModule {
       int turningEncoderChannel,
       double offset) {
     m_driveMotor = new SparkMax(driveMotorChannel,MotorType.kBrushless);
-    m_driveMotor.configure(kConstants.kSwerveNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    m_driveMotor.configure(kConstants.kSwerveNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_turningMotor = new SparkMax(turningMotorChannel,MotorType.kBrushless);
-    m_turningMotor.configure(kConstants.kSwerveNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    m_turningMotor.configure(kConstants.kSwerveNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_turningEncoder = new CANcoder(turningEncoderChannel);
     // Limit the PID Controller's input range between -pi and pi and set the input
