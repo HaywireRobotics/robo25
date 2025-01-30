@@ -163,9 +163,11 @@ public class SwerveModule {
     final double[] wrappedValues = calculatePIDValuesFromDesiredState(desiredState);
     final double turnOutput = wrappedValues[0];
     driveMotorsAtVoltage(desiredState.speedMetersPerSecond, turnOutput);
-  }
+}
 
   public void setDesiredState(SwerveModuleState desiredState) {
+    
+
     final double[] wrappedValues = calculatePIDValuesFromDesiredState(desiredState);
     final double turnOutput = wrappedValues[0];
     final double driveOutput = wrappedValues[1];
@@ -177,8 +179,11 @@ public class SwerveModule {
     desiredState.optimize(encoderRotation); // Optimize the reference state to avoid spinning further than 90 degrees
     desiredState.cosineScale(encoderRotation); // Smooths driving (look at docs for more)
     // Calculate the drive output from the drive PID controller.
+    
     final double driveOutput = m_drivePIDController.calculate(getDriveVelocity(), desiredState.speedMetersPerSecond);
     final double driveFeedforward = m_driveFeedforward.calculate(desiredState.speedMetersPerSecond);
+    SmartDashboard.putNumber("SwervePIDOutput " + m_idForDashboard, driveOutput); // this is a debugging readout
+    SmartDashboard.putNumber("SwerveFeedforwardOutput " + m_idForDashboard, driveFeedforward); // this is a debugging readout
     // Calculate the turning motor output from the turning PID controller.
     final double turnOutput =
         m_turningPIDController.calculate(
@@ -198,6 +203,7 @@ public class SwerveModule {
     SmartDashboard.putNumber("SwerveDriveVelocity " + m_idForDashboard, getDriveVelocity());
     m_turningMotor.setVoltage(turnOutput);
     SmartDashboard.putNumber("SwerveTurnMotorVoltage " + m_idForDashboard, turnOutput);
+    
   }
   public void periodic(){
     SmartDashboard.putNumber("SwerveDriveMotorPosition " + m_idForDashboard, getDriveEncoderPosition());

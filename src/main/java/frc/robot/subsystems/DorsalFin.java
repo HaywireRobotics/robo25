@@ -34,8 +34,8 @@ public class DorsalFin extends SubsystemBase {
   public static final double kMaxAngularSpeed = Math.PI; // 1/2 rotation per second
 
   private final Translation2d m_frontLeftLocation = new Translation2d(kConstants.kDriveTrainLength/2, kConstants.kDriveTrainWidth/2);
-  private final Translation2d m_frontRightLocation = new Translation2d(-kConstants.kDriveTrainLength/2, kConstants.kDriveTrainWidth/2);
-  private final Translation2d m_backLeftLocation = new Translation2d(kConstants.kDriveTrainLength/2, -kConstants.kDriveTrainWidth/2);
+  private final Translation2d m_frontRightLocation = new Translation2d(kConstants.kDriveTrainLength/2, -kConstants.kDriveTrainWidth/2);
+  private final Translation2d m_backLeftLocation = new Translation2d(-kConstants.kDriveTrainLength/2, kConstants.kDriveTrainWidth/2);
   private final Translation2d m_backRightLocation = new Translation2d(-kConstants.kDriveTrainLength/2, -kConstants.kDriveTrainWidth/2);
 
   private final SwerveModule m_frontLeft = new SwerveModule(
