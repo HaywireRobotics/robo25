@@ -10,6 +10,7 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -87,6 +88,7 @@ public class DorsalFin extends SubsystemBase {
             m_backLeft.getPosition(),
             m_backRight.getPosition()
           });
+  private Pose2d fieldPose = new Pose2d();
 
   private final Robot m_robot;
 
@@ -130,7 +132,7 @@ public class DorsalFin extends SubsystemBase {
 
   /** Updates the field relative position of the robot. */
   public void updateOdometry() {
-    m_odometry.update(
+    fieldPose = m_odometry.update(
         getRotationAroundUpAxisInRotation2d(),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
@@ -138,6 +140,10 @@ public class DorsalFin extends SubsystemBase {
           m_backLeft.getPosition(),
           m_backRight.getPosition()
         });
+  }
+
+  public Pose2d getFieldPose(){
+    return fieldPose;
   }
 
   public void setAllToState(SwerveModuleState state){

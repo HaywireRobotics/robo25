@@ -46,7 +46,7 @@ public class DefaultDriveCommand extends Command {
         m_subsystem.drive(teleopSpeedMultiplier*leftX, teleopSpeedMultiplier*leftY, -teleopSpeedMultiplier*rightX,m_fieldRelative);
         
         /* Odometry */
-        m_subsystem.updateOdometry();
+        // m_subsystem.updateOdometry();
     }
 
     @Override
