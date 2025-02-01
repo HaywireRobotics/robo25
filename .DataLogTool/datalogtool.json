@@ -1,5 +1,10 @@
 {
   "download": {
-    "serverTeam": "1569"
+    "localDir": "C:\\Users\\robo\\Documents\\Robot Logs",
+    "serverTeam": "172.22.11.2",
+    "visible": false
+  },
+  "output": {
+    "outputFolder": "C:\\Users\\robo\\Documents\\Robot Logs"
   }
 }

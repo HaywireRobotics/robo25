@@ -17,12 +17,14 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefaultElevatorCommand;
 import frc.robot.commands.DefaultFilterFeederCommand;
+import frc.robot.commands.Move1MeterCommand;
 import frc.robot.commands.TuneSwerveAutonomousCommand;
 import frc.robot.subsystems.DorsalFin;
 import frc.robot.subsystems.Elevator;
@@ -38,6 +40,7 @@ public class RobotContainer {
 
   // DEFINE default COMMAND?
   public final DefaultDriveCommand defaultDriveCommand;
+  public final Move1MeterCommand move1MeterCommand;
   // public final DefaultElevatorCommand defaultElevatorCommand;
   // public final DefaultFilterFeederCommand defaultFilterFeederCommand;
 
@@ -61,6 +64,7 @@ public class RobotContainer {
     // m_elevator = new Elevator();
 
     defaultDriveCommand = new DefaultDriveCommand(m_dorsalFin, m_driveController);
+    move1MeterCommand = new Move1MeterCommand(m_dorsalFin);
     // defaultElevatorCommand = new DefaultElevatorCommand(m_elevator);
     // defaultFilterFeederCommand = new DefaultFilterFeederCommand(m_filterFeeder);
 
@@ -70,7 +74,7 @@ public class RobotContainer {
 
     tuneSwerveAutonomousCommand = new TuneSwerveAutonomousCommand(m_dorsalFin);
     sysidRoutine = new SysIdRoutine(
-        new SysIdRoutine.Config(),
+        new SysIdRoutine.Config(BaseUnits.VoltageUnit.of(0.1).per(BaseUnits.TimeUnit), BaseUnits.VoltageUnit.of(1.6),BaseUnits.TimeUnit.of(10)),
         new SysIdRoutine.Mechanism(m_dorsalFin::sysIdVoltageDrive, m_dorsalFin::driveLogs, m_dorsalFin));
     configureBindings();
   }
@@ -79,6 +83,11 @@ public class RobotContainer {
     if (kConstants.kEnableFeedforwardTuning) {
       m_driveController.a().whileTrue(this.sysIdDynamic(SysIdRoutine.Direction.kForward));
       m_driveController.b().whileTrue(this.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+      m_driveController.x().whileTrue(this.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+      m_driveController.y().whileTrue(this.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    }
+    if (kConstants.kEnable1MeterTuning) {
+      m_driveController.a().whileTrue(this.move1MeterCommand);
     }
   }
 

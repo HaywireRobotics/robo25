@@ -11,15 +11,15 @@ public class kConstants {
     public static final double kMaxAngularAcceleration = 20;
     public static final double kInchesToMeters = 0.0254;
 
-    public static final double kSwerveDriveKP = 0.0;
-    public static final double kSwerveDriveKI = 0.01;
+    public static final double kSwerveDriveKP = 0.44072;
+    public static final double kSwerveDriveKI = 0.0;
     public static final double kSwerveDriveKD = 0.0;
-    public static final double kSwerveDriveKS = 0;
-    public static final double kSwerveDriveKV = 1;
+    public static final double kSwerveDriveKS = 0.11831;
+    public static final double kSwerveDriveKV = 2.4461;
 
-    public static final double kSwerveTurningKP = 10;
-    public static final double kSwerveTurningKI = 0.2;
-    public static final double kSwerveTurningKD = 0.1;
+    public static final double kSwerveTurningKP = 8;
+    public static final double kSwerveTurningKI = 0;
+    public static final double kSwerveTurningKD = 0;
     public static final double kSwerveTurningKS = 0.2;
     public static final double kSwerveTurningKV = 47.12;
 
@@ -82,6 +82,7 @@ public class kConstants {
 
     
     // Feature Flags
-    public static final boolean kEnableFeedforwardTuning = true;
+    public static final boolean kEnableFeedforwardTuning = false; // A, B, X, Y run feedforward tuning code for the Sysid tool
+    public static final boolean kEnable1MeterTuning = true; // A moves the robot forward 1 meter
 }
 /* kConstants.kSwerve */
