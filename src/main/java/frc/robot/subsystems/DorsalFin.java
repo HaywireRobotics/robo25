@@ -165,7 +165,7 @@ public class DorsalFin extends SubsystemBase {
       m_frontRight.getPosition().distanceMeters,
       m_backLeft.getPosition().distanceMeters,
       m_backRight.getPosition().distanceMeters
-    }
+    };
   }
 
   public double getRotationAroundUpAxis() {
