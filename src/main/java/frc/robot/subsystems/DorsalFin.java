@@ -159,6 +159,15 @@ public class DorsalFin extends SubsystemBase {
     }
   }
 
+  public double[] getSwerveDriveLocations() {
+    return new double[] {
+      m_frontLeft.getPosition().distanceMeters,
+      m_frontRight.getPosition().distanceMeters,
+      m_backLeft.getPosition().distanceMeters,
+      m_backRight.getPosition().distanceMeters
+    }
+  }
+
   public double getRotationAroundUpAxis() {
     return m_gyro.getYaw();
   }
@@ -169,7 +178,7 @@ public class DorsalFin extends SubsystemBase {
 
   public SysIdRoutineLog driveLogs(SysIdRoutineLog logs){
     for(int i = 0; i < m_swerveModules.length;i++){
-      SwerveModule module =m_swerveModules[i];
+      SwerveModule module = m_swerveModules[i];
       logs.motor("motor" + swerveModuleNames[i])
         .linearVelocity(m_velocity.mut_replace(module.getDriveVelocity(),MetersPerSecond))
         .voltage(m_appliedVoltage.mut_replace(module.getDriveVoltage(),Volts))
