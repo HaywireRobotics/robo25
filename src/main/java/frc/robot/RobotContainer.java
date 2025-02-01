@@ -46,17 +46,9 @@ public class RobotContainer {
 
   private final PhotonCamera m_camera = new PhotonCamera("Camera_Module_v1");
   AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
-  Transform3d robotToCam = new Transform3d(new Translation3d(0.3302, 0.0, 0.2), new Rotation3d(0, 0, 0)); // Cam mounted
-                                                                                                          // facing
-                                                                                                          // forward,
-                                                                                                          // half a
-                                                                                                          // meter
-                                                                                                          // forward of
-                                                                                                          // center,
-                                                                                                          // half a
-                                                                                                          // meter up
-                                                                                                          // from
-                                                                                                          // center.
+  Transform3d robotToCam = new Transform3d(
+    new Translation3d(0.3302, 0.0, 0.2), 
+    new Rotation3d(0, 0, 0)); // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
   // Construct PhotonPoseEstimator
   PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
       PoseStrategy.CLOSEST_TO_REFERENCE_POSE, robotToCam);

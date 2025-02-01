@@ -7,7 +7,25 @@
       "open": false
     },
     "transitory": {
+      "CameraPublisher": {
+        "open": true,
+        "photonvision_Port_1182_Output_MJPEG_Server": {
+          "open": true,
+          "string[]##v_/CameraPublisher/photonvision_Port_1182_Output_MJPEG_Server/streams": {
+            "open": true
+          }
+        }
+      },
       "SmartDashboard": {
+        "open": true
+      },
+      "photonvision": {
+        "Camera_Module_v1": {
+          "Transform3d##v_/photonvision/Camera_Module_v1/targetPose": {
+            "open": true
+          },
+          "open": true
+        },
         "open": true
       }
     },
@@ -16,7 +34,8 @@
       "/SmartDashboard/SwerveDrivePID 2": "PIDController",
       "/SmartDashboard/SwerveDrivePID 3": "PIDController",
       "/SmartDashboard/SwerveDrivePID 8": "PIDController",
-      "/SmartDashboard/SwerveDrivePID 9": "PIDController"
+      "/SmartDashboard/SwerveDrivePID 9": "PIDController",
+      "/SmartDashboard/fieldPose": "Field2d"
     },
     "windows": {
       "/SmartDashboard/SwerveDrivePID 2": {
@@ -45,6 +64,12 @@
     "Connections": {
       "open": true
     },
+    "Server": {
+      "Publishers": {
+        "open": true
+      },
+      "open": true
+    },
     "visible": true
   },
   "NetworkTables Settings": {
@@ -65,7 +90,7 @@
             0.0,
             0.8500000238418579
           ],
-          "height": 1017,
+          "height": 981,
           "series": [
             {
               "color": [
