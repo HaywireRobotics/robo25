@@ -41,6 +41,7 @@ public class RobotContainer {
   // DEFINE default COMMAND?
   public final DefaultDriveCommand defaultDriveCommand;
   public final Move1MeterCommand move1MeterCommand;
+  public final FollowAprilTagCommand followAprilTagCommand;
   // public final DefaultElevatorCommand defaultElevatorCommand;
   // public final DefaultFilterFeederCommand defaultFilterFeederCommand;
 
@@ -65,6 +66,7 @@ public class RobotContainer {
 
     defaultDriveCommand = new DefaultDriveCommand(m_dorsalFin, m_driveController);
     move1MeterCommand = new Move1MeterCommand(m_dorsalFin);
+    followAprilTagCommand = new FollowApriltagCommand(m_dorsalFin, m_camera);
     // defaultElevatorCommand = new DefaultElevatorCommand(m_elevator);
     // defaultFilterFeederCommand = new DefaultFilterFeederCommand(m_filterFeeder);
 

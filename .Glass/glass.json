@@ -10,7 +10,6 @@
       "CameraPublisher": {
         "open": true,
         "photonvision_Port_1182_Output_MJPEG_Server": {
-          "open": true,
           "string[]##v_/CameraPublisher/photonvision_Port_1182_Output_MJPEG_Server/streams": {
             "open": true
           }
