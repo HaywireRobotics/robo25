@@ -185,6 +185,18 @@ public class DorsalFin extends SubsystemBase {
         .linearPosition(m_distance.mut_replace(module.getDrivePosition(),Meters));
     }
    return logs;
+  }
+
+  public Pose2d getPose2D() {
+    return fieldPose;
+  }
+  /* 
+  public double getLinearVelocity() {
 
   }
+
+  public double getAngularVelocity() {
+    
+  }
+  */
 }

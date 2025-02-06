@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefaultElevatorCommand;
 import frc.robot.commands.DefaultFilterFeederCommand;
+import frc.robot.commands.FollowAprilTagCommand;
 import frc.robot.commands.Move1MeterCommand;
 import frc.robot.commands.TuneSwerveAutonomousCommand;
 import frc.robot.subsystems.DorsalFin;
@@ -66,7 +67,7 @@ public class RobotContainer {
 
     defaultDriveCommand = new DefaultDriveCommand(m_dorsalFin, m_driveController);
     move1MeterCommand = new Move1MeterCommand(m_dorsalFin);
-    followAprilTagCommand = new FollowApriltagCommand(m_dorsalFin, m_camera);
+    followAprilTagCommand = new FollowAprilTagCommand(m_dorsalFin, m_camera, robot);
     // defaultElevatorCommand = new DefaultElevatorCommand(m_elevator);
     // defaultFilterFeederCommand = new DefaultFilterFeederCommand(m_filterFeeder);
 
@@ -90,6 +91,9 @@ public class RobotContainer {
     }
     if (kConstants.kEnable1MeterTuning) {
       m_driveController.a().whileTrue(this.move1MeterCommand);
+    }
+    if (kConstants.kEnableFollowApriltag) {
+      m_driveController.a().whileTrue(this.followAprilTagCommand);
     }
   }
 

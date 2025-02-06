@@ -24,8 +24,7 @@
             "open": true
           },
           "open": true
-        },
-        "open": true
+        }
       }
     },
     "types": {
@@ -165,7 +164,10 @@
             }
           ]
         }
-      ]
+      ],
+      "window": {
+        "visible": false
+      }
     }
   }
 }

@@ -83,6 +83,7 @@ public class kConstants {
     
     // Feature Flags
     public static final boolean kEnableFeedforwardTuning = false; // A, B, X, Y run feedforward tuning code for the Sysid tool
-    public static final boolean kEnable1MeterTuning = true; // A moves the robot forward 1 meter
+    public static final boolean kEnable1MeterTuning = false; // A moves the robot forward 1 meter
+    public static final boolean kEnableFollowApriltag = true; // A follows april tag 2 at a distance of 1 meter
 }
 /* kConstants.kSwerve */
