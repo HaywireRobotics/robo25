@@ -16,6 +16,7 @@ public class kConstants {
     public static final double kSwerveDriveKD = 0.0;
     public static final double kSwerveDriveKS = 0.11831;
     public static final double kSwerveDriveKV = 2.4461;
+    public static final double kSwerveDriveKA = 0.28161;
 
     public static final double kSwerveTurningKP = 8;
     public static final double kSwerveTurningKI = 0;
@@ -84,6 +85,7 @@ public class kConstants {
     // Feature Flags
     public static final boolean kEnableFeedforwardTuning = false; // A, B, X, Y run feedforward tuning code for the Sysid tool
     public static final boolean kEnable1MeterTuning = false; // A moves the robot forward 1 meter
-    public static final boolean kEnableFollowApriltag = true; // A follows april tag 2 at a distance of 1 meter
+    public static final boolean kEnableFollowApriltag = false; // A follows april tag 2 at a distance of 1 meter
+    public static final boolean kEnableGoToSpecifiedPosition = true; // A goes to (currently) 0,0 the place where the robot was restarted
 }
 /* kConstants.kSwerve */

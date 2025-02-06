@@ -25,6 +25,7 @@ import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefaultElevatorCommand;
 import frc.robot.commands.DefaultFilterFeederCommand;
 import frc.robot.commands.FollowAprilTagCommand;
+import frc.robot.commands.GoToSpecifiedPosition;
 import frc.robot.commands.Move1MeterCommand;
 import frc.robot.commands.TuneSwerveAutonomousCommand;
 import frc.robot.subsystems.DorsalFin;
@@ -43,6 +44,7 @@ public class RobotContainer {
   public final DefaultDriveCommand defaultDriveCommand;
   public final Move1MeterCommand move1MeterCommand;
   public final FollowAprilTagCommand followAprilTagCommand;
+  public final GoToSpecifiedPosition goToSpecifiedPosition;
   // public final DefaultElevatorCommand defaultElevatorCommand;
   // public final DefaultFilterFeederCommand defaultFilterFeederCommand;
 
@@ -68,6 +70,7 @@ public class RobotContainer {
     defaultDriveCommand = new DefaultDriveCommand(m_dorsalFin, m_driveController);
     move1MeterCommand = new Move1MeterCommand(m_dorsalFin);
     followAprilTagCommand = new FollowAprilTagCommand(m_dorsalFin, m_camera, robot);
+    goToSpecifiedPosition = new GoToSpecifiedPosition(m_dorsalFin, robot);
     // defaultElevatorCommand = new DefaultElevatorCommand(m_elevator);
     // defaultFilterFeederCommand = new DefaultFilterFeederCommand(m_filterFeeder);
 
@@ -94,6 +97,9 @@ public class RobotContainer {
     }
     if (kConstants.kEnableFollowApriltag) {
       m_driveController.a().whileTrue(this.followAprilTagCommand);
+    }
+    if (kConstants.kEnableGoToSpecifiedPosition) {
+      m_driveController.a().whileTrue(this.goToSpecifiedPosition);
     }
   }
 
