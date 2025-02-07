@@ -39,7 +39,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void elevatorGoTo0(){
-    m_elevatorMotor.getEncoder();
+    setPIDTarget(0);
   }
 
   public void setPIDTarget(double position){

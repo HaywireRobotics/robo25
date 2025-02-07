@@ -26,8 +26,6 @@ import com.ctre.phoenix6.hardware.CANcoder;
 import frc.robot.kConstants;
 
 public class SwerveModule {
-  private static final double kWheelRadius = 0.0508;
-  private static final int kEncoderResolution = 4096;
 
   private static final double kModuleMaxAngularVelocity = kConstants.kMaxAngularVelocity;
   private static final double kModuleMaxAngularAcceleration = kConstants.kMaxAngularAcceleration; // radians per second squared

@@ -54,7 +54,7 @@ public class kConstants {
 
     // Elevator
     public static final int kElevatorMotor = 19;
-    public static final double kElevatorRatio = 1.0;
+    public static final double kElevatorRatio = 1.0/20.0;
     
     public static final double kElevatorKP = 1;
     public static final double kElevatorKI = 0;
@@ -79,6 +79,20 @@ public class kConstants {
     public static final double kEnableIntake = 7;
     public static final SparkBaseConfig kIntakeAssemblyNominalConfig = new SparkMaxConfig().smartCurrentLimit(95).idleMode(IdleMode.kBrake).inverted(false);
     
+
+
+    // Manipulator
+    public static final double kManipulatorRatio = 1.0/35.0;
+    public static final int kManipulatorMotor = 23;
+    public static final double kManipulatorKP = 1;
+    public static final double kManipulatorKI = 0;
+    public static final double kManipulatorKD = 0;
+    public static final double kManipulatorMaxAcceleration = 1;
+    public static final double kManipulatorMaxVelocity = 1;
+    public static final double kManipulatorMaxAngle = 180;
+
+
+
     public static final SparkBaseConfig kDefaultNeo550NominalConfig = new SparkMaxConfig().smartCurrentLimit(95).idleMode(IdleMode.kBrake).inverted(false);
 
     
