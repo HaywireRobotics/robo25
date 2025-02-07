@@ -30,7 +30,7 @@ public class SwerveModule {
   private static final double kModuleMaxAngularVelocity = kConstants.kMaxAngularVelocity;
   private static final double kModuleMaxAngularAcceleration = kConstants.kMaxAngularAcceleration; // radians per second squared
 
-  private final SparkMax m_driveMotor;
+  private final SparkFlex m_driveMotor;
 
   private final SparkMax m_turningMotor;
 
@@ -72,10 +72,10 @@ public class SwerveModule {
       int turningMotorChannel,
       int turningEncoderChannel,
       double offset) {
-    m_driveMotor = new SparkMax(driveMotorChannel,MotorType.kBrushless);
-    m_driveMotor.configure(kConstants.kSwerveNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_driveMotor = new SparkFlex(driveMotorChannel,MotorType.kBrushless);
+    m_driveMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_turningMotor = new SparkMax(turningMotorChannel,MotorType.kBrushless);
-    m_turningMotor.configure(kConstants.kSwerveNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_turningMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_turningEncoder = new CANcoder(turningEncoderChannel);
     // Limit the PID Controller's input range between -pi and pi and set the input

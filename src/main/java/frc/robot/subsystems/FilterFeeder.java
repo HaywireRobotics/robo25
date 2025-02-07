@@ -36,9 +36,9 @@ public class FilterFeeder extends SubsystemBase {
     m_intakeAssemblyMotor = new SparkMax(kConstants.kIntakeAssemblyMotor, MotorType.kBrushless);
     m_indexMotor = new SparkMax(kConstants.kIndexMotor, MotorType.kBrushless);
     m_intakeAssemblyPIDController.setTolerance(3, 2);
-    m_intakeAssemblyMotor.configure(kConstants.kIntakeAssemblyNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_intakeMotor.configure(kConstants.kDefaultNeo550NominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_indexMotor.configure(kConstants.kDefaultNeo550NominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_intakeAssemblyMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_intakeMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_indexMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   @Override

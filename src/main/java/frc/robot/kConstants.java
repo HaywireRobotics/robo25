@@ -34,7 +34,7 @@ public class kConstants {
 
 
     // Swerve motors
-    public static final SparkBaseConfig kSwerveNominalConfig = new SparkMaxConfig().smartCurrentLimit(150).idleMode(IdleMode.kBrake).inverted(false);
+    public static final SparkBaseConfig kNeoNominalConfig = new SparkMaxConfig().smartCurrentLimit(150).idleMode(IdleMode.kBrake).inverted(false);
 
     public static final int kSwerveFrontRightTurnMotor = 4;
     public static final int kSwerveFrontRightDriveMotor = 3;
@@ -82,9 +82,6 @@ public class kConstants {
     public static final double kIntakeAssemblyUpPoint = 0;
     public static final double kEnableIndex = 4;
     public static final double kEnableIntake = 7;
-    public static final SparkBaseConfig kIntakeAssemblyNominalConfig = new SparkMaxConfig().smartCurrentLimit(95).idleMode(IdleMode.kBrake).inverted(false);
-    
-
 
     // Manipulator
     public static final double kManipulatorRatio = 1.0/35.0;
@@ -95,11 +92,6 @@ public class kConstants {
     public static final double kManipulatorMaxAcceleration = 1;
     public static final double kManipulatorMaxVelocity = 1;
     public static final double kManipulatorMaxAngle = 180;
-
-
-
-    public static final SparkBaseConfig kDefaultNeo550NominalConfig = new SparkMaxConfig().smartCurrentLimit(95).idleMode(IdleMode.kBrake).inverted(false);
-
     
     // Feature Flags
     public static final boolean kEnableFeedforwardTuning = false; // A, B, X, Y run feedforward tuning code for the Sysid tool
