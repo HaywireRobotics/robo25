@@ -6,6 +6,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Statics;
+import frc.robot.kConstants;
 import frc.robot.subsystems.DorsalFin;
 
 
@@ -42,8 +43,15 @@ public class DefaultDriveCommand extends Command {
         leftX = Statics.applyDeadband(leftX, JOYSTICK_DEADBAND);
         leftY = Statics.applyDeadband(leftY, JOYSTICK_DEADBAND);
         rightX = Statics.applyDeadband(rightX, JOYSTICK_DEADBAND);
+
+        double slowdownValue = (kConstants.kSlowModeDivider - controller.getLeftTriggerAxis()) / kConstants.kSlowModeDivider;
         
-        m_subsystem.drive(teleopSpeedMultiplier*leftX, teleopSpeedMultiplier*leftY, -teleopSpeedMultiplier*rightX,m_fieldRelative);
+        leftX = leftX * slowdownValue;
+        leftY = leftY * slowdownValue;
+        rightX = rightX * slowdownValue;
+
+
+        m_subsystem.drive(kConstants.kNavigationMultiplier*leftX, kConstants.kNavigationMultiplier*leftY, -kConstants.kRotationMultiplier*rightX,m_fieldRelative);
         
         /* Odometry */
         // m_subsystem.updateOdometry();

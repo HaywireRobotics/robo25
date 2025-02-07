@@ -84,7 +84,7 @@ public class FollowAprilTagCommand extends Command {
     SmartDashboard.putString("Chassis Speed", movement.toString());
     // m_dorsalFin.drive(movement.vyMetersPerSecond, movement.vxMetersPerSecond, movement.omegaRadiansPerSecond, false);
     */
-    m_dorsalFin.drive(tagPosition.getY()*5, (tagPosition.getX() - 1)*5, Statics.applyDeadband(-(tagPosition.getRotation().plus(Rotation2d.k180deg).getRadians()), 0.05), false);
+    m_dorsalFin.drive(tagPosition.getY()*4, (tagPosition.getX() - 1)*4, Statics.applyDeadband(-(tagPosition.getRotation().plus(Rotation2d.k180deg).getRadians()), 0.05), false);
   }
 
   // Called once the command ends or is interrupted.

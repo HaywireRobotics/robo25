@@ -11,6 +11,11 @@ public class kConstants {
     public static final double kMaxAngularAcceleration = 20;
     public static final double kInchesToMeters = 0.0254;
 
+    public static final double kNavigationMultiplier = 1.6; // Number to multiply the left joystick by
+    public static final double kRotationMultiplier = 2.5; // Number to multiply the right joystick by
+
+    public static final double kSlowModeDivider = 1.5; // Number to divide both joysticks 1.5 = [1,0.3] 
+
     public static final double kSwerveDriveKP = 0.44072;
     public static final double kSwerveDriveKI = 0.0;
     public static final double kSwerveDriveKD = 0.0;
@@ -99,7 +104,7 @@ public class kConstants {
     // Feature Flags
     public static final boolean kEnableFeedforwardTuning = false; // A, B, X, Y run feedforward tuning code for the Sysid tool
     public static final boolean kEnable1MeterTuning = false; // A moves the robot forward 1 meter
-    public static final boolean kEnableFollowApriltag = false; // A follows april tag 2 at a distance of 1 meter
-    public static final boolean kEnableGoToSpecifiedPosition = true; // A goes to (currently) 0,0 the place where the robot was restarted
+    public static final boolean kEnableFollowApriltag = true; // A follows april tag 2 at a distance of 1 meter
+    public static final boolean kEnableGoToSpecifiedPosition = false; // A goes to (currently) 0,0 the place where the robot was restarted
 }
 /* kConstants.kSwerve */
