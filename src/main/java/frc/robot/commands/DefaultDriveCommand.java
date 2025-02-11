@@ -4,8 +4,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Statics;
+import frc.robot.wrappers.Controller;
 import frc.robot.kConstants;
 import frc.robot.subsystems.DorsalFin;
 
@@ -14,7 +14,7 @@ import frc.robot.subsystems.DorsalFin;
 
 public class DefaultDriveCommand extends Command {
     private final DorsalFin m_subsystem;
-    private final CommandXboxController controller;
+    private final Controller m_controller;
     private boolean m_fieldRelative = false;
 
     //the buffer not only affects the "deadzone", 
@@ -22,29 +22,33 @@ public class DefaultDriveCommand extends Command {
     private static final double JOYSTICK_DEADBAND = 0.1;
     public double teleopSpeedMultiplier = 1.6;
 
-    public DefaultDriveCommand(DorsalFin subsystem, CommandXboxController xboxController) {
+    public DefaultDriveCommand(DorsalFin subsystem, Controller xboxController) {
         this.m_subsystem = subsystem;
-        this.controller = xboxController;
+        this.m_controller = xboxController;
 
         addRequirements(subsystem);
-        SmartDashboard.putBoolean("FieldRelative", m_fieldRelative);
     }
 
     
 
     @Override
     public void execute() {
-        double rightX = controller.getRightX();
-        double leftX = controller.getLeftX();
-        double leftY = controller.getLeftY();
+        double rightX = m_controller.getRightX();
+        double leftX = m_controller.getLeftX();
+        double leftY = m_controller.getLeftY();
 
-        m_fieldRelative = SmartDashboard.getBoolean("FieldRelative", m_fieldRelative);
+        if (m_controller.getByName(kConstants.kDisableFieldCentricButton).getAsBoolean()) {
+            m_fieldRelative = false;
+        }
+        if (m_controller.getByName(kConstants.kEnableFieldCentricButton).getAsBoolean()) {
+            m_fieldRelative = true;
+        }
 
         leftX = Statics.applyDeadband(leftX, JOYSTICK_DEADBAND);
         leftY = Statics.applyDeadband(leftY, JOYSTICK_DEADBAND);
         rightX = Statics.applyDeadband(rightX, JOYSTICK_DEADBAND);
 
-        double slowdownValue = (kConstants.kSlowModeDivider - controller.getLeftTriggerAxis()) / kConstants.kSlowModeDivider;
+        double slowdownValue = (kConstants.kSlowModeDivider - m_controller.getLeftTriggerAxis()) / kConstants.kSlowModeDivider;
         
         leftX = leftX * slowdownValue;
         leftY = leftY * slowdownValue;

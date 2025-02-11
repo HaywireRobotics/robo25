@@ -5,6 +5,7 @@
 package frc.robot;
 
 import java.util.Optional;
+import java.util.ResourceBundle.Control;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
@@ -32,9 +33,10 @@ import frc.robot.subsystems.DorsalFin;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.FilterFeeder;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.wrappers.Controller;
 
 public class RobotContainer {
-  private final CommandXboxController m_driveController = new CommandXboxController(0);
+  private final Controller m_driveController = new Controller(0);
   // define SUBSYSTEMS!!!
   private final DorsalFin m_dorsalFin;
   // private final Elevator m_elevator;
