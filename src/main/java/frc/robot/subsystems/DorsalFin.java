@@ -71,6 +71,8 @@ public class DorsalFin extends SubsystemBase {
   private final MutLinearVelocity m_velocity = MetersPerSecond.mutable(0);
   private final AHRS m_gyro = new AHRS();
 
+  private Rotation2d m_calibratedOffset = new Rotation2d();
+
   private final SwerveDriveKinematics m_kinematics =
       new SwerveDriveKinematics(
           m_frontLeftLocation,
@@ -78,7 +80,14 @@ public class DorsalFin extends SubsystemBase {
           m_backLeftLocation,
           m_backRightLocation);
 
-  private final SwerveDriveOdometry m_odometry =
+  private final SwerveDriveOdometry m_odometry;
+  private Pose2d fieldPose = new Pose2d();
+
+  private final Robot m_robot;
+
+  public DorsalFin(Robot robot) {
+    this.resetGyro();
+    m_odometry =
       new SwerveDriveOdometry(
           m_kinematics,
           getRotationAroundUpAxisInRotation2d(),
@@ -88,12 +97,6 @@ public class DorsalFin extends SubsystemBase {
             m_backLeft.getPosition(),
             m_backRight.getPosition()
           });
-  private Pose2d fieldPose = new Pose2d();
-
-  private final Robot m_robot;
-
-  public DorsalFin(Robot robot) {
-    m_gyro.zeroYaw();
     m_robot = robot;
   }
 
@@ -177,7 +180,7 @@ public class DorsalFin extends SubsystemBase {
   }
 
   public Rotation2d getRotationAroundUpAxisInRotation2d() {
-    return m_gyro.getRotation2d();
+    return m_gyro.getRotation2d().minus(m_calibratedOffset);
   }
 
   public SysIdRoutineLog driveLogs(SysIdRoutineLog logs){
@@ -193,6 +196,11 @@ public class DorsalFin extends SubsystemBase {
 
   public Pose2d getPose2D() {
     return fieldPose;
+  }
+
+  public void resetGyro() {
+    // m_gyro.reset();
+    m_calibratedOffset = m_gyro.getRotation2d();
   }
   /* 
   public double getLinearVelocity() {

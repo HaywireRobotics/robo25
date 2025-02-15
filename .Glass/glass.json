@@ -33,6 +33,7 @@
       "/SmartDashboard/SwerveDrivePID 3": "PIDController",
       "/SmartDashboard/SwerveDrivePID 8": "PIDController",
       "/SmartDashboard/SwerveDrivePID 9": "PIDController",
+      "/SmartDashboard/Trajectory Sample": "Field2d",
       "/SmartDashboard/fieldPose": "Field2d"
     },
     "windows": {
@@ -52,6 +53,31 @@
         }
       },
       "/SmartDashboard/SwerveDrivePID 9": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Trajectory Sample": {
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/fieldPose": {
+        "Robot": {
+          "style": "Box/Image"
+        },
+        "bottom": 1476,
+        "height": 8.210550308227539,
+        "left": 150,
+        "right": 2961,
+        "top": 79,
+        "width": 16.541748046875,
         "window": {
           "visible": true
         }

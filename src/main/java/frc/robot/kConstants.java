@@ -96,12 +96,11 @@ public class kConstants {
     // Feature Flags
     public static final boolean kEnableFeedforwardTuning = false; // A, B, X, Y run feedforward tuning code for the Sysid tool
     public static final boolean kEnable1MeterTuning = false; // A moves the robot forward 1 meter
-    public static final boolean kEnableFollowApriltag = true; // A follows april tag 2 at a distance of 1 meter
-    public static final boolean kEnableGoToSpecifiedPosition = false; // A goes to (currently) 0,0 the place where the robot was restarted
+    public static final boolean kEnableFollowApriltag = false; // A follows april tag 2 at a distance of 1 meter
+    public static final boolean kEnableGoToSpecifiedPosition = true; // A goes to (currently) 0,0 the place where the robot was restarted
 
     // Buttons
     public static final String kDisableFieldCentricButton = "back";
     public static final String kEnableFieldCentricButton = "start";
-
 }
 /* kConstants.kSwerve */
