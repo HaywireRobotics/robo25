@@ -2,6 +2,9 @@ package frc.robot;
 
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.wpilibj.Filesystem;
+
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 public class kConstants {
@@ -14,7 +17,9 @@ public class kConstants {
     public static final double kNavigationMultiplier = 1.6; // Number to multiply the left joystick by
     public static final double kRotationMultiplier = 5; // Number to multiply the right joystick by
 
-    public static final double kSlowModeDivider = 1.5; // Number to divide both joysticks 1.5 = [1,0.3] 
+    public static final double kSlowModeDivider = 1.5; // Number to divide both joysticks 1.5 = [1,0.3]
+
+    public static final double kMaxPoseAmbiguity = 0.1;
 
     public static final double kSwerveDriveKP = 0.44072;
     public static final double kSwerveDriveKI = 0.0;
@@ -102,5 +107,8 @@ public class kConstants {
     // Buttons
     public static final String kDisableFieldCentricButton = "back";
     public static final String kEnableFieldCentricButton = "start";
+
+    // Files
+    public static final String kFieldAprilTagJSON = Filesystem.getDeployDirectory() + "/fields/2025-reefscape-andymark.json";
 }
 /* kConstants.kSwerve */

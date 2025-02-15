@@ -56,7 +56,7 @@ public class GoToSpecifiedPosition extends Command {
     m_timer.reset();
     m_timer.start();
     final ArrayList<Translation2d> waypoints = new ArrayList<>(2);
-    waypoints.add(new Translation2d(0.5, 0.5));
+    // waypoints.add(new Translation2d(0.5, 0.5));
     m_trajectory = TrajectoryGenerator.generateTrajectory(
       m_dorsalFin.getPose2D(), 
       waypoints, 

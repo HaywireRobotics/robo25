@@ -149,6 +149,10 @@ public class DorsalFin extends SubsystemBase {
         });
   }
 
+  public void setOdometry(Pose2d newPose) {
+    m_odometry.resetPose(newPose);
+  }
+ 
   public Pose2d getFieldPose(){
     return fieldPose;
   }

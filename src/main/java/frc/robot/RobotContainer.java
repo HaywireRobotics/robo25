@@ -33,6 +33,7 @@ import frc.robot.subsystems.DorsalFin;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.FilterFeeder;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.wrappers.Camera;
 import frc.robot.wrappers.Controller;
 
 public class RobotContainer {
@@ -53,15 +54,11 @@ public class RobotContainer {
   public final TuneSwerveAutonomousCommand tuneSwerveAutonomousCommand;
   private final SysIdRoutine sysidRoutine;
 
-  private final PhotonCamera m_camera = new PhotonCamera("Camera_Module_v1");
-  AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+  private final Camera m_camera = new Camera("Camera_Module_v1");
   Transform3d robotToCam = new Transform3d(
     new Translation3d(0.3302, 0.0, 0.2), 
     new Rotation3d(0, 0, 0)); // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
   // Construct PhotonPoseEstimator
-  PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout,
-      PoseStrategy.CLOSEST_TO_REFERENCE_POSE, robotToCam);
-  
   private static Field2d fieldPose = new Field2d();
 
   public RobotContainer(Robot robot) {
@@ -117,25 +114,19 @@ public class RobotContainer {
     return sysidRoutine.dynamic(direction);
   }
 
-  public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
-    //photonPoseEstimator.setReferencePose(prevEstimatedRobotPose);
-    return photonPoseEstimator.update(m_camera.getAllUnreadResults().get(0));
-  }
-
-  public Pose2d getGlobalPose(){
-    EstimatedRobotPose estimatedRobotPose = getEstimatedGlobalPose().get();
-    return estimatedRobotPose.estimatedPose.toPose2d();
-  }
-
   public void updateOdometry() {
     m_dorsalFin.updateOdometry();
+    Optional<Pose2d> estimated_pose = m_camera.estimatePose();
+    if (estimated_pose.isPresent()) {
+      m_dorsalFin.setOdometry(estimated_pose.get());
+    }
   }
 
   public Pose2d getFieldPose(){
     return m_dorsalFin.getFieldPose();
   }
 
-  public Field2d updateFieldPose(){
+  public Field2d updateFieldPose() {
     fieldPose.setRobotPose(getFieldPose());
     return fieldPose;
   }
