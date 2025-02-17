@@ -17,14 +17,17 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import frc.robot.kConstants;
 
 /** Add your docs here. */
 public class Camera extends PhotonCamera {
     private List<PhotonPipelineResult> m_cameraData;
+    private Transform3d m_cameraOffset;
     private AprilTagFieldLayout aprilTagFieldLayout;
-    public Camera(String name) {
+    public Camera(String name, Transform3d cameraOffset) {
         super(name);
+        m_cameraOffset = cameraOffset;
         try {
             aprilTagFieldLayout = new AprilTagFieldLayout(kConstants.kFieldAprilTagJSON);
         } catch (IOException error) {
@@ -50,7 +53,7 @@ public class Camera extends PhotonCamera {
         return m_cameraData.get(0);
     }
 
-    public Optional<Pose2d> estimatePose() {
+    public Optional<Pose2d> estimatePose(Pose2d robotPose) {
         updateVisible();
         if (m_cameraData.size() == 0 || m_cameraData.get(0) == null) {
             return Optional.empty();
@@ -65,10 +68,14 @@ public class Camera extends PhotonCamera {
         if (target.poseAmbiguity > kConstants.kMaxPoseAmbiguity) {
             return Optional.empty();
         }
+        if (target.bestCameraToTarget.getX() > kConstants.kMaxTagDistance) {
+            return Optional.empty();
+        }
         int target_id = target.fiducialId;
         Pose3d field_target_pose = aprilTagFieldLayout.getTagPose(target_id).get();
         Pose3d camera_pose = field_target_pose.plus(target.bestCameraToTarget.inverse());
-        return Optional.of(camera_pose.toPose2d());
+        Pose3d calculatedRobotPose = camera_pose.plus(m_cameraOffset.inverse());
+        return Optional.of(calculatedRobotPose.toPose2d().interpolate(robotPose, target.poseAmbiguity*10));
     }
 
     private void updateVisible() {

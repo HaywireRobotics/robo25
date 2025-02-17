@@ -15,6 +15,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
@@ -25,7 +26,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
+import frc.robot.kConstants;
 import frc.robot.subsystems.DorsalFin;
+import frc.robot.wrappers.FieldLayout;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class GoToSpecifiedPosition extends Command {
@@ -35,8 +38,13 @@ public class GoToSpecifiedPosition extends Command {
   private Trajectory m_trajectory;
   private final Timer m_timer;
   private Field2d m_position = new Field2d();
+
+  private final int m_idToTarget;
+
+  private FieldLayout m_field = new FieldLayout(kConstants.kFieldAprilTagJSON);
   /** Creates a new GoToSpecifiedPosition. */
-  public GoToSpecifiedPosition(DorsalFin dorsalFin, Robot robot) {
+  public GoToSpecifiedPosition(DorsalFin dorsalFin, Robot robot, int idToTarget) {
+    m_idToTarget = idToTarget;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(dorsalFin);
     m_dorsalFin = dorsalFin;
@@ -60,30 +68,20 @@ public class GoToSpecifiedPosition extends Command {
     m_trajectory = TrajectoryGenerator.generateTrajectory(
       m_dorsalFin.getPose2D(), 
       waypoints, 
-      new Pose2d(1, 1, new Rotation2d(0)), new TrajectoryConfig(0.5, 1));
+      m_field.getTag(m_idToTarget)
+        .translate(new Transform2d(1, 0, Rotation2d.kZero))
+        .facing(m_field.getTag(m_idToTarget).toPose())
+        .translate(new Transform2d(0, 0, Rotation2d.kZero)).toPose(),
+      new TrajectoryConfig(0.5, 1));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    /*
-    // tagPosition.plus(kConstants.kCameraPosition); // TODO offset tagPosition by the camera position
-    Pose2d worldTagPosition = m_dorsalFin.getPose2D().plus(tagPosition);
-    SmartDashboard.putString("World Tag Position", worldTagPosition.toString());
-    SmartDashboard.putString("Tag Position", tagPosition.toString());
-    SmartDashboard.putString("Robot Position", m_dorsalFin.getPose2D().toString());
-    
-    // Run Controller
-    double linearVelocity = m_dorsalFin.getLinearVelocity();
-    double angularVelocity = m_dorsalFin.getAngularVelocity();
-    ChassisSpeeds movement = m_controller.calculate(m_dorsalFin.getPose2D(), worldTagPosition, linearVelocity, angularVelocity);
-    SmartDashboard.putString("Chassis Speed", movement.toString());
-    // m_dorsalFin.drive(movement.vyMetersPerSecond, movement.vxMetersPerSecond, movement.omegaRadiansPerSecond, false);
-    */
     Trajectory.State reference = m_trajectory.sample(m_timer.get());
     m_position.setRobotPose(reference.poseMeters);
-    SmartDashboard.putData("Trajectory Sample", m_position);
-    ChassisSpeeds movement = m_controller.calculate(m_dorsalFin.getPose2D(), reference, reference.poseMeters.getRotation());
+    Rotation2d targetRotation = m_trajectory.sample(m_trajectory.getTotalTimeSeconds()).poseMeters.getRotation();
+    ChassisSpeeds movement = m_controller.calculate(m_dorsalFin.getPose2D(), reference, targetRotation);
     movement.omegaRadiansPerSecond = -movement.omegaRadiansPerSecond;
     m_dorsalFin.drive(movement);
   }

@@ -47,18 +47,19 @@ public class RobotContainer {
   public final DefaultDriveCommand defaultDriveCommand;
   public final Move1MeterCommand move1MeterCommand;
   public final FollowAprilTagCommand followAprilTagCommand;
-  public final GoToSpecifiedPosition goToSpecifiedPosition;
+  public final GoToSpecifiedPosition goToAprilTag8;
+  public final GoToSpecifiedPosition goToAprilTag2;
   // public final DefaultElevatorCommand defaultElevatorCommand;
   // public final DefaultFilterFeederCommand defaultFilterFeederCommand;
 
   public final TuneSwerveAutonomousCommand tuneSwerveAutonomousCommand;
   private final SysIdRoutine sysidRoutine;
 
-  private final Camera m_camera = new Camera("Camera_Module_v1");
-  Transform3d robotToCam = new Transform3d(
-    new Translation3d(0.3302, 0.0, 0.2), 
-    new Rotation3d(0, 0, 0)); // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
-  // Construct PhotonPoseEstimator
+  private final Camera m_camera = new Camera("Camera_Module_v1", new Transform3d(
+    new Translation3d(0.3302, 0.0, 0.2),
+    new Rotation3d(0, 0, 0))
+  );
+
   private static Field2d fieldPose = new Field2d();
 
   public RobotContainer(Robot robot) {
@@ -69,7 +70,8 @@ public class RobotContainer {
     defaultDriveCommand = new DefaultDriveCommand(m_dorsalFin, m_driveController);
     move1MeterCommand = new Move1MeterCommand(m_dorsalFin);
     followAprilTagCommand = new FollowAprilTagCommand(m_dorsalFin, m_camera, robot);
-    goToSpecifiedPosition = new GoToSpecifiedPosition(m_dorsalFin, robot);
+    goToAprilTag8 = new GoToSpecifiedPosition(m_dorsalFin, robot, 8);
+    goToAprilTag2 = new GoToSpecifiedPosition(m_dorsalFin, robot, 2);
     // defaultElevatorCommand = new DefaultElevatorCommand(m_elevator);
     // defaultFilterFeederCommand = new DefaultFilterFeederCommand(m_filterFeeder);
 
@@ -98,7 +100,8 @@ public class RobotContainer {
       m_driveController.a().whileTrue(this.followAprilTagCommand);
     }
     if (kConstants.kEnableGoToSpecifiedPosition) {
-      m_driveController.a().whileTrue(this.goToSpecifiedPosition);
+      m_driveController.a().whileTrue(this.goToAprilTag8);
+      m_driveController.b().whileTrue(this.goToAprilTag2);
     }
   }
 
@@ -116,7 +119,7 @@ public class RobotContainer {
 
   public void updateOdometry() {
     m_dorsalFin.updateOdometry();
-    Optional<Pose2d> estimated_pose = m_camera.estimatePose();
+    Optional<Pose2d> estimated_pose = m_camera.estimatePose(m_dorsalFin.getPose2D());
     if (estimated_pose.isPresent()) {
       m_dorsalFin.setOdometry(estimated_pose.get());
     }

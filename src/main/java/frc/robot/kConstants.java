@@ -19,7 +19,8 @@ public class kConstants {
 
     public static final double kSlowModeDivider = 1.5; // Number to divide both joysticks 1.5 = [1,0.3]
 
-    public static final double kMaxPoseAmbiguity = 0.1;
+    public static final double kMaxPoseAmbiguity = 0.1; // Ambiguity Ratio
+    public static final double kMaxTagDistance = 1.5; // Meters
 
     public static final double kSwerveDriveKP = 0.44072;
     public static final double kSwerveDriveKI = 0.0;
