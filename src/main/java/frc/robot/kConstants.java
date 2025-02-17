@@ -64,8 +64,9 @@ public class kConstants {
 
 
     // Elevator
-    public static final int kElevatorMotor = 19;
+    public static final int kElevatorMotor = 17;
     public static final double kElevatorRatio = 1.0/20.0;
+    public static final double kElevatorRotationsToInches = 4 * Math.PI;
     
     public static final double kElevatorKP = 1;
     public static final double kElevatorKI = 0;
@@ -76,9 +77,11 @@ public class kConstants {
 
     // Intake
     // TODO Once this assembly is actully added, check the PIDs
-    public static final int kIntakeMotor = 20;
-    public static final int kIntakeAssemblyMotor = 21;
-    public static final int kIndexMotor = 22;
+    public static final int kIntakeMotor = 13;
+    public static final int kIntakeAssemblyMotor = 12;
+    public static final int kIndexMotor = 14;
+    public static final int kIndexBackLeftMotor = 16;
+    public static final int kIndexBackRightMotor = 15;
     public static final double kIntakeAssemblyKP = 1;
     public static final double kIntakeAssemblyKI = 0;
     public static final double kIntakeAssemblyKD = 0;
@@ -91,7 +94,7 @@ public class kConstants {
 
     // Manipulator
     public static final double kManipulatorRatio = 1.0/35.0;
-    public static final int kManipulatorMotor = 23;
+    public static final int kManipulatorMotor = 18;
     public static final double kManipulatorKP = 1;
     public static final double kManipulatorKI = 0;
     public static final double kManipulatorKD = 0;

@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -26,6 +28,7 @@ public class Elevator extends SubsystemBase {
   /** Creates a new Elevator. */
   public Elevator() {
     m_elevatorMotor = new SparkMax(kConstants.kElevatorMotor, MotorType.kBrushless);
+    m_elevatorMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_elevatorPIDController.setTolerance(3, 2);
   }
 
@@ -35,10 +38,10 @@ public class Elevator extends SubsystemBase {
   }
 
   public double getElevatorPos(){
-    return (m_elevatorMotor.getEncoder().getPosition())*kConstants.kElevatorRatio;
+    return (m_elevatorMotor.getEncoder().getPosition()) * kConstants.kElevatorRatio * kConstants.kElevatorRotationsToInches;
   }
 
-  public void elevatorGoTo0(){
+  public void elevatorGoTo0() {
     setPIDTarget(0);
   }
 
