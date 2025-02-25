@@ -5,35 +5,33 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Stomach;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class GoToElevatorCommand extends Command {
-  /** Creates a new DefaultElevatorCommand. */
-  public final Elevator m_elevator;
-  public final double m_position;
-  public GoToElevatorCommand(Elevator elevator, double position) {
-    m_elevator = elevator;
-    m_position = position;
-    addRequirements(elevator);
+public class DigestionCommand extends Command {
+  private final Stomach m_stomach;
+
+  /** Creates a new DigestionCommand. */
+  public DigestionCommand(Stomach stomach) {
+    addRequirements(stomach);
+
+    m_stomach = stomach;
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_elevator.setPIDTarget(m_position);
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_elevator.assemblyPeriodic();
+    m_stomach.enableIndexMotor();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_elevator.setMotorPower(0);
+    m_stomach.disableIndexMotor();
   }
 
   // Returns true when the command should end.

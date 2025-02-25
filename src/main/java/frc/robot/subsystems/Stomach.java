@@ -1,0 +1,49 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.subsystems;
+
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.kConstants;
+
+public class Stomach extends SubsystemBase {
+  private final SparkMax m_frontIndexMotor;
+  private final SparkMax m_backLeftIndexMotor;
+  private final SparkMax m_backRightIndexMotor;
+
+  private boolean isIndexEnabled = false;
+
+  /** Creates a new Stomach. */
+  public Stomach() {
+    m_frontIndexMotor = new SparkMax(kConstants.kIndexMotor, MotorType.kBrushless);
+    m_backLeftIndexMotor = new SparkMax(kConstants.kIndexBackLeftMotor, MotorType.kBrushless);
+    m_backRightIndexMotor = new SparkMax(kConstants.kIndexBackRightMotor, MotorType.kBrushless);
+    m_frontIndexMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_backLeftIndexMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_backRightIndexMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+  }
+
+  public void enableIndexMotor() {
+    m_frontIndexMotor.setVoltage(kConstants.kEnableFrontIndexVoltage);
+    m_backLeftIndexMotor.setVoltage(-kConstants.kEnableBackIndexVoltage);
+    m_backRightIndexMotor.setVoltage(kConstants.kEnableBackIndexVoltage);
+    isIndexEnabled = true;
+  }
+
+  public void disableIndexMotor() {
+    m_frontIndexMotor.setVoltage(0);
+    m_backLeftIndexMotor.setVoltage(0);
+    m_backRightIndexMotor.setVoltage(0);
+    isIndexEnabled = false;
+  }
+
+  public boolean isIndexMotorEnabled() {
+    return isIndexEnabled;
+  }
+}

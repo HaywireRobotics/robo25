@@ -205,6 +205,7 @@ public class SwerveModule {
   }
   public void periodic(){
     SmartDashboard.putNumber("SwerveDriveMotorPosition " + m_idForDashboard, getDriveEncoderPosition());
+    SmartDashboard.putNumber("SwerveTurnEncoderPosition" + m_idForDashboard, m_turningEncoder.getPosition().getValueAsDouble());
   }
   public double getDriveVelocity() {
     return applyDriveRatio(getDriveEncoderVelocityRPS());

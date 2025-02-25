@@ -22,35 +22,48 @@ import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.BreatheCommand;
+import frc.robot.commands.ChewCommand;
+import frc.robot.commands.ChompCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefaultElevatorCommand;
 import frc.robot.commands.DefaultFilterFeederCommand;
+import frc.robot.commands.DefaultManipulatorCommand;
+import frc.robot.commands.DigestionCommand;
 import frc.robot.commands.FollowAprilTagCommand;
 import frc.robot.commands.GoToSpecifiedPosition;
 import frc.robot.commands.Move1MeterCommand;
+import frc.robot.commands.MoveClawCommand;
 import frc.robot.commands.TuneSwerveAutonomousCommand;
 import frc.robot.subsystems.DorsalFin;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.FilterFeeder;
+import frc.robot.subsystems.Manipulator;
+import frc.robot.subsystems.Stomach;
+import frc.robot.subsystems.Teeth;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.wrappers.Camera;
 import frc.robot.wrappers.Controller;
 
 public class RobotContainer {
   private final Controller m_driveController = new Controller(0);
+  private final Controller m_manipulatorController = new Controller(1);
+
+  private final Robot m_robot;
+
   // define SUBSYSTEMS!!!
   private final DorsalFin m_dorsalFin;
-  // private final Elevator m_elevator;
-  // private final FilterFeeder m_filterFeeder;
+  private final Elevator m_elevator;
+  private final FilterFeeder m_filterFeeder;
+  private final Manipulator m_manipulator;
+  private final Teeth m_teeth;
+  private final Stomach m_stomach;
 
   // DEFINE default COMMAND?
   public final DefaultDriveCommand defaultDriveCommand;
-  public final Move1MeterCommand move1MeterCommand;
-  public final FollowAprilTagCommand followAprilTagCommand;
-  public final GoToSpecifiedPosition goToAprilTag8;
-  public final GoToSpecifiedPosition goToAprilTag2;
-  // public final DefaultElevatorCommand defaultElevatorCommand;
-  // public final DefaultFilterFeederCommand defaultFilterFeederCommand;
+  public final DefaultElevatorCommand defaultElevatorCommand;
+  public final DefaultFilterFeederCommand defaultFilterFeederCommand;
+  public final DefaultManipulatorCommand defaultManipulatorCommand;
 
   public final TuneSwerveAutonomousCommand tuneSwerveAutonomousCommand;
   private final SysIdRoutine sysidRoutine;
@@ -64,20 +77,22 @@ public class RobotContainer {
 
   public RobotContainer(Robot robot) {
     m_dorsalFin = new DorsalFin(robot);
-    // m_filterFeeder = new FilterFeeder();
-    // m_elevator = new Elevator();
+    m_filterFeeder = new FilterFeeder();
+    m_elevator = new Elevator();
+    m_manipulator = new Manipulator();
+    m_teeth = new Teeth();
+    m_stomach = new Stomach();
+    m_robot = robot;
 
     defaultDriveCommand = new DefaultDriveCommand(m_dorsalFin, m_driveController);
-    move1MeterCommand = new Move1MeterCommand(m_dorsalFin);
-    followAprilTagCommand = new FollowAprilTagCommand(m_dorsalFin, m_camera, robot);
-    goToAprilTag8 = new GoToSpecifiedPosition(m_dorsalFin, robot, 8);
-    goToAprilTag2 = new GoToSpecifiedPosition(m_dorsalFin, robot, 2);
-    // defaultElevatorCommand = new DefaultElevatorCommand(m_elevator);
-    // defaultFilterFeederCommand = new DefaultFilterFeederCommand(m_filterFeeder);
+    defaultElevatorCommand = new DefaultElevatorCommand(m_elevator);
+    defaultFilterFeederCommand = new DefaultFilterFeederCommand(m_filterFeeder);
+    defaultManipulatorCommand = new DefaultManipulatorCommand(m_manipulator);
 
     m_dorsalFin.setDefaultCommand(defaultDriveCommand);
-    // m_elevator.setDefaultCommand(defaultElevatorCommand);
-    // m_filterFeeder.setDefaultCommand(defaultFilterFeederCommand);
+    m_elevator.setDefaultCommand(defaultElevatorCommand);
+    m_filterFeeder.setDefaultCommand(defaultFilterFeederCommand);
+    m_manipulator.setDefaultCommand(defaultManipulatorCommand);
 
     tuneSwerveAutonomousCommand = new TuneSwerveAutonomousCommand(m_dorsalFin);
     sysidRoutine = new SysIdRoutine(
@@ -94,15 +109,32 @@ public class RobotContainer {
       m_driveController.y().whileTrue(this.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
     }
     if (kConstants.kEnable1MeterTuning) {
-      m_driveController.a().whileTrue(this.move1MeterCommand);
+      m_driveController.a().whileTrue(new Move1MeterCommand(m_dorsalFin));
     }
     if (kConstants.kEnableFollowApriltag) {
-      m_driveController.a().whileTrue(this.followAprilTagCommand);
+      m_driveController.a().whileTrue(new FollowAprilTagCommand(m_dorsalFin, m_camera, m_robot));
     }
     if (kConstants.kEnableGoToSpecifiedPosition) {
-      m_driveController.a().whileTrue(this.goToAprilTag8);
-      m_driveController.b().whileTrue(this.goToAprilTag2);
+      m_driveController.a().whileTrue(new GoToSpecifiedPosition(m_dorsalFin, m_robot, 8));
+      m_driveController.b().whileTrue(new GoToSpecifiedPosition(m_dorsalFin, m_robot, 2));
     }
+    m_manipulatorController.getByName(kConstants.kLowerIntakeAssemblyButton).whileTrue(
+      new ChompCommand(m_filterFeeder)
+    ).onFalse(
+      new BreatheCommand(m_filterFeeder)
+    );
+    m_manipulatorController.getByName(kConstants.kRunIndexesCommand).whileTrue(
+      new DigestionCommand(m_stomach)
+    );
+    m_manipulatorController.getByName(kConstants.kRunIntakeButton).whileTrue(
+      new ChewCommand(m_teeth)
+    );
+    m_manipulatorController.getByName(kConstants.kMoveManipulatorToDownButton).whileTrue(
+      new MoveClawCommand(m_manipulator, 0)
+    );
+    m_manipulatorController.getByName(kConstants.kMoveManipulatorToMiddleButton).whileTrue(
+      new MoveClawCommand(m_manipulator, 0.3)
+    );
   }
 
   public Command getAutonomousCommand() {

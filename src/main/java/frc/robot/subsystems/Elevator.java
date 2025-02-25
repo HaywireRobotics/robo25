@@ -42,7 +42,7 @@ public class Elevator extends SubsystemBase {
   }
 
   public void elevatorGoTo0() {
-    setPIDTarget(0);
+    setPIDTarget(0.1);
   }
 
   public void setPIDTarget(double position){
@@ -58,7 +58,7 @@ public class Elevator extends SubsystemBase {
     m_elevatorMotor.setVoltage(power);
   }
   
-  public void pidLoop(){
+  public void assemblyPeriodic(){
     setMotorPower(m_elevatorPIDController.calculate(getElevatorPos()));
   }
 }

@@ -23,7 +23,8 @@ public class DefaultElevatorCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_elevator.pidLoop();
+    m_elevator.assemblyPeriodic();
+    m_elevator.setPIDTarget(15);
   }
 
   // Called once the command ends or is interrupted.

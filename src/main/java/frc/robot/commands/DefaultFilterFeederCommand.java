@@ -6,13 +6,14 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.FilterFeeder;
+import frc.robot.wrappers.Controller;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DefaultFilterFeederCommand extends Command {
   /** Creates a new DefaultFilterFeederCommand. */
-  private static FilterFeeder m_filterFeeder;
+  private final FilterFeeder m_filterFeeder;
   public DefaultFilterFeederCommand(FilterFeeder filterFeeder) {
-   m_filterFeeder = filterFeeder;
+    m_filterFeeder = filterFeeder;
     addRequirements(m_filterFeeder);
   }
   // Called when the command is initially scheduled.
@@ -23,7 +24,6 @@ public class DefaultFilterFeederCommand extends Command {
   @Override
   public void execute() {
     m_filterFeeder.assemblyPeriodic();
-
   }
 
   // Called once the command ends or is interrupted.
