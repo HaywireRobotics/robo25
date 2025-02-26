@@ -19,12 +19,13 @@ public class BreatheCommand extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    m_filterFeeder.bumpIntakeAssembly();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_filterFeeder.bumpIntakeAssembly();
     m_filterFeeder.assemblyPeriodic();
   }
 

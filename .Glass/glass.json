@@ -30,7 +30,9 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/SwerveDrivePID 2": "PIDController",
+      "/SmartDashboard/SwerveDrivePID 20": "PIDController",
       "/SmartDashboard/SwerveDrivePID 3": "PIDController",
+      "/SmartDashboard/SwerveDrivePID 6": "PIDController",
       "/SmartDashboard/SwerveDrivePID 8": "PIDController",
       "/SmartDashboard/SwerveDrivePID 9": "PIDController",
       "/SmartDashboard/Trajectory Sample": "Field2d",
@@ -70,10 +72,7 @@
         "builtin": "",
         "height": 8.210550308227539,
         "image": "C:\\Users\\robo\\Documents\\2025\\fieldimage2025.png",
-        "width": 16.541748046875,
-        "window": {
-          "visible": true
-        }
+        "width": 16.541748046875
       }
     }
   },
@@ -86,8 +85,7 @@
         "open": true
       },
       "open": true
-    },
-    "visible": true
+    }
   },
   "NetworkTables Settings": {
     "mode": "Client (NT4)"

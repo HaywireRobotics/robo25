@@ -29,12 +29,12 @@ public class Elevator extends SubsystemBase {
   public Elevator() {
     m_elevatorMotor = new SparkMax(kConstants.kElevatorMotor, MotorType.kBrushless);
     m_elevatorMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_elevatorPIDController.setTolerance(3, 2);
+    m_elevatorPIDController.setTolerance(0.5, 0);
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    System.out.println(this.getElevatorPos());
   }
 
   public double getElevatorPos(){
@@ -47,7 +47,6 @@ public class Elevator extends SubsystemBase {
 
   public void setPIDTarget(double position){
     m_elevatorPIDController.setGoal(position);
-  
   }
 
   public boolean atGoal(){
@@ -59,6 +58,16 @@ public class Elevator extends SubsystemBase {
   }
   
   public void assemblyPeriodic(){
-    setMotorPower(m_elevatorPIDController.calculate(getElevatorPos()));
+    double motorPower = m_elevatorPIDController.calculate(getElevatorPos());
+    double elevatorPos = this.getElevatorPos();
+    
+    if (elevatorPos > 60) {
+      motorPower = Math.min(0, motorPower);
+    }
+    if (elevatorPos < 1) {
+      motorPower = Math.max(0, motorPower);
+    }
+
+    setMotorPower(motorPower);
   }
 }

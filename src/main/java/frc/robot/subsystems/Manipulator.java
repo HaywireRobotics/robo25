@@ -10,6 +10,7 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.kConstants;
 
@@ -30,8 +31,8 @@ public class Manipulator extends SubsystemBase {
   /** Creates a new Manipulator. */
   public Manipulator() {
     m_manipulatorMotor = new SparkMax(kConstants.kManipulatorMotor, MotorType.kBrushless);
-    m_manipulatorPIDController.setTolerance(3, 2);
-    m_manipulatorPIDController.setGoal(kConstants.kManipulatorDownPoint - 0.5);
+    m_manipulatorPIDController.setTolerance(0.01, 2);
+    m_manipulatorPIDController.setGoal(kConstants.kManipulatorDownPoint - 0.375);
 
     m_encoder = new DutyCycleEncoder(kConstants.kManipulatorEncoderID, 1, 0);
     m_encoder.setAssumedFrequency(975.6);
@@ -39,7 +40,8 @@ public class Manipulator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Manipulator Angle", this.getManipulatorPos());
+    SmartDashboard.putNumber("Manipulator Setpoint", m_manipulatorPIDController.getGoal().position);
   }
 
   public double getManipulatorPos(){
@@ -55,11 +57,11 @@ public class Manipulator extends SubsystemBase {
   }
 
   public void setPIDTarget(double position){
-    if (position > kConstants.kManipulatorMinAngle){
-      position = kConstants.kManipulatorMinAngle;
+    if (position > kConstants.kManipulatorMaxAngle){
+      position = kConstants.kManipulatorMaxAngle;
     }
-    if (position < kConstants.kManipulatorMinAngle - 0.5){
-      position = kConstants.kManipulatorMinAngle - 0.5;
+    if (position < kConstants.kManipulatorMaxAngle - 0.5){
+      position = kConstants.kManipulatorMaxAngle - 0.5;
     }
     m_manipulatorPIDController.reset(this.getManipulatorPos());
     m_manipulatorPIDController.setGoal(position);
@@ -74,6 +76,16 @@ public class Manipulator extends SubsystemBase {
   }
   
   public void assemblyPeriodic() {
-    setMotorPower(m_manipulatorPIDController.calculate(getManipulatorPos()));
+    double power = m_manipulatorPIDController.calculate(this.getManipulatorPos());
+    double position = this.getManipulatorPos();
+
+    if (position > kConstants.kManipulatorMaxAngle) {
+      power = Math.min(0, power);
+    }
+    if (position < kConstants.kManipulatorMaxAngle - 0.5) {
+      power = Math.max(0, power);
+    }
+
+    this.setMotorPower(power);
   }
 }

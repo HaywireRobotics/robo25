@@ -34,6 +34,8 @@ import frc.robot.commands.FollowAprilTagCommand;
 import frc.robot.commands.GoToSpecifiedPosition;
 import frc.robot.commands.Move1MeterCommand;
 import frc.robot.commands.MoveClawCommand;
+import frc.robot.commands.MoveElevatorCommand;
+import frc.robot.commands.OpenWideCommand;
 import frc.robot.commands.TuneSwerveAutonomousCommand;
 import frc.robot.subsystems.DorsalFin;
 import frc.robot.subsystems.Elevator;
@@ -118,22 +120,36 @@ public class RobotContainer {
       m_driveController.a().whileTrue(new GoToSpecifiedPosition(m_dorsalFin, m_robot, 8));
       m_driveController.b().whileTrue(new GoToSpecifiedPosition(m_dorsalFin, m_robot, 2));
     }
+
+    // Manipulator Controller Stuff
     m_manipulatorController.getByName(kConstants.kLowerIntakeAssemblyButton).whileTrue(
       new ChompCommand(m_filterFeeder)
     ).onFalse(
       new BreatheCommand(m_filterFeeder)
     );
-    m_manipulatorController.getByName(kConstants.kRunIndexesCommand).whileTrue(
-      new DigestionCommand(m_stomach)
+    m_manipulatorController.getByName(kConstants.kRaiseIntakeAssemblyButton).whileTrue(
+      new OpenWideCommand(m_filterFeeder)
     );
     m_manipulatorController.getByName(kConstants.kRunIntakeButton).whileTrue(
+      new DigestionCommand(m_stomach)
+    ).whileTrue(
       new ChewCommand(m_teeth)
-    );
-    m_manipulatorController.getByName(kConstants.kMoveManipulatorToDownButton).whileTrue(
-      new MoveClawCommand(m_manipulator, 0)
     );
     m_manipulatorController.getByName(kConstants.kMoveManipulatorToMiddleButton).whileTrue(
       new MoveClawCommand(m_manipulator, 0.3)
+    );
+    m_manipulatorController.getByName(kConstants.kMoveManipulatorToUpButton).whileTrue(
+      new MoveClawCommand(m_manipulator, 0.4)
+    );
+
+
+    m_manipulatorController.getByName(kConstants.kGrabCoralButton).onTrue(
+      new MoveElevatorCommand(m_elevator, 45).andThen(
+        new MoveClawCommand(m_manipulator, 0),
+        new MoveElevatorCommand(m_elevator, 35),
+        new MoveElevatorCommand(m_elevator, 45),
+        new MoveClawCommand(m_manipulator, 0.3)
+      )
     );
   }
 

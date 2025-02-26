@@ -48,11 +48,17 @@ public class Controller extends CommandXboxController {
         if (name.equals("right")) {
             return this.povRight();
         }
-        if (name.equals("lb")) {
+        if (name.equals("lt")) {
             return this.leftTrigger();
         }
-        if (name.equals("rb")) {
+        if (name.equals("rt")) {
             return this.rightTrigger();
+        }
+        if (name.equals("lb")) {
+            return this.leftBumper();
+        }
+        if (name.equals("rb")) {
+            return this.rightBumper();
         }
         if (name.equals("stick_left")) {
             return this.leftStick();

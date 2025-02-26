@@ -83,8 +83,8 @@ public class kConstants {
     public static final double kIntakeAssemblyKP = 1;
     public static final double kIntakeAssemblyKI = 0;
     public static final double kIntakeAssemblyKD = 0;
-    public static final double kIntakeAssemblyMaxVelocity = 5;
-    public static final double kIntakeAssemblyMaxAcceleration = 10;
+    public static final double kIntakeAssemblyMaxVelocity = 10;
+    public static final double kIntakeAssemblyMaxAcceleration = 40;
 
     public static final int kIndexMotor = 14;
     public static final int kIndexBackLeftMotor = 16;
@@ -102,12 +102,12 @@ public class kConstants {
     // Manipulator
     public static final double kManipulatorRatio = 1.0/35.0;
     public static final int kManipulatorMotor = 18;
-    public static final double kManipulatorKP = 12;
-    public static final double kManipulatorKI = 0.1;
+    public static final double kManipulatorKP = 10;
+    public static final double kManipulatorKI = 2;
     public static final double kManipulatorKD = 0;
     public static final double kManipulatorMaxAcceleration = 10;
-    public static final double kManipulatorMaxVelocity = 5;
-    public static final double kManipulatorMinAngle = 0.74082186;
+    public static final double kManipulatorMaxVelocity = 2;
+    public static final double kManipulatorMaxAngle = 0.74082186;   
     public static final double kManipulatorDownPoint = 0.74082186;
     public static final int kManipulatorEncoderID = 0;
 
@@ -120,14 +120,20 @@ public class kConstants {
     public static final boolean kEnableGoToSpecifiedPosition = false; // A goes to (currently) 0,0 the place where the robot was restarted
 
     // Buttons
+    // Driver
     public static final String kDisableFieldCentricButton = "back";
     public static final String kEnableFieldCentricButton = "start";
-    public static final String kLowerIntakeAssemblyButton = "down";
-    public static final String kRunIntakeButton = "a";
-    public static final String kRunIndexesCommand = "b";
 
-    public static final String kMoveManipulatorToDownButton = "lb";
-    public static final String kMoveManipulatorToMiddleButton = "rb";
+    // Manipulator
+    public static final String kLowerIntakeAssemblyButton = "b";
+    public static final String kRaiseIntakeAssemblyButton = "y";
+    public static final String kRunIntakeButton = "a";
+
+    public static final String kMoveManipulatorToMiddleButton = "rt";
+    public static final String kMoveManipulatorToTopButton = "rb";
+    public static final String kMoveManipulatorToUpButton = "start";
+
+    public static final String kGrabCoralButton = "x";
 
     // Files
     public static final String kFieldAprilTagJSON = Filesystem.getDeployDirectory() + "/fields/2025-reefscape-andymark.json";
