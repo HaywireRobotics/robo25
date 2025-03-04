@@ -42,8 +42,8 @@ public class SwerveModule {
 
   // Gains are for example purposes only - must be determined for your own robot!
   private final PIDController m_drivePIDController = new PIDController(
-    kConstants.kSwerveDriveKP, 
-    kConstants.kSwerveDriveKI, 
+    kConstants.kSwerveDriveKP,
+    kConstants.kSwerveDriveKI,
     kConstants.kSwerveDriveKD
   );
   private double appliedDriveVoltage = 0;
@@ -60,6 +60,8 @@ public class SwerveModule {
   private final SimpleMotorFeedforward m_driveFeedforward = new SimpleMotorFeedforward(kConstants.kSwerveDriveKS, kConstants.kSwerveDriveKV, kConstants.kSwerveDriveKA);
   // private final SimpleMotorFeedforward m_turnFeedforward = new SimpleMotorFeedforward(kConstants.kSwerveTurningKS, kConstants.kSwerveTurningKV);
   
+  private final ProfiledAccelerator m_accelerator = new ProfiledAccelerator(1.0 / 50.0);
+
   /**
    * Constructs a SwerveModule with a drive motor, turning motor, drive encoder and turning encoder.
    *
@@ -196,6 +198,7 @@ public class SwerveModule {
 
   private void driveMotorsAtVoltage(double driveOutput, double turnOutput) {
     if (kConstants.kEnableFeedforwardTuning) appliedDriveVoltage = driveOutput;
+    // driveOutput = m_accelerator.calculate(driveOutput);
     m_driveMotor.setVoltage(driveOutput);
     SmartDashboard.putNumber("SwerveDriveMotorVoltage " + m_idForDashboard, driveOutput);
     SmartDashboard.putNumber("SwerveDriveVelocity " + m_idForDashboard, getDriveVelocity());

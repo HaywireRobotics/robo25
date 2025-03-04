@@ -31,7 +31,7 @@ public class FilterFeeder extends SubsystemBase {
   /** Creates a new FilterFeeder. */
   public FilterFeeder() {
     m_intakeAssemblyMotor = new SparkMax(kConstants.kIntakeAssemblyMotor, MotorType.kBrushless);
-    m_intakeAssemblyPIDController.setTolerance(0.5, 0.25);
+    m_intakeAssemblyPIDController.setTolerance(0.1, 0.25);
     m_intakeAssemblyMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
@@ -45,6 +45,10 @@ public class FilterFeeder extends SubsystemBase {
 
   public void bumpIntakeAssembly() {
     m_intakeAssemblyPIDController.setGoal(kConstants.kIntakeAssemblyBumpPoint);
+  }
+
+  public void setPIDTarget(double target) {
+    m_intakeAssemblyPIDController.setGoal(target);
   }
 
   /**

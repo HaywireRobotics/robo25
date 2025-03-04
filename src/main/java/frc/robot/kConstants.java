@@ -36,7 +36,7 @@ public class kConstants {
     public static final double kSwerveTurningKV = 47.12;
 
     public static final double kDriveTrainWidth = 24.5 * kInchesToMeters;
-    public static final double kDriveTrainLength = 20 * kInchesToMeters;
+    public static final double kDriveTrainLength = 19.5 * kInchesToMeters;
 
 
     // Swerve motors
@@ -95,9 +95,6 @@ public class kConstants {
 
     public static final double kEnableBackIndexVoltage = 2;
     public static final double kEnableFrontIndexVoltage = 4;
-    
-    
-    
 
     // Manipulator
     public static final double kManipulatorRatio = 1.0/35.0;
@@ -131,9 +128,16 @@ public class kConstants {
 
     public static final String kMoveManipulatorToMiddleButton = "rt";
     public static final String kMoveManipulatorToTopButton = "rb";
+    public static final String kMoveManipulatorToDownButton = "lt";
     public static final String kMoveManipulatorToUpButton = "start";
 
     public static final String kGrabCoralButton = "x";
+
+    public static final String kElevatorPosition0Button = "back";
+    public static final String kElevatorPosition1Button = "up";
+    public static final String kElevatorPosition2Button = "right";
+    public static final String kElevatorPosition3Button = "down";
+    public static final String kElevatorPosition4Button = "left";
 
     // Files
     public static final String kFieldAprilTagJSON = Filesystem.getDeployDirectory() + "/fields/2025-reefscape-andymark.json";

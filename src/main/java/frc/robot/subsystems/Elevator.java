@@ -34,7 +34,6 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    System.out.println(this.getElevatorPos());
   }
 
   public double getElevatorPos(){

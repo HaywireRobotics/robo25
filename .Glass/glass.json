@@ -39,26 +39,6 @@
       "/SmartDashboard/fieldPose": "Field2d"
     },
     "windows": {
-      "/SmartDashboard/SwerveDrivePID 2": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/SwerveDrivePID 3": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/SwerveDrivePID 8": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/SwerveDrivePID 9": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/Trajectory Sample": {
         "builtin": "",
         "height": 8.210550308227539,

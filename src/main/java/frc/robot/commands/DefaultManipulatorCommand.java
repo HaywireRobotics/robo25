@@ -15,6 +15,7 @@ public class DefaultManipulatorCommand extends Command {
   public DefaultManipulatorCommand(Manipulator manipulator) {
     addRequirements(manipulator);
     m_manipulator = manipulator;
+    m_manipulator.setPIDTarget(m_manipulator.getManipulatorPos());
   }
 
   // Called when the command is initially scheduled.
@@ -25,9 +26,6 @@ public class DefaultManipulatorCommand extends Command {
   @Override
   public void execute() {
     m_manipulator.assemblyPeriodic();
-    System.out.print(m_manipulator.getManipulatorPos());
-    System.out.print(" : ");
-    System.out.println(m_manipulator.getRawManipulatorPos());
   }
 
   // Called once the command ends or is interrupted.

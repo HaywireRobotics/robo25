@@ -71,7 +71,7 @@ public class RobotContainer {
   private final SysIdRoutine sysidRoutine;
 
   private final Camera m_camera = new Camera("Camera_Module_v1", new Transform3d(
-    new Translation3d(0.3302, 0.0, 0.2),
+    new Translation3d(0.19, 0.17, 0.35),
     new Rotation3d(0, 0, 0))
   );
 
@@ -141,15 +141,33 @@ public class RobotContainer {
     m_manipulatorController.getByName(kConstants.kMoveManipulatorToUpButton).whileTrue(
       new MoveClawCommand(m_manipulator, 0.4)
     );
+    m_manipulatorController.getByName(kConstants.kMoveManipulatorToDownButton).whileTrue(
+      new MoveClawCommand(m_manipulator, 0)
+    );
 
 
-    m_manipulatorController.getByName(kConstants.kGrabCoralButton).onTrue(
-      new MoveElevatorCommand(m_elevator, 45).andThen(
-        new MoveClawCommand(m_manipulator, 0),
-        new MoveElevatorCommand(m_elevator, 35),
-        new MoveElevatorCommand(m_elevator, 45),
-        new MoveClawCommand(m_manipulator, 0.3)
-      )
+    m_manipulatorController.getByName(kConstants.kGrabCoralButton).whileTrue(
+      new MoveElevatorCommand(m_elevator, 45)
+      .andThen( new MoveClawCommand(m_manipulator, 0) )
+      .andThen( new MoveElevatorCommand(m_elevator, 35) )
+      .andThen( new MoveElevatorCommand(m_elevator, 45) )
+      .andThen( new MoveClawCommand(m_manipulator, 0.3) )
+    );
+
+    m_manipulatorController.getByName(kConstants.kElevatorPosition0Button).whileTrue(
+      new MoveElevatorCommand(m_elevator, 0)
+    );
+    m_manipulatorController.getByName(kConstants.kElevatorPosition1Button).whileTrue(
+      new MoveElevatorCommand(m_elevator, 10)
+    );
+    m_manipulatorController.getByName(kConstants.kElevatorPosition2Button).whileTrue(
+      new MoveElevatorCommand(m_elevator, 20)
+    );
+    m_manipulatorController.getByName(kConstants.kElevatorPosition3Button).whileTrue(
+      new MoveElevatorCommand(m_elevator, 30)
+    );
+    m_manipulatorController.getByName(kConstants.kElevatorPosition4Button).whileTrue(
+      new MoveElevatorCommand(m_elevator, 40)
     );
   }
 
