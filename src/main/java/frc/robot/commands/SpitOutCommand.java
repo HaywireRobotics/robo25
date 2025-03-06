@@ -8,11 +8,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Teeth;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ChewCommand extends Command {
+public class SpitOutCommand extends Command {
   private final Teeth m_teeth;
-
-  /** Creates a new ChewCommand. */
-  public ChewCommand(Teeth teeth) {
+  /** Creates a new SpitOutCommand. */
+  public SpitOutCommand(Teeth teeth) {
     addRequirements(teeth);
     m_teeth = teeth;
   }
@@ -24,7 +23,7 @@ public class ChewCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    m_teeth.runIntake();
+    m_teeth.reverseIntake();
   }
 
   // Called once the command ends or is interrupted.

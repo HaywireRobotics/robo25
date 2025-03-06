@@ -51,6 +51,10 @@ public class FilterFeeder extends SubsystemBase {
     m_intakeAssemblyPIDController.setGoal(target);
   }
 
+  public void reset() {
+    m_intakeAssemblyPIDController.reset(this.getIntakeAssemblyEncoderPosition());
+  }
+
   /**
    * Runs the intake assembly motor and checks if it is at hard limit.
    */

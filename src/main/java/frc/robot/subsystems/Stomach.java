@@ -24,9 +24,9 @@ public class Stomach extends SubsystemBase {
     m_frontIndexMotor = new SparkMax(kConstants.kIndexMotor, MotorType.kBrushless);
     m_backLeftIndexMotor = new SparkMax(kConstants.kIndexBackLeftMotor, MotorType.kBrushless);
     m_backRightIndexMotor = new SparkMax(kConstants.kIndexBackRightMotor, MotorType.kBrushless);
-    m_frontIndexMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_backLeftIndexMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_backRightIndexMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_frontIndexMotor.configure(kConstants.kNeo550NominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_backLeftIndexMotor.configure(kConstants.kNeo550NominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_backRightIndexMotor.configure(kConstants.kNeo550NominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public void enableIndexMotor() {

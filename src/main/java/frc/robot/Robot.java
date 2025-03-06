@@ -38,6 +38,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    m_robotContainer.reset();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -53,6 +54,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    m_robotContainer.reset();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

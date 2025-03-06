@@ -65,7 +65,8 @@
         "open": true
       },
       "open": true
-    }
+    },
+    "visible": true
   },
   "NetworkTables Settings": {
     "mode": "Client (NT4)"

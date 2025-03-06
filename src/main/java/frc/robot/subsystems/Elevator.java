@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.kConstants;
 
@@ -34,14 +35,15 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("Elevator Position: ", this.getElevatorPos());
   }
 
   public double getElevatorPos(){
     return (m_elevatorMotor.getEncoder().getPosition()) * kConstants.kElevatorRatio * kConstants.kElevatorRotationsToInches;
   }
 
-  public void elevatorGoTo0() {
-    setPIDTarget(0.1);
+  public void reset() {
+    m_elevatorPIDController.reset(this.getElevatorPos());
   }
 
   public void setPIDTarget(double position){

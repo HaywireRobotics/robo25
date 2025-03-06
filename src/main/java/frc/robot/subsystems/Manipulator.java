@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
@@ -31,7 +33,8 @@ public class Manipulator extends SubsystemBase {
   /** Creates a new Manipulator. */
   public Manipulator() {
     m_manipulatorMotor = new SparkMax(kConstants.kManipulatorMotor, MotorType.kBrushless);
-    m_manipulatorPIDController.setTolerance(0.01, 2);
+    m_manipulatorMotor.configure(kConstants.kNeo550NominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_manipulatorPIDController.setTolerance(0.02, 2);
     m_manipulatorPIDController.setGoal(kConstants.kManipulatorDownPoint - 0.375);
 
     m_encoder = new DutyCycleEncoder(kConstants.kManipulatorEncoderID, 1, 0);
@@ -54,6 +57,10 @@ public class Manipulator extends SubsystemBase {
 
   public boolean isEncoderConnected(){
     return m_encoder.isConnected();
+  }
+
+  public void reset() {
+    m_manipulatorPIDController.reset(this.getManipulatorPos());
   }
 
   public void setPIDTarget(double position){

@@ -41,6 +41,7 @@ public class kConstants {
 
     // Swerve motors
     public static final SparkBaseConfig kNeoNominalConfig = new SparkMaxConfig().smartCurrentLimit(150).idleMode(IdleMode.kBrake).inverted(false);
+    public static final SparkBaseConfig kNeo550NominalConfig = new SparkMaxConfig().smartCurrentLimit(90).idleMode(IdleMode.kBrake).inverted(false);
 
     public static final int kSwerveFrontRightTurnMotor = 4;
     public static final int kSwerveFrontRightDriveMotor = 3;
@@ -67,8 +68,16 @@ public class kConstants {
     public static final int kElevatorMotor = 17;
     public static final double kElevatorRatio = 1.0/20.0;
     public static final double kElevatorRotationsToInches = 4 * Math.PI;
+
+    public static final double kElevatorGrabCoralPosition = 17.015689;
+    public static final double kElevatorScoreL2Position = 14.690601;
+    public static final double kElevatorScoreL3Position = 35.694858;
+    public static final double kElevatorScoreL4Position = 59.168884;
+    public static final double kElevatorRemoveAlgaeLowPosition = 21.721669;
+    public static final double kManipulatorRemoveAlgaePosition = 0.426240;
+    public static final double kElevatorRemoveAlgaeHighPosition = 45.464669;
     
-    public static final double kElevatorKP = 1;
+    public static final double kElevatorKP = 2;
     public static final double kElevatorKI = 0;
     public static final double kElevatorKD = 0;
     public static final double kElevatorMaxAcceleration = 10;
@@ -99,19 +108,19 @@ public class kConstants {
     // Manipulator
     public static final double kManipulatorRatio = 1.0/35.0;
     public static final int kManipulatorMotor = 18;
-    public static final double kManipulatorKP = 10;
+    public static final double kManipulatorKP = 13;
     public static final double kManipulatorKI = 2;
-    public static final double kManipulatorKD = 0;
+    public static final double kManipulatorKD = 1;
     public static final double kManipulatorMaxAcceleration = 10;
     public static final double kManipulatorMaxVelocity = 2;
-    public static final double kManipulatorMaxAngle = 0.74082186;   
+    public static final double kManipulatorMaxAngle = 0.74082186;
     public static final double kManipulatorDownPoint = 0.74082186;
     public static final int kManipulatorEncoderID = 0;
 
     public static final double kManipulatorPowerMultiplier = -1;
     
     // Feature Flags
-    public static final boolean kEnableFeedforwardTuning = true; // A, B, X, Y run feedforward tuning code for the Sysid tool
+    public static final boolean kEnableFeedforwardTuning = false; // A, B, X, Y run feedforward tuning code for the Sysid tool
     public static final boolean kEnable1MeterTuning = false; // A moves the robot forward 1 meter
     public static final boolean kEnableFollowApriltag = false; // A follows april tag 2 at a distance of 1 meter
     public static final boolean kEnableGoToSpecifiedPosition = false; // A goes to (currently) 0,0 the place where the robot was restarted
@@ -122,22 +131,37 @@ public class kConstants {
     public static final String kEnableFieldCentricButton = "start";
 
     // Manipulator
-    public static final String kLowerIntakeAssemblyButton = "b";
-    public static final String kRaiseIntakeAssemblyButton = "y";
-    public static final String kRunIntakeButton = "a";
+    public static final String kLowerIntakeAssemblyButton = "a";
+    public static final String kRunIntakeButton = "rt";
 
-    public static final String kMoveManipulatorToMiddleButton = "rt";
-    public static final String kMoveManipulatorToTopButton = "rb";
-    public static final String kMoveManipulatorToDownButton = "lt";
-    public static final String kMoveManipulatorToUpButton = "start";
+    // Algae
+    public static final String kRaiseIntakeAssemblyButton = "b";
+    public static final String kReverseIntakeButton = "rb";
 
-    public static final String kGrabCoralButton = "x";
+    // public static final String kGrabCoralButton = "x";
 
+    public static final String kElevatorUpButton = "lb";
+    public static final String kElevatorDownButton = "lt";
+
+
+    // Joystick is part of a different system
+    // public static final String kManipulatorAngleJoystick = "left_stick";
+
+
+    /* 
     public static final String kElevatorPosition0Button = "back";
     public static final String kElevatorPosition1Button = "up";
     public static final String kElevatorPosition2Button = "right";
     public static final String kElevatorPosition3Button = "down";
     public static final String kElevatorPosition4Button = "left";
+    */
+
+    /* 
+    public static final String kMoveManipulatorToMiddleButton = "rt";
+    public static final String kMoveManipulatorToTopButton = "rb";
+    public static final String kMoveManipulatorToDownButton = "lt";
+    public static final String kMoveManipulatorToUpButton = "start";
+    */
 
     // Files
     public static final String kFieldAprilTagJSON = Filesystem.getDeployDirectory() + "/fields/2025-reefscape-andymark.json";

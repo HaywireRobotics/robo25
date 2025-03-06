@@ -14,13 +14,12 @@ public class DefaultFilterFeederCommand extends Command {
   private final FilterFeeder m_filterFeeder;
   public DefaultFilterFeederCommand(FilterFeeder filterFeeder) {
     m_filterFeeder = filterFeeder;
+    m_filterFeeder.reset();
     addRequirements(m_filterFeeder);
   }
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_filterFeeder.setPIDTarget(m_filterFeeder.getIntakeAssemblyEncoderPosition());
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

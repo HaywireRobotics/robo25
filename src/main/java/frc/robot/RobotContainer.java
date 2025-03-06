@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.BreatheCommand;
 import frc.robot.commands.ChewCommand;
 import frc.robot.commands.ChompCommand;
+import frc.robot.commands.DecreasePositionCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefaultElevatorCommand;
 import frc.robot.commands.DefaultFilterFeederCommand;
@@ -32,10 +33,13 @@ import frc.robot.commands.DefaultManipulatorCommand;
 import frc.robot.commands.DigestionCommand;
 import frc.robot.commands.FollowAprilTagCommand;
 import frc.robot.commands.GoToSpecifiedPosition;
+import frc.robot.commands.GrabCoralSequence;
+import frc.robot.commands.IncreasePositionCommand;
 import frc.robot.commands.Move1MeterCommand;
 import frc.robot.commands.MoveClawCommand;
 import frc.robot.commands.MoveElevatorCommand;
 import frc.robot.commands.OpenWideCommand;
+import frc.robot.commands.SpitOutCommand;
 import frc.robot.commands.TuneSwerveAutonomousCommand;
 import frc.robot.subsystems.DorsalFin;
 import frc.robot.subsystems.Elevator;
@@ -46,6 +50,7 @@ import frc.robot.subsystems.Teeth;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.wrappers.Camera;
 import frc.robot.wrappers.Controller;
+import frc.robot.wrappers.PositionMemory;
 
 public class RobotContainer {
   private final Controller m_driveController = new Controller(0);
@@ -60,6 +65,8 @@ public class RobotContainer {
   private final Manipulator m_manipulator;
   private final Teeth m_teeth;
   private final Stomach m_stomach;
+
+  private final PositionMemory m_elevatorPositionMemory = new PositionMemory(0, 3);
 
   // DEFINE default COMMAND?
   public final DefaultDriveCommand defaultDriveCommand;
@@ -87,9 +94,9 @@ public class RobotContainer {
     m_robot = robot;
 
     defaultDriveCommand = new DefaultDriveCommand(m_dorsalFin, m_driveController);
-    defaultElevatorCommand = new DefaultElevatorCommand(m_elevator);
+    defaultElevatorCommand = new DefaultElevatorCommand(m_elevator, m_elevatorPositionMemory);
     defaultFilterFeederCommand = new DefaultFilterFeederCommand(m_filterFeeder);
-    defaultManipulatorCommand = new DefaultManipulatorCommand(m_manipulator);
+    defaultManipulatorCommand = new DefaultManipulatorCommand(m_manipulator, m_manipulatorController);
 
     m_dorsalFin.setDefaultCommand(defaultDriveCommand);
     m_elevator.setDefaultCommand(defaultElevatorCommand);
@@ -135,39 +142,15 @@ public class RobotContainer {
     ).whileTrue(
       new ChewCommand(m_teeth)
     );
-    m_manipulatorController.getByName(kConstants.kMoveManipulatorToMiddleButton).whileTrue(
-      new MoveClawCommand(m_manipulator, 0.3)
-    );
-    m_manipulatorController.getByName(kConstants.kMoveManipulatorToUpButton).whileTrue(
-      new MoveClawCommand(m_manipulator, 0.4)
-    );
-    m_manipulatorController.getByName(kConstants.kMoveManipulatorToDownButton).whileTrue(
-      new MoveClawCommand(m_manipulator, 0)
+    m_manipulatorController.getByName(kConstants.kReverseIntakeButton).whileTrue(
+      new SpitOutCommand(m_teeth)
     );
 
-
-    m_manipulatorController.getByName(kConstants.kGrabCoralButton).whileTrue(
-      new MoveElevatorCommand(m_elevator, 45)
-      .andThen( new MoveClawCommand(m_manipulator, 0) )
-      .andThen( new MoveElevatorCommand(m_elevator, 35) )
-      .andThen( new MoveElevatorCommand(m_elevator, 45) )
-      .andThen( new MoveClawCommand(m_manipulator, 0.3) )
+    m_manipulatorController.getByName(kConstants.kElevatorUpButton).onTrue(
+      new IncreasePositionCommand(m_elevatorPositionMemory)
     );
-
-    m_manipulatorController.getByName(kConstants.kElevatorPosition0Button).whileTrue(
-      new MoveElevatorCommand(m_elevator, 0)
-    );
-    m_manipulatorController.getByName(kConstants.kElevatorPosition1Button).whileTrue(
-      new MoveElevatorCommand(m_elevator, 10)
-    );
-    m_manipulatorController.getByName(kConstants.kElevatorPosition2Button).whileTrue(
-      new MoveElevatorCommand(m_elevator, 20)
-    );
-    m_manipulatorController.getByName(kConstants.kElevatorPosition3Button).whileTrue(
-      new MoveElevatorCommand(m_elevator, 30)
-    );
-    m_manipulatorController.getByName(kConstants.kElevatorPosition4Button).whileTrue(
-      new MoveElevatorCommand(m_elevator, 40)
+    m_manipulatorController.getByName(kConstants.kElevatorDownButton).onTrue(
+      new DecreasePositionCommand(m_elevatorPositionMemory)
     );
   }
 
@@ -202,5 +185,11 @@ public class RobotContainer {
 
   public void putAllSmartDashboardData(){
     //TODO
+  }
+
+  public void reset() {
+    m_filterFeeder.reset();
+    m_elevator.reset();
+    m_manipulator.reset();
   }
 }

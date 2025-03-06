@@ -19,11 +19,16 @@ public class Teeth extends SubsystemBase {
   /** Creates a new Teeth. */
   public Teeth() {
     m_intakeMotor = new SparkMax(kConstants.kIntakeMotor, MotorType.kBrushless);
-    m_intakeMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_intakeMotor.configure(kConstants.kNeo550NominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public void runIntake() {
     m_intakeMotor.setVoltage(kConstants.kEnableIntakeVoltage);
+    m_isEnabled = true;
+  }
+
+  public void reverseIntake() {
+    m_intakeMotor.setVoltage(-kConstants.kEnableIntakeVoltage);
     m_isEnabled = true;
   }
 
