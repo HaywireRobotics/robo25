@@ -206,13 +206,4 @@ public class DorsalFin extends SubsystemBase {
     // m_gyro.reset();
     m_calibratedOffset = m_gyro.getRotation2d();
   }
-  /* 
-  public double getLinearVelocity() {
-
-  }
-
-  public double getAngularVelocity() {
-    
-  }
-  */
 }

@@ -41,6 +41,7 @@ import frc.robot.commands.MoveElevatorCommand;
 import frc.robot.commands.OpenWideCommand;
 import frc.robot.commands.SpitOutCommand;
 import frc.robot.commands.TuneSwerveAutonomousCommand;
+import frc.robot.commands.AlignWithAprilTagCommand;
 import frc.robot.subsystems.DorsalFin;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.FilterFeeder;
@@ -78,7 +79,7 @@ public class RobotContainer {
   private final SysIdRoutine sysidRoutine;
 
   private final Camera m_camera = new Camera("Camera_Module_v1", new Transform3d(
-    new Translation3d(0.19, 0.17, 0.35),
+    new Translation3d(0.17, -0.19, 0.35),
     new Rotation3d(0, 0, 0))
   );
 
@@ -96,7 +97,7 @@ public class RobotContainer {
     defaultDriveCommand = new DefaultDriveCommand(m_dorsalFin, m_driveController);
     defaultElevatorCommand = new DefaultElevatorCommand(m_elevator, m_elevatorPositionMemory);
     defaultFilterFeederCommand = new DefaultFilterFeederCommand(m_filterFeeder);
-    defaultManipulatorCommand = new DefaultManipulatorCommand(m_manipulator, m_manipulatorController);
+    defaultManipulatorCommand = new DefaultManipulatorCommand(m_manipulator, m_manipulatorController, m_elevator);
 
     m_dorsalFin.setDefaultCommand(defaultDriveCommand);
     m_elevator.setDefaultCommand(defaultElevatorCommand);
@@ -128,6 +129,13 @@ public class RobotContainer {
       m_driveController.b().whileTrue(new GoToSpecifiedPosition(m_dorsalFin, m_robot, 2));
     }
 
+    m_driveController.getByName(kConstants.kAlignReefLeftButton).whileTrue(
+      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera, 0.165, false)
+    );
+    m_driveController.getByName(kConstants.kAlignReefRightButton).whileTrue(
+      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera, -0.165, false)
+    );
+
     // Manipulator Controller Stuff
     m_manipulatorController.getByName(kConstants.kLowerIntakeAssemblyButton).whileTrue(
       new ChompCommand(m_filterFeeder)
@@ -151,6 +159,10 @@ public class RobotContainer {
     );
     m_manipulatorController.getByName(kConstants.kElevatorDownButton).onTrue(
       new DecreasePositionCommand(m_elevatorPositionMemory)
+    );
+
+    m_manipulatorController.getByName(kConstants.kGrabCoralButton).whileTrue(
+      new GrabCoralSequence(m_elevator, m_manipulator)
     );
   }
 

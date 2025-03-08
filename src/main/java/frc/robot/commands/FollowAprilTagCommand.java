@@ -19,15 +19,17 @@ import frc.robot.Robot;
 import frc.robot.Statics;
 import frc.robot.subsystems.DorsalFin;
 
+import frc.robot.wrappers.Camera;
+
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class FollowAprilTagCommand extends Command {
   private final DorsalFin m_dorsalFin;
-  private final PhotonCamera m_camera;
+  private final Camera m_camera;
   private final Robot m_robot;
   private final LTVUnicycleController m_controller;
   private int m_countNotSeen = 0;
   /** Creates a new FollowAprilTagCommand. */
-  public FollowAprilTagCommand(DorsalFin dorsalFin, PhotonCamera camera, Robot robot) {
+  public FollowAprilTagCommand(DorsalFin dorsalFin, Camera camera, Robot robot) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(dorsalFin);
     m_dorsalFin = dorsalFin;

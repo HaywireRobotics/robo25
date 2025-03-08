@@ -14,16 +14,14 @@ import frc.robot.subsystems.Manipulator;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class GrabCoralSequence extends SequentialCommandGroup {
-  /** Creates a new GrabCoralSequence. */
+  /** Grabs a coral (almost) safely. */
   public GrabCoralSequence(Elevator m_elevator, Manipulator m_manipulator) {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new MoveElevatorCommand(m_elevator, kConstants.kElevatorGrabCoralPosition + 10),
       new MoveClawCommand(m_manipulator, 0),
       new MoveElevatorCommand(m_elevator, kConstants.kElevatorGrabCoralPosition),
       new MoveElevatorCommand(m_elevator, kConstants.kElevatorGrabCoralPosition + 10),
       new MoveClawCommand(m_manipulator, 0.3)
-  );
+    );
   }
 }

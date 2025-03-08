@@ -48,6 +48,10 @@ public class Camera extends PhotonCamera {
         return m_cameraData.get(0).getTargets();
     }
 
+    public PhotonTrackedTarget getBestAprilTag() {
+        return m_cameraData.get(0).getBestTarget();
+    }
+
     public PhotonPipelineResult getTargets() {
         updateVisible();
         return m_cameraData.get(0);

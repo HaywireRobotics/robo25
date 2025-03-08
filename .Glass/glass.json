@@ -36,6 +36,7 @@
       "/SmartDashboard/SwerveDrivePID 8": "PIDController",
       "/SmartDashboard/SwerveDrivePID 9": "PIDController",
       "/SmartDashboard/Trajectory Sample": "Field2d",
+      "/SmartDashboard/TrajectoryOutput": "Field2d",
       "/SmartDashboard/fieldPose": "Field2d"
     },
     "windows": {
@@ -45,6 +46,15 @@
         "image": "C:\\Users\\robo\\Documents\\2025\\fieldimage2025.png",
         "width": 16.541748046875
       },
+      "/SmartDashboard/TrajectoryOutput": {
+        "builtin": "",
+        "height": 8.210550308227539,
+        "image": "C:\\Users\\robo\\Documents\\2025\\fieldimage2025.png",
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/fieldPose": {
         "Robot": {
           "style": "Box/Image"
@@ -52,7 +62,10 @@
         "builtin": "",
         "height": 8.210550308227539,
         "image": "C:\\Users\\robo\\Documents\\2025\\fieldimage2025.png",
-        "width": 16.541748046875
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
       }
     }
   },

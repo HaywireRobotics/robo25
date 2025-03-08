@@ -34,7 +34,7 @@ public class Manipulator extends SubsystemBase {
   public Manipulator() {
     m_manipulatorMotor = new SparkMax(kConstants.kManipulatorMotor, MotorType.kBrushless);
     m_manipulatorMotor.configure(kConstants.kNeo550NominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_manipulatorPIDController.setTolerance(0.02, 2);
+    m_manipulatorPIDController.setTolerance(0.05, 0.01);
     m_manipulatorPIDController.setGoal(kConstants.kManipulatorDownPoint - 0.375);
 
     m_encoder = new DutyCycleEncoder(kConstants.kManipulatorEncoderID, 1, 0);
@@ -70,7 +70,6 @@ public class Manipulator extends SubsystemBase {
     if (position < kConstants.kManipulatorMaxAngle - 0.5){
       position = kConstants.kManipulatorMaxAngle - 0.5;
     }
-    m_manipulatorPIDController.reset(this.getManipulatorPos());
     m_manipulatorPIDController.setGoal(position);
   }
 

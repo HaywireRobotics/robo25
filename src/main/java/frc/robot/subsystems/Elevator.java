@@ -30,7 +30,7 @@ public class Elevator extends SubsystemBase {
   public Elevator() {
     m_elevatorMotor = new SparkMax(kConstants.kElevatorMotor, MotorType.kBrushless);
     m_elevatorMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_elevatorPIDController.setTolerance(0.5, 0);
+    m_elevatorPIDController.setTolerance(0.5, 0.1);
   }
 
   @Override

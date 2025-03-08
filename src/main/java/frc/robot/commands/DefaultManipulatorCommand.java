@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.kConstants;
+import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.wrappers.Controller;
 
@@ -13,12 +14,14 @@ import frc.robot.wrappers.Controller;
 public class DefaultManipulatorCommand extends Command {
   private final Manipulator m_manipulator;
   private final Controller m_controller;
+  private final Elevator m_elevator;
   /** Creates a new DefaultManipulatorCommand. */
-  public DefaultManipulatorCommand(Manipulator manipulator, Controller controller) {
+  public DefaultManipulatorCommand(Manipulator manipulator, Controller controller, Elevator elevator) {
     addRequirements(manipulator);
     m_manipulator = manipulator;
     m_manipulator.reset();
     m_controller = controller;
+    m_elevator = elevator;
     m_manipulator.setPIDTarget(m_manipulator.getManipulatorPos());
   }
 
@@ -32,14 +35,20 @@ public class DefaultManipulatorCommand extends Command {
     double stickX = m_controller.getLeftX();
     double stickY = m_controller.getLeftY();
 
-    if (Math.abs(stickX) > 0.5) {
-      m_manipulator.setPIDTarget(kConstants.kManipulatorDownPoint - 0.3);
-    }
-    if (stickY < -0.5) {
-      m_manipulator.setPIDTarget(kConstants.kManipulatorDownPoint - 0.5);
-    }
-    if (stickY > 0.5) {
-      m_manipulator.setPIDTarget(kConstants.kManipulatorDownPoint);
+    double magnitude = Math.sqrt(stickX*stickX + stickY*stickY);
+
+    if (magnitude > 0.5) {
+      double angle = 0.5 - ((Math.atan(stickY / Math.abs(stickX)) + (Math.PI/2)) / (2*Math.PI));
+
+      if (angle < 0.2) {
+        angle = 0;
+      }
+
+      if (m_elevator.getElevatorPos() < kConstants.kElevatorGrabCoralPosition && angle < 0.25) {
+        // do nothing
+      } else {
+        m_manipulator.setPIDTarget(kConstants.kManipulatorDownPoint - angle);
+      }
     }
 
     m_manipulator.assemblyPeriodic();
