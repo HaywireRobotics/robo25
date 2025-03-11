@@ -1,0 +1,37 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Blue 2 to 21"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Prepare To Score"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align Left Bar"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Middle"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

@@ -6,6 +6,9 @@
     "Retained Values": {
       "open": false
     },
+    "Transitory Values": {
+      "open": false
+    },
     "transitory": {
       "CameraPublisher": {
         "open": true,
@@ -16,6 +19,12 @@
         }
       },
       "SmartDashboard": {
+        "fieldPose": {
+          "double[]##v_/SmartDashboard/fieldPose/Robot": {
+            "open": true
+          },
+          "open": true
+        },
         "open": true
       },
       "photonvision": {
@@ -29,6 +38,7 @@
     },
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/PathPlanner": "Alerts",
       "/SmartDashboard/SwerveDrivePID 2": "PIDController",
       "/SmartDashboard/SwerveDrivePID 20": "PIDController",
       "/SmartDashboard/SwerveDrivePID 3": "PIDController",
@@ -50,10 +60,7 @@
         "builtin": "",
         "height": 8.210550308227539,
         "image": "C:\\Users\\robo\\Documents\\2025\\fieldimage2025.png",
-        "width": 16.541748046875,
-        "window": {
-          "visible": true
-        }
+        "width": 16.541748046875
       },
       "/SmartDashboard/fieldPose": {
         "Robot": {

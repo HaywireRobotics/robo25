@@ -3,7 +3,12 @@ package frc.robot;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.Filesystem;
+
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.config.ModuleConfig;
 
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
@@ -40,6 +45,32 @@ public class kConstants {
 
     public static final double kRobotWidth = (33.0 + (3.0/32.0)) * kInchesToMeters;
     public static final double kRobotLength = 38.5 * kInchesToMeters;
+
+
+    public static final RobotConfig kRobotConfig = new RobotConfig(
+        64.8637,
+        8.9882993814224495442708333333333,
+        new ModuleConfig(
+            (kWheelDiameter/2) * kInchesToMeters,
+            1,
+            0.6,
+            new DCMotor(
+                12,
+                3.35,
+                166,
+                1.3,
+                615.123841573, 
+                4),
+            150,
+            4
+        ),
+        new Translation2d(kConstants.kDriveTrainLength/2, kConstants.kDriveTrainWidth/2),
+        new Translation2d(kConstants.kDriveTrainLength/2, -kConstants.kDriveTrainWidth/2),
+        new Translation2d(-kConstants.kDriveTrainLength/2, kConstants.kDriveTrainWidth/2),
+        new Translation2d(-kConstants.kDriveTrainLength/2, -kConstants.kDriveTrainWidth/2)
+    );
+
+  
 
 
     // Swerve motors
@@ -121,10 +152,22 @@ public class kConstants {
     public static final int kManipulatorEncoderID = 0;
 
     public static final double kManipulatorPowerMultiplier = -1;
+
+    // Climb
+    public static final int kClimbMotor = 19;
+    public static final double kClimbRatio = 1.0/90.0;
+
+    public static final double kClimbKP = 5;
+    public static final double kClimbKI = 0;
+    public static final double kClimbKD = 0;
+    public static final double kClimbMaxVelocity = 1;
+    public static final double kClimbMaxAcceleration = 1;
+
+    public static final double kClimbChangeAmount = (0.1)/50.0;
     
     // Feature Flags
     public static final boolean kEnableFeedforwardTuning = false; // A, B, X, Y run feedforward tuning code for the Sysid tool
-    public static final boolean kEnable1MeterTuning = true; // A moves the robot forward 1 meter
+    public static final boolean kEnable1MeterTuning = false; // A moves the robot forward 1 meter
     public static final boolean kEnableFollowApriltag = false; // A follows april tag 2 at a distance of 1 meter
     public static final boolean kEnableGoToSpecifiedPosition = false; // A goes to (currently) 0,0 the place where the robot was restarted
 
@@ -132,9 +175,11 @@ public class kConstants {
     // Driver
     public static final String kDisableFieldCentricButton = "back";
     public static final String kEnableFieldCentricButton = "start";
+    public static final String kResetGyroButton = "up";
 
     public static final String kAlignReefLeftButton = "x";
     public static final String kAlignReefRightButton = "b";
+
 
     // Manipulator
     public static final String kLowerIntakeAssemblyButton = "a";
@@ -148,7 +193,10 @@ public class kConstants {
 
     public static final String kElevatorUpButton = "lb";
     public static final String kElevatorDownButton = "lt";
-
+    
+    // Climb
+    public static final String kClimbUpButton = "up";
+    public static final String kClimbDownButton = "down";
 
     // Joystick is part of a different system
     // public static final String kManipulatorAngleJoystick = "left_stick";

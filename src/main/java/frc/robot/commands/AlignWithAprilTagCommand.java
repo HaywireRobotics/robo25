@@ -63,6 +63,8 @@ public class AlignWithAprilTagCommand extends Command {
       headingController
     );
     m_timer = new Timer();
+    m_timer.stop();
+    m_timer.reset();
   }
 
   // Called when the command is initially scheduled.
@@ -102,6 +104,8 @@ public class AlignWithAprilTagCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     m_dorsalFin.drive(0, 0, 0, false);
+    m_timer.stop();
+    m_timer.reset();
   }
 
   // Returns true when the command should end.

@@ -36,6 +36,13 @@ public class Stomach extends SubsystemBase {
     isIndexEnabled = true;
   }
 
+  public void reverseIndexMotor() {
+    m_frontIndexMotor.setVoltage(-kConstants.kEnableFrontIndexVoltage);
+    m_backLeftIndexMotor.setVoltage(kConstants.kEnableBackIndexVoltage);
+    m_backRightIndexMotor.setVoltage(-kConstants.kEnableBackIndexVoltage);
+    isIndexEnabled = true;
+  }
+
   public void disableIndexMotor() {
     m_frontIndexMotor.setVoltage(0);
     m_backLeftIndexMotor.setVoltage(0);

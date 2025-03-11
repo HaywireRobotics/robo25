@@ -4,14 +4,18 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -22,11 +26,17 @@ import edu.wpi.first.units.measure.MutDistance;
 import edu.wpi.first.units.measure.MutLinearVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.kConstants;
 import frc.robot.Robot;
 import frc.robot.wrappers.SwerveModule;
 import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.config.PIDConstants;
 import com.kauailabs.navx.frc.AHRS;
 
 /** Represents a swerve drive style drivetrain. */
@@ -81,23 +91,43 @@ public class DorsalFin extends SubsystemBase {
           m_backRightLocation);
 
   private final SwerveDriveOdometry m_odometry;
-  private Pose2d fieldPose = new Pose2d();
+  private Pose2d m_fieldPose = new Pose2d();
 
   private final Robot m_robot;
 
   public DorsalFin(Robot robot) {
     this.resetGyro();
-    m_odometry =
-      new SwerveDriveOdometry(
-          m_kinematics,
-          getRotationAroundUpAxisInRotation2d(),
-          new SwerveModulePosition[] {
-            m_frontLeft.getPosition(),
-            m_frontRight.getPosition(),
-            m_backLeft.getPosition(),
-            m_backRight.getPosition()
-          });
+    m_odometry = new SwerveDriveOdometry(
+      m_kinematics,
+      getRotationAroundUpAxisInRotation2d(),
+      new SwerveModulePosition[] {
+        m_frontLeft.getPosition(),
+        m_frontRight.getPosition(),
+        m_backLeft.getPosition(),
+        m_backRight.getPosition()
+      }
+    );
     m_robot = robot;
+
+    AutoBuilder.configure(
+      this::getPose2D,
+      this::setOdometry,
+      this::getChassisSpeeds,
+      this::reversedDrive,
+      new PPHolonomicDriveController(
+        new PIDConstants(2, 0, 0),
+        new PIDConstants(4, 0.1, 0)
+      ),
+      kConstants.kRobotConfig,
+      () -> {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+          return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+      },
+      this
+    );
   }
 
   /**
@@ -133,13 +163,19 @@ public class DorsalFin extends SubsystemBase {
     m_backRight.setDesiredState(swerveModuleStates[3]);
   }
 
+  public void reversedDrive(ChassisSpeeds speed) {
+    speed.omegaRadiansPerSecond = -speed.omegaRadiansPerSecond;
+    drive(speed);
+  }
+
   public void sysIdVoltageDrive(Voltage voltage){
     setAllToState(new SwerveModuleState(voltage.in(Volts), new Rotation2d(0)));
   }
 
   /** Updates the field relative position of the robot. */
   public void updateOdometry() {
-    fieldPose = m_odometry.update(
+    Pose2d oldPose = m_fieldPose;
+    m_fieldPose = m_odometry.update(
         getRotationAroundUpAxisInRotation2d(),
         new SwerveModulePosition[] {
           m_frontLeft.getPosition(),
@@ -149,12 +185,21 @@ public class DorsalFin extends SubsystemBase {
         });
   }
 
+  public ChassisSpeeds getChassisSpeeds() {
+    return m_kinematics.toChassisSpeeds(
+      m_frontLeft.getPositionState(),
+      m_frontRight.getPositionState(),
+      m_backLeft.getPositionState(),
+      m_backRight.getPositionState()
+    );
+  }
+
   public void setOdometry(Pose2d newPose) {
     m_odometry.resetPose(newPose);
   }
  
   public Pose2d getFieldPose(){
-    return fieldPose;
+    return m_fieldPose;
   }
 
   public void setAllToState(SwerveModuleState state){
@@ -199,11 +244,24 @@ public class DorsalFin extends SubsystemBase {
   }
 
   public Pose2d getPose2D() {
-    return fieldPose;
+    return m_fieldPose;
   }
 
   public void resetGyro() {
     // m_gyro.reset();
     m_calibratedOffset = m_gyro.getRotation2d();
+  }
+
+  public Command getPathByName(String name) {
+    try{
+      // Load the path you want to follow using its name in the GUI
+      PathPlannerPath path = PathPlannerPath.fromPathFile(name);
+
+      // Create a path following command using AutoBuilder. This will also trigger event markers.
+      return AutoBuilder.followPath(path);
+    } catch (Exception e) {
+      DriverStation.reportError("Big oops: " + e.getMessage(), e.getStackTrace());
+      return Commands.none();
+    }
   }
 }

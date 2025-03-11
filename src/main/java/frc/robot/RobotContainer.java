@@ -26,6 +26,7 @@ import frc.robot.commands.BreatheCommand;
 import frc.robot.commands.ChewCommand;
 import frc.robot.commands.ChompCommand;
 import frc.robot.commands.DecreasePositionCommand;
+import frc.robot.commands.DefaultClimbCommand;
 import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.DefaultElevatorCommand;
 import frc.robot.commands.DefaultFilterFeederCommand;
@@ -39,9 +40,12 @@ import frc.robot.commands.Move1MeterCommand;
 import frc.robot.commands.MoveClawCommand;
 import frc.robot.commands.MoveElevatorCommand;
 import frc.robot.commands.OpenWideCommand;
+import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.SpitOutCommand;
 import frc.robot.commands.TuneSwerveAutonomousCommand;
 import frc.robot.commands.AlignWithAprilTagCommand;
+import frc.robot.commands.AntacidCommand;
+import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.DorsalFin;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.FilterFeeder;
@@ -49,9 +53,11 @@ import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.Stomach;
 import frc.robot.subsystems.Teeth;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import frc.robot.wrappers.Camera;
 import frc.robot.wrappers.Controller;
 import frc.robot.wrappers.PositionMemory;
+import com.pathplanner.lib.auto.NamedCommands;
 
 public class RobotContainer {
   private final Controller m_driveController = new Controller(0);
@@ -66,6 +72,7 @@ public class RobotContainer {
   private final Manipulator m_manipulator;
   private final Teeth m_teeth;
   private final Stomach m_stomach;
+  private final Climb m_climb;
 
   private final PositionMemory m_elevatorPositionMemory = new PositionMemory(0, 3);
 
@@ -74,8 +81,10 @@ public class RobotContainer {
   public final DefaultElevatorCommand defaultElevatorCommand;
   public final DefaultFilterFeederCommand defaultFilterFeederCommand;
   public final DefaultManipulatorCommand defaultManipulatorCommand;
+  public final DefaultClimbCommand defaultClimbCommand;
 
   public final TuneSwerveAutonomousCommand tuneSwerveAutonomousCommand;
+  public final Command exampleAutoCommand;
   private final SysIdRoutine sysidRoutine;
 
   private final Camera m_camera = new Camera("Camera_Module_v1", new Transform3d(
@@ -92,23 +101,28 @@ public class RobotContainer {
     m_manipulator = new Manipulator();
     m_teeth = new Teeth();
     m_stomach = new Stomach();
+    m_climb = new Climb();
     m_robot = robot;
 
     defaultDriveCommand = new DefaultDriveCommand(m_dorsalFin, m_driveController);
     defaultElevatorCommand = new DefaultElevatorCommand(m_elevator, m_elevatorPositionMemory);
     defaultFilterFeederCommand = new DefaultFilterFeederCommand(m_filterFeeder);
     defaultManipulatorCommand = new DefaultManipulatorCommand(m_manipulator, m_manipulatorController, m_elevator);
+    defaultClimbCommand = new DefaultClimbCommand(m_climb);
 
     m_dorsalFin.setDefaultCommand(defaultDriveCommand);
     m_elevator.setDefaultCommand(defaultElevatorCommand);
     m_filterFeeder.setDefaultCommand(defaultFilterFeederCommand);
     m_manipulator.setDefaultCommand(defaultManipulatorCommand);
+    m_climb.setDefaultCommand(defaultClimbCommand);
 
     tuneSwerveAutonomousCommand = new TuneSwerveAutonomousCommand(m_dorsalFin);
+    exampleAutoCommand = new PathPlannerAuto("Test Auto");
     sysidRoutine = new SysIdRoutine(
         new SysIdRoutine.Config(BaseUnits.VoltageUnit.of(0.1).per(BaseUnits.TimeUnit), BaseUnits.VoltageUnit.of(1.6),BaseUnits.TimeUnit.of(10)),
         new SysIdRoutine.Mechanism(m_dorsalFin::sysIdVoltageDrive, m_dorsalFin::driveLogs, m_dorsalFin));
     configureBindings();
+    configureNamedCommands();
   }
 
   private void configureBindings() {
@@ -135,6 +149,13 @@ public class RobotContainer {
     m_driveController.getByName(kConstants.kAlignReefRightButton).whileTrue(
       new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera, -0.165, false)
     );
+    m_driveController.getByName(kConstants.kResetGyroButton).onTrue(
+      new ResetGyroCommand(m_dorsalFin)
+    );
+
+    // m_driveController.getByName("y").whileTrue(
+    //   exampleAutoCommand
+    // );
 
     // Manipulator Controller Stuff
     m_manipulatorController.getByName(kConstants.kLowerIntakeAssemblyButton).whileTrue(
@@ -152,6 +173,8 @@ public class RobotContainer {
     );
     m_manipulatorController.getByName(kConstants.kReverseIntakeButton).whileTrue(
       new SpitOutCommand(m_teeth)
+    ).whileTrue(
+      new AntacidCommand(m_stomach)
     );
 
     m_manipulatorController.getByName(kConstants.kElevatorUpButton).onTrue(
@@ -166,8 +189,25 @@ public class RobotContainer {
     );
   }
 
+  private void configureNamedCommands() {
+    NamedCommands.registerCommand("Prepare To Score",
+    new MoveClawCommand(m_manipulator, 0.3).andThen(
+      new MoveElevatorCommand(m_elevator, kConstants.kElevatorScoreL3Position),
+      new MoveClawCommand(m_manipulator, 0.5)
+    )
+    );
+    NamedCommands.registerCommand("Align Left Bar",
+      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera, 0.165, true)
+    );
+    NamedCommands.registerCommand("Score Middle",
+      new MoveElevatorCommand(m_elevator, kConstants.kElevatorScoreL3Position).andThen(
+        new MoveClawCommand(m_manipulator, 0)
+      )
+    );
+  }
+
   public Command getAutonomousCommand() {
-    return tuneSwerveAutonomousCommand;
+    return exampleAutoCommand;
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {

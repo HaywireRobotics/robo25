@@ -154,6 +154,11 @@ public class SwerveModule {
       applyDriveRatio(getDriveEncoderPosition()), new Rotation2d(getTurningEncoderPosition()));
   }
 
+  public SwerveModuleState getPositionState() {
+    return new SwerveModuleState(
+      applyDriveRatio(getDriveEncoderPosition()), new Rotation2d(getTurningEncoderPosition()));
+  }
+
   /**
    * Sets the desired state for the module.
    *
