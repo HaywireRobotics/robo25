@@ -25,6 +25,9 @@ public class Camera extends PhotonCamera {
     private List<PhotonPipelineResult> m_cameraData;
     private Transform3d m_cameraOffset;
     private AprilTagFieldLayout aprilTagFieldLayout;
+
+    public boolean disablePoseEstimation = false;
+
     public Camera(String name, Transform3d cameraOffset) {
         super(name);
         m_cameraOffset = cameraOffset;
@@ -59,6 +62,9 @@ public class Camera extends PhotonCamera {
 
     public Optional<Pose2d> estimatePose(Pose2d robotPose) {
         updateVisible();
+        if (disablePoseEstimation) {
+            return Optional.empty();
+        }
         if (m_cameraData.size() == 0 || m_cameraData.get(0) == null) {
             return Optional.empty();
         }

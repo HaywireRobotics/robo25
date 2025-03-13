@@ -34,7 +34,6 @@ import frc.robot.wrappers.FieldLayout;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignWithAprilTagCommand extends Command {
   private final DorsalFin m_dorsalFin;
-  private final Robot m_robot;
   private final Camera m_camera;
   private final HolonomicDriveController m_controller;
 
@@ -51,7 +50,6 @@ public class AlignWithAprilTagCommand extends Command {
   public AlignWithAprilTagCommand(DorsalFin dorsalFin, Robot robot, Camera camera, double xOffset, boolean terminateAfterTime) {
     addRequirements(dorsalFin);
     m_dorsalFin = dorsalFin;
-    m_robot = robot;
     m_camera = camera;
     m_xOffset = xOffset;
     m_terminateAfterTime = terminateAfterTime;
@@ -70,34 +68,35 @@ public class AlignWithAprilTagCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_timer.reset();
+    m_timer.reset(); // Set up the timer
     m_timer.start();
-    PhotonTrackedTarget target = m_camera.getBestAprilTag();
+    PhotonTrackedTarget target = m_camera.getBestAprilTag(); // Get the best april tag to get its id
 
     if (target == null) {
-      this.cancel();
+      this.cancel(); // If it doesn't see a target, skip.
       return;
     }
 
-    m_trajectory = TrajectoryGenerator.generateTrajectory(
-      m_dorsalFin.getPose2D(),
-      new ArrayList<Translation2d>(0),
-      m_fieldLayout.getTag(target.fiducialId)
-      .translate(new Transform2d(0, 0, Rotation2d.k180deg))
-      .translate(new Transform2d(-(kConstants.kRobotLength/2.0), m_xOffset, Rotation2d.kZero)).toPose(),
-      new TrajectoryConfig(0.5, 1));
+    m_trajectory = TrajectoryGenerator.generateTrajectory( // Create a trajectory from our robot to touching the reef.
+      m_dorsalFin.getPose2D(), // Start position
+      new ArrayList<Translation2d>(0), // Waypoints (none means straight line)
+      m_fieldLayout.getTag(target.fiducialId) // Position of the april tag
+      .translate(new Transform2d(0, 0, Rotation2d.k180deg)) // Facing the april tag
+      .translate(new Transform2d(-(kConstants.kRobotLength/2.0), m_xOffset, Rotation2d.kZero)).toPose(), // Not in the wall, and offsetted.
+      new TrajectoryConfig(0.5, 1)); // So it doesn't go too fast.
+    m_camera.disablePoseEstimation = true;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Trajectory.State reference = m_trajectory.sample(m_timer.get());
-    m_position.setRobotPose(reference.poseMeters);
+    Trajectory.State reference = m_trajectory.sample(m_timer.get()); // Get the wanted position of the robot
+    m_position.setRobotPose(reference.poseMeters); // Display the position
     SmartDashboard.putData("TrajectoryOutput", m_position);
-    Rotation2d targetRotation = m_trajectory.sample(m_trajectory.getTotalTimeSeconds()).poseMeters.getRotation();
-    ChassisSpeeds movement = m_controller.calculate(m_dorsalFin.getPose2D(), reference, targetRotation);
-    movement.omegaRadiansPerSecond = -movement.omegaRadiansPerSecond;
-    m_dorsalFin.drive(movement);
+    Rotation2d targetRotation = m_trajectory.sample(m_trajectory.getTotalTimeSeconds()).poseMeters.getRotation(); // Get the final rotation for the swerve to point to
+    ChassisSpeeds movement = m_controller.calculate(m_dorsalFin.getPose2D(), reference, targetRotation); // Calculate which way to drive to get from the robot's position to the reference.
+    movement.omegaRadiansPerSecond = -movement.omegaRadiansPerSecond; // Robot reported rotation and control rotation are opposties
+    m_dorsalFin.drive(movement); // Drive with ChassisSpeeds.
   }
 
   // Called once the command ends or is interrupted.
@@ -106,12 +105,14 @@ public class AlignWithAprilTagCommand extends Command {
     m_dorsalFin.drive(0, 0, 0, false);
     m_timer.stop();
     m_timer.reset();
+
+    m_camera.disablePoseEstimation = false;
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_terminateAfterTime) {
+    if (m_terminateAfterTime) { // Terminate 1 second after the timer expires.
       return (m_trajectory.getTotalTimeSeconds()+1) > m_timer.get();
     }
     return false;

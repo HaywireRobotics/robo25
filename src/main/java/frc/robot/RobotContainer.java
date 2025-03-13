@@ -108,7 +108,7 @@ public class RobotContainer {
     defaultElevatorCommand = new DefaultElevatorCommand(m_elevator, m_elevatorPositionMemory);
     defaultFilterFeederCommand = new DefaultFilterFeederCommand(m_filterFeeder);
     defaultManipulatorCommand = new DefaultManipulatorCommand(m_manipulator, m_manipulatorController, m_elevator);
-    defaultClimbCommand = new DefaultClimbCommand(m_climb);
+    defaultClimbCommand = new DefaultClimbCommand(m_climb, m_manipulatorController);
 
     m_dorsalFin.setDefaultCommand(defaultDriveCommand);
     m_elevator.setDefaultCommand(defaultElevatorCommand);

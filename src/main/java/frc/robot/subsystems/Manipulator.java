@@ -88,7 +88,7 @@ public class Manipulator extends SubsystemBase {
     if (position > kConstants.kManipulatorMaxAngle) {
       power = Math.min(0, power);
     }
-    if (position < kConstants.kManipulatorMaxAngle - 0.5) {
+    if (position < kConstants.kManipulatorMaxAngle - 0.4444) {
       power = Math.max(0, power);
     }
 

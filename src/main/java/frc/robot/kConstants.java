@@ -104,7 +104,7 @@ public class kConstants {
     public static final double kElevatorRotationsToInches = 4 * Math.PI;
 
     public static final double kElevatorGrabCoralPosition = 19.006944;
-    public static final double kElevatorScoreL2Position = 15.483465;
+    public static final double kElevatorScoreL2Position = 14.483465;
     public static final double kElevatorScoreL3Position = 34.782211;
     public static final double kElevatorScoreL4Position = 59.976616;
     public static final double kElevatorRemoveAlgaeLowPosition = 21.721669;
@@ -157,7 +157,7 @@ public class kConstants {
     public static final int kClimbMotor = 19;
     public static final double kClimbRatio = 1.0/90.0;
 
-    public static final double kClimbKP = 5;
+    public static final double kClimbKP = 25;
     public static final double kClimbKI = 0;
     public static final double kClimbKD = 0;
     public static final double kClimbMaxVelocity = 1;
