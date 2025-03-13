@@ -26,10 +26,12 @@ public class Elevator extends SubsystemBase {
           new TrapezoidProfile.Constraints(
               kConstants.kElevatorMaxVelocity, kConstants.kElevatorMaxAcceleration));
 
+  private boolean m_configuredForUp = false;
+
   /** Creates a new Elevator. */
   public Elevator() {
     m_elevatorMotor = new SparkMax(kConstants.kElevatorMotor, MotorType.kBrushless);
-    m_elevatorMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_elevatorMotor.configure(kConstants.kNeoLowStallCurrentConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_elevatorPIDController.setTolerance(0.5, 0.1);
   }
 
@@ -67,6 +69,15 @@ public class Elevator extends SubsystemBase {
     }
     if (elevatorPos < 1) {
       motorPower = Math.max(0, motorPower);
+    }
+
+    if (motorPower > 0 && !m_configuredForUp) {
+      m_elevatorMotor.configure(kConstants.kNeoHighStallCurrentConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+      m_configuredForUp = true;
+    }
+    if (motorPower < 0 && m_configuredForUp) {
+      m_elevatorMotor.configure(kConstants.kNeoLowStallCurrentConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+      m_configuredForUp = false;
     }
 
     setMotorPower(motorPower);

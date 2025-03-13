@@ -45,7 +45,7 @@ public class DefaultManipulatorCommand extends Command {
       }
 
       if (m_elevator.getElevatorPos() < kConstants.kElevatorGrabCoralPosition && angle < 0.20) {
-        // do nothing
+        // do nothing`
       } else {
         m_manipulator.setPIDTarget(kConstants.kManipulatorDownPoint - angle);
       }

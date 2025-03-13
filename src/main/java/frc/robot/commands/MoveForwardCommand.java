@@ -7,25 +7,25 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DorsalFin;
 
-public class Move1MeterCommand extends Command {
+public class MoveForwardCommand extends Command {
   private final DorsalFin m_dorsalFin;
-  private double m_targetDistance;
+  private final double m_targetDistance;
+  private double m_startPosition;
 
   /** Creates a new Move1MeterCommand. 
    * Implicitly uses the FrontRight swerve as the distance calculator
   */
-  public Move1MeterCommand(DorsalFin dorsalFin) {
+  public MoveForwardCommand(DorsalFin dorsalFin, double distance) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(dorsalFin);
     m_dorsalFin = dorsalFin;
+    m_targetDistance = distance;
   }
 
   // Called when the command is initially scheduled. 
   @Override
   public void initialize() {
-    this.m_targetDistance = m_dorsalFin.getSwerveDriveLocations()[1] + 1; // 1 Meter Forward
-    System.out.print("Target Distance: ");
-    System.out.println(this.m_targetDistance);
+    m_startPosition = m_dorsalFin.getSwerveDriveLocations()[1];
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -44,8 +44,6 @@ public class Move1MeterCommand extends Command {
   @Override
   public boolean isFinished() {
     final double frontLeftLocation = m_dorsalFin.getSwerveDriveLocations()[1];
-    System.out.print("Current Distance: ");
-    System.out.println(frontLeftLocation);
-    return frontLeftLocation > this.m_targetDistance;
+    return Math.abs(m_startPosition-frontLeftLocation) > m_targetDistance;
   }
 }

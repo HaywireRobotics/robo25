@@ -36,7 +36,7 @@ import frc.robot.commands.FollowAprilTagCommand;
 import frc.robot.commands.GoToSpecifiedPosition;
 import frc.robot.commands.GrabCoralSequence;
 import frc.robot.commands.IncreasePositionCommand;
-import frc.robot.commands.Move1MeterCommand;
+import frc.robot.commands.MoveForwardCommand;
 import frc.robot.commands.MoveClawCommand;
 import frc.robot.commands.MoveElevatorCommand;
 import frc.robot.commands.OpenWideCommand;
@@ -117,12 +117,12 @@ public class RobotContainer {
     m_climb.setDefaultCommand(defaultClimbCommand);
 
     tuneSwerveAutonomousCommand = new TuneSwerveAutonomousCommand(m_dorsalFin);
-    exampleAutoCommand = new PathPlannerAuto("Test Auto");
     sysidRoutine = new SysIdRoutine(
         new SysIdRoutine.Config(BaseUnits.VoltageUnit.of(0.1).per(BaseUnits.TimeUnit), BaseUnits.VoltageUnit.of(1.6),BaseUnits.TimeUnit.of(10)),
         new SysIdRoutine.Mechanism(m_dorsalFin::sysIdVoltageDrive, m_dorsalFin::driveLogs, m_dorsalFin));
     configureBindings();
     configureNamedCommands();
+    exampleAutoCommand = new PathPlannerAuto("Test Auto");
   }
 
   private void configureBindings() {
@@ -133,7 +133,7 @@ public class RobotContainer {
       m_driveController.y().whileTrue(this.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
     }
     if (kConstants.kEnable1MeterTuning) {
-      m_driveController.a().whileTrue(new Move1MeterCommand(m_dorsalFin));
+      m_driveController.a().whileTrue(new MoveForwardCommand(m_dorsalFin, 1));
     }
     if (kConstants.kEnableFollowApriltag) {
       m_driveController.a().whileTrue(new FollowAprilTagCommand(m_dorsalFin, m_camera, m_robot));
@@ -207,7 +207,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return exampleAutoCommand;
+    return new MoveForwardCommand(m_dorsalFin, 1);
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
