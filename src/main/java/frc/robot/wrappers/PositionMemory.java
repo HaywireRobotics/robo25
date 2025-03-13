@@ -4,7 +4,7 @@
 
 package frc.robot.wrappers;
 
-/** Add your docs here. */
+/** A simple counter that automatically limits itself to a min and a max. */
 public class PositionMemory {
     private int m_point = 1;
     private final int m_min;
@@ -31,5 +31,9 @@ public class PositionMemory {
 
     public int get() {
         return m_point;
+    }
+
+    public void set(double point) {
+        m_point = Math.min(m_max, Math.min(m_min, point));
     }
 }

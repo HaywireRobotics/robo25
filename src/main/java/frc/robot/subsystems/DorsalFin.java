@@ -116,7 +116,7 @@ public class DorsalFin extends SubsystemBase {
       this::reversedDrive,
       new PPHolonomicDriveController(
         new PIDConstants(2, 0, 0),
-        new PIDConstants(4, 0.1, 0)
+        new PIDConstants(2, 0.1, 0)
       ),
       kConstants.kRobotConfig,
       () -> {

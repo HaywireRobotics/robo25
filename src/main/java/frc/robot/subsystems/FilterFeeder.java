@@ -43,6 +43,10 @@ public class FilterFeeder extends SubsystemBase {
     m_intakeAssemblyPIDController.setGoal(kConstants.kIntakeAssemblyUpPoint);
   }
 
+  public void moveIntakeAssemblyToGrabAlgae() {
+    m_intakeAssemblyPIDController.setGoal(kConstants.kIntakeAssemblyAlgaePoint);
+  }
+
   public void bumpIntakeAssembly() {
     m_intakeAssemblyPIDController.setGoal(kConstants.kIntakeAssemblyBumpPoint);
   }

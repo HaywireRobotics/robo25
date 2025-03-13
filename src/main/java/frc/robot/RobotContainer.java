@@ -43,6 +43,7 @@ import frc.robot.commands.OpenWideCommand;
 import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.SpitOutCommand;
 import frc.robot.commands.TuneSwerveAutonomousCommand;
+import frc.robot.commands.YawnCommand;
 import frc.robot.commands.AlignWithAprilTagCommand;
 import frc.robot.commands.AntacidCommand;
 import frc.robot.subsystems.Climb;
@@ -119,9 +120,10 @@ public class RobotContainer {
     tuneSwerveAutonomousCommand = new TuneSwerveAutonomousCommand(m_dorsalFin);
     sysidRoutine = new SysIdRoutine(
         new SysIdRoutine.Config(BaseUnits.VoltageUnit.of(0.1).per(BaseUnits.TimeUnit), BaseUnits.VoltageUnit.of(1.6),BaseUnits.TimeUnit.of(10)),
-        new SysIdRoutine.Mechanism(m_dorsalFin::sysIdVoltageDrive, m_dorsalFin::driveLogs, m_dorsalFin));
+        new SysIdRoutine.Mechanism(m_dorsalFin::sysIdVoltageDrive, m_dorsalFin::driveLogs, m_dorsalFin)
+      );
     configureBindings();
-    configureNamedCommands();
+    // configureNamedCommands();
     exampleAutoCommand = new PathPlannerAuto("Test Auto");
   }
 
@@ -162,6 +164,9 @@ public class RobotContainer {
       new ChompCommand(m_filterFeeder)
     ).onFalse(
       new BreatheCommand(m_filterFeeder)
+    );
+    m_manipulatorController.getByName(kConstants.kMoveIntakeAssemblyToGrabAlgaeButton).whileTrue(
+      new YawnCommand(m_filterFeeder)
     );
     m_manipulatorController.getByName(kConstants.kRaiseIntakeAssemblyButton).whileTrue(
       new OpenWideCommand(m_filterFeeder)
@@ -207,7 +212,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return new MoveForwardCommand(m_dorsalFin, 1);
+    // return new MoveClawCommand(m_manipulator, 0.4).andThen(new MoveForwardCommand(m_dorsalFin, 1));
+    return exampleAutoCommand;
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {

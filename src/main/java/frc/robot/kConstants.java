@@ -137,6 +137,7 @@ public class kConstants {
     public static final int kIndexBackRightMotor = 15;
     public static final double kIntakeAssemblyDownPoint = 17.7;
     public static final double kIntakeAssemblyBumpPoint = 16;
+    public static final double kIntakeAssemblyAlgaePoint = 8;
     public static final double kIntakeAssemblyUpPoint = 0.1;
 
     public static final double kEnableBackIndexVoltage = 2;
@@ -186,10 +187,11 @@ public class kConstants {
 
     // Manipulator
     public static final String kLowerIntakeAssemblyButton = "a";
+    public static final String kRaiseIntakeAssemblyButton = "b";
     public static final String kRunIntakeButton = "rt";
 
     // Algae
-    public static final String kRaiseIntakeAssemblyButton = "b";
+    public static final String kMoveIntakeAssemblyToGrabAlgaeButton = "y";
     public static final String kReverseIntakeButton = "rb";
 
     public static final String kGrabCoralButton = "x";
