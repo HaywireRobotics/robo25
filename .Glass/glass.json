@@ -21,8 +21,7 @@
             "open": true
           },
           "open": true
-        },
-        "open": true
+        }
       },
       "photonvision": {
         "Camera_Module_v1": {
@@ -30,12 +29,14 @@
             "open": true
           },
           "open": true
-        }
+        },
+        "open": true
       }
     },
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Auto": "String Chooser",
+      "/SmartDashboard/IntakeLimitSwitch": "Digital Input",
       "/SmartDashboard/PathPlanner": "Alerts",
       "/SmartDashboard/SwerveDrivePID 2": "PIDController",
       "/SmartDashboard/SwerveDrivePID 20": "PIDController",
@@ -53,6 +54,11 @@
           "visible": true
         }
       },
+      "/SmartDashboard/IntakeLimitSwitch": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Trajectory Sample": {
         "builtin": "",
         "height": 8.210550308227539,
@@ -63,10 +69,26 @@
         "builtin": "",
         "height": 8.210550308227539,
         "image": "C:\\Users\\robo\\Documents\\2025\\fieldimage2025.png",
-        "width": 16.541748046875
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
       },
       "/SmartDashboard/fieldPose": {
         "Robot": {
+          "arrowColor": [
+            0.0,
+            0.2666666507720947,
+            1.0,
+            255.0
+          ],
+          "arrowSize": 70,
+          "color": [
+            62.333343505859375,
+            255.0,
+            0.0,
+            255.0
+          ],
           "style": "Box/Image"
         },
         "builtin": "",

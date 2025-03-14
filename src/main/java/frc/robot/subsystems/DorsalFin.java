@@ -196,10 +196,6 @@ public class DorsalFin extends SubsystemBase {
   public void setOdometry(Pose2d newPose) {
     m_odometry.resetPose(newPose);
     m_fieldPose = newPose;
-    System.out.println(newPose.getRotation());
-    // m_calibratedOffset = Rotation2d.kZero;
-    // m_calibratedOffset = getRotationAroundUpAxisInRotation2d().minus(newPose.getRotation());
-    // System.out.println(getRotationAroundUpAxisInRotation2d());
   }
  
   public Pose2d getFieldPose(){
@@ -248,7 +244,6 @@ public class DorsalFin extends SubsystemBase {
   }
 
   public Pose2d getPose2D() {
-    System.out.println(m_fieldPose);
     return m_fieldPose;
   }
 

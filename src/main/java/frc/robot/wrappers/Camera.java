@@ -18,6 +18,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import frc.robot.Statics;
 import frc.robot.kConstants;
 
 /** Add your docs here. */
@@ -25,6 +26,8 @@ public class Camera extends PhotonCamera {
     private List<PhotonPipelineResult> m_cameraData;
     private Transform3d m_cameraOffset;
     private AprilTagFieldLayout aprilTagFieldLayout;
+
+    private Transform3d m_previousTransform = Transform3d.kZero;
 
     public boolean disablePoseEstimation = false;
 
@@ -75,17 +78,32 @@ public class Camera extends PhotonCamera {
         if (target == null) {
             return Optional.empty();
         }
+        
+        Transform3d targetTransform3d = target.bestCameraToTarget;
+        // System.out.print("Input ");
+        // System.out.print(targetTransform3d);
         if (target.poseAmbiguity > kConstants.kMaxPoseAmbiguity) {
             return Optional.empty();
         }
         if (target.bestCameraToTarget.getX() > kConstants.kMaxTagDistance) {
             return Optional.empty();
         }
+        // System.out.print(" Previous ");
+        // System.out.print(m_previousTransform);
+        // targetTransform3d = new Transform3d(
+        //     Statics.interpolate(m_previousTransform.getX(), targetTransform3d.getX(), 0.8), 
+        //     Statics.interpolate(m_previousTransform.getY(), targetTransform3d.getY(), 0.8), 
+        //     Statics.interpolate(m_previousTransform.getZ(), targetTransform3d.getZ(), 0.8),
+        //     m_previousTransform.getRotation().interpolate(targetTransform3d.getRotation(), 0.8)
+        // );
+        // System.out.print(" Output ");
+        // System.out.println(targetTransform3d);
+        // m_previousTransform = targetTransform3d;
         int target_id = target.fiducialId;
         Pose3d field_target_pose = aprilTagFieldLayout.getTagPose(target_id).get();
-        Pose3d camera_pose = field_target_pose.plus(target.bestCameraToTarget.inverse());
+        Pose3d camera_pose = field_target_pose.plus(targetTransform3d.inverse());
         Pose3d calculatedRobotPose = camera_pose.plus(m_cameraOffset.inverse());
-        return Optional.of(calculatedRobotPose.toPose2d().interpolate(robotPose, target.poseAmbiguity*10));
+        return Optional.of(calculatedRobotPose.toPose2d().interpolate(robotPose, Math.min(target.poseAmbiguity*10 + 0.2,1)));
     }
 
     private void updateVisible() {

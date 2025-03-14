@@ -9,6 +9,30 @@
           "data": {
             "pathName": "Red to 22"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align Coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Prepare To Score Top"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align Left Bar"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score"
+          }
         }
       ]
     }

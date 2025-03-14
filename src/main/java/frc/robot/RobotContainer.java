@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.BaseUnits;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -66,6 +67,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 public class RobotContainer {
   private final Controller m_driveController = new Controller(0);
   private final Controller m_manipulatorController = new Controller(1);
+
+  private final DigitalInput m_coralLimitSwitch = new DigitalInput(1);
 
   private final Robot m_robot;
 
@@ -127,7 +130,7 @@ public class RobotContainer {
         new SysIdRoutine.Mechanism(m_dorsalFin::sysIdVoltageDrive, m_dorsalFin::driveLogs, m_dorsalFin)
       );
     configureBindings();
-    // configureNamedCommands();
+    configureNamedCommands();
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto", autoChooser);
 
@@ -180,7 +183,7 @@ public class RobotContainer {
       new OpenWideCommand(m_filterFeeder)
     );
     m_manipulatorController.getByName(kConstants.kRunIntakeButton).whileTrue(
-      new DigestionCommand(m_stomach)
+      new DigestionCommand(m_stomach, m_coralLimitSwitch)
     ).whileTrue(
       new ChewCommand(m_teeth)
     );
@@ -203,18 +206,25 @@ public class RobotContainer {
   }
 
   private void configureNamedCommands() {
-    NamedCommands.registerCommand("Prepare To Score",
-    new MoveClawCommand(m_manipulator, 0.3).andThen(
-      new MoveElevatorCommand(m_elevator, kConstants.kElevatorScoreL3Position),
-      new MoveClawCommand(m_manipulator, 0.5)
-    )
+    NamedCommands.registerCommand("Prepare To Score Top",
+      new MoveClawCommand(m_manipulator, 0.3).andThen(
+        new MoveElevatorCommand(m_elevator, kConstants.kElevatorScoreL4Position),
+        new MoveClawCommand(m_manipulator, 0.5)
+      )
     );
     NamedCommands.registerCommand("Align Left Bar",
       new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera, 0.165, true)
     );
-    NamedCommands.registerCommand("Score Middle",
-      new MoveElevatorCommand(m_elevator, kConstants.kElevatorScoreL3Position).andThen(
-        new MoveClawCommand(m_manipulator, 0)
+    NamedCommands.registerCommand("Align Right Bar",
+      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera, -0.165, true)
+    );
+    NamedCommands.registerCommand("Score",
+      new MoveClawCommand(m_manipulator, 0)
+    );
+    NamedCommands.registerCommand("Align Coral",
+      new MoveElevatorCommand(m_elevator, kConstants.kElevatorGrabCoralPosition + 10).andThen(
+        new DigestionCommand(m_stomach, m_coralLimitSwitch),
+        new GrabCoralSequence(m_elevator, m_manipulator)
       )
     );
   }
@@ -236,7 +246,7 @@ public class RobotContainer {
     m_dorsalFin.updateOdometry();
     Optional<Pose2d> estimated_pose = m_camera.estimatePose(m_dorsalFin.getPose2D());
     if (estimated_pose.isPresent()) {
-      m_dorsalFin.setOdometry(estimated_pose.get()); 
+      m_dorsalFin.setOdometry(estimated_pose.get());
     }
   }
 

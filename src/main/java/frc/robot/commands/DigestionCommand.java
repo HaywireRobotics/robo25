@@ -4,18 +4,22 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Stomach;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DigestionCommand extends Command {
   private final Stomach m_stomach;
+  private final DigitalInput m_limitSwitch; // Normally open
 
   /** Creates a new DigestionCommand. */
-  public DigestionCommand(Stomach stomach) {
+  public DigestionCommand(Stomach stomach, DigitalInput limitSwitch) {
     addRequirements(stomach);
 
     m_stomach = stomach;
+    m_limitSwitch = limitSwitch;
   }
 
   // Called when the command is initially scheduled.
@@ -37,6 +41,6 @@ public class DigestionCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_limitSwitch.get();
   }
 }

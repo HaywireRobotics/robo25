@@ -10,4 +10,7 @@ public final class Statics {
     public static double trueMod(double value, double mod) {
         return (((value % mod) + mod) % mod);
     }
+    public static double interpolate(double start, double end, double t) {
+        return start + (end - start) * t;
+    }
 }

@@ -52,7 +52,7 @@ public class kConstants {
         8.9882993814224495442708333333333,
         new ModuleConfig(
             (kWheelDiameter/2) * kInchesToMeters,
-            1,
+            3,
             0.6,
             new DCMotor(
                 12,
@@ -74,10 +74,10 @@ public class kConstants {
 
 
     // Swerve motors
-    public static final SparkBaseConfig kNeoNominalConfig = new SparkMaxConfig().smartCurrentLimit(150).idleMode(IdleMode.kBrake).inverted(false);
+    public static final SparkBaseConfig kNeoNominalConfig = new SparkMaxConfig().smartCurrentLimit(80).idleMode(IdleMode.kBrake).inverted(false);
     public static final SparkBaseConfig kNeoLowStallCurrentConfig = new SparkMaxConfig().smartCurrentLimit(1).idleMode(IdleMode.kBrake).inverted(false);
     public static final SparkBaseConfig kNeoHighStallCurrentConfig = new SparkMaxConfig().smartCurrentLimit(20).idleMode(IdleMode.kBrake).inverted(false);
-    public static final SparkBaseConfig kNeo550NominalConfig = new SparkMaxConfig().smartCurrentLimit(90).idleMode(IdleMode.kBrake).inverted(false);
+    public static final SparkBaseConfig kNeo550NominalConfig = new SparkMaxConfig().smartCurrentLimit(40).idleMode(IdleMode.kBrake).inverted(false);
     public static final SparkBaseConfig kNeo550LowStallCurrentConfig = new SparkMaxConfig().smartCurrentLimit(30).idleMode(IdleMode.kBrake).inverted(false);
 
     public static final int kSwerveFrontRightTurnMotor = 4;

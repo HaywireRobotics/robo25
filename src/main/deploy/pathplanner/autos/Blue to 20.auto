@@ -13,7 +13,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Prepare To Score"
+            "name": "Align Coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Prepare To Score Top"
           }
         },
         {
@@ -25,7 +31,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Score Middle"
+            "name": "Score"
           }
         }
       ]
