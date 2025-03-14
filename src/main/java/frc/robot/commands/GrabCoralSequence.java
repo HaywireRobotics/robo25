@@ -18,7 +18,7 @@ public class GrabCoralSequence extends SequentialCommandGroup {
   public GrabCoralSequence(Elevator m_elevator, Manipulator m_manipulator) {
     addCommands(
       new MoveElevatorCommand(m_elevator, kConstants.kElevatorGrabCoralPosition + 10),
-      new MoveClawCommand(m_manipulator, 0, 0.25),
+      new MoveClawCommand(m_manipulator, 0, 0.2),
       new MoveElevatorCommand(m_elevator, kConstants.kElevatorGrabCoralPosition),
       new MoveElevatorCommand(m_elevator, kConstants.kElevatorGrabCoralPosition + 10),
       new MoveClawCommand(m_manipulator, 0.3)

@@ -49,26 +49,24 @@ public class MoveClawCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    // m_manipulator.setPIDTarget(m_manipulator.getManipulatorPos());
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     boolean finished = m_manipulator.atGoal();
 
-    if (!finished) {
+    if (!finished) { // Reset timer if the manipulator bounced
       m_timerRunning = false;
     }
 
-    if (finished && !m_timerRunning) {
-      m_extraTimeTimer.restart();
+    if (finished && !m_timerRunning) { // If manipulator at target AND the countdown isn't running
+      m_extraTimeTimer.restart(); // Start the timer
       m_timerRunning = true;
     }
-    if (finished && m_timerRunning && m_extraTimeTimer.get() > m_extraTime) {
-      return true;
+    if (finished && m_timerRunning && m_extraTimeTimer.get() > m_extraTime) { // If we are at the goal AND the timer is running AND the timer is expired
+      return true; // End the command
     }
-    return false;
+    return false; // Keep on going
   }
 }
