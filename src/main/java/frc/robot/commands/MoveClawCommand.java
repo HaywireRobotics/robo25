@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.kConstants;
@@ -12,19 +13,32 @@ import frc.robot.kConstants;
 public class MoveClawCommand extends Command {
   private final Manipulator m_manipulator;
   private final double m_setpoint;
+  private final double m_extraTime;
+  private boolean m_timerRunning = false;
+  private final Timer m_extraTimeTimer = new Timer();
 
   /** Creates a new MoveClawCommand. */
+  public MoveClawCommand(Manipulator manipulator, double setpoint, double extraTime) {
+    addRequirements(manipulator);
+
+    m_manipulator = manipulator;
+    m_setpoint = (-setpoint) + kConstants.kManipulatorDownPoint;
+    m_extraTime = extraTime;
+  }
+
   public MoveClawCommand(Manipulator manipulator, double setpoint) {
     addRequirements(manipulator);
 
     m_manipulator = manipulator;
     m_setpoint = (-setpoint) + kConstants.kManipulatorDownPoint;
+    m_extraTime = 0;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     m_manipulator.setPIDTarget(m_setpoint);
+    m_timerRunning = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -42,6 +56,19 @@ public class MoveClawCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_manipulator.atGoal();
+    boolean finished = m_manipulator.atGoal();
+
+    if (!finished) {
+      m_timerRunning = false;
+    }
+
+    if (finished && !m_timerRunning) {
+      m_extraTimeTimer.restart();
+      m_timerRunning = true;
+    }
+    if (finished && m_timerRunning && m_extraTimeTimer.get() > m_extraTime) {
+      return true;
+    }
+    return false;
   }
 }
