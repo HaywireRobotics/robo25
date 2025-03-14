@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -18,6 +19,7 @@ import frc.robot.kConstants;
 
 public class FilterFeeder extends SubsystemBase {
   private final SparkMax m_intakeAssemblyMotor;
+  private final DutyCycleEncoder m_encoder;
   
  
   private final ProfiledPIDController m_intakeAssemblyPIDController = new ProfiledPIDController(
@@ -38,7 +40,11 @@ public class FilterFeeder extends SubsystemBase {
   public FilterFeeder() {
     m_intakeAssemblyMotor = new SparkMax(kConstants.kIntakeAssemblyMotor, MotorType.kBrushless);
     m_intakeAssemblyPIDController.setTolerance(0.1, 0.25);
+    m_intakeAssemblyPIDController.enableContinuousInput(0, 1);
     m_intakeAssemblyMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    m_encoder = new DutyCycleEncoder(2, 1, 0);
+    m_encoder.setAssumedFrequency(975.6);
   }
 
   public void lowerIntakeAssembly() {
@@ -84,6 +90,7 @@ public class FilterFeeder extends SubsystemBase {
   }
 
   public double getIntakeAssemblyEncoderPosition() {
-    return m_intakeAssemblyMotor.getEncoder().getPosition();
+    // return m_intakeAssemblyMotor.getEncoder().getPosition();
+    return m_encoder.get();
   }
 }

@@ -47,28 +47,7 @@ public class kConstants {
     public static final double kRobotLength = 38.5 * kInchesToMeters;
 
 
-    public static final RobotConfig kRobotConfig = new RobotConfig(
-        64.8637,
-        8.9882993814224495442708333333333,
-        new ModuleConfig(
-            (kWheelDiameter/2) * kInchesToMeters,
-            3,
-            0.6,
-            new DCMotor(
-                12,
-                3.35,
-                166,
-                1.3,
-                615.123841573, 
-                1),
-            150,
-            4
-        ),
-        new Translation2d(kConstants.kDriveTrainLength/2, kConstants.kDriveTrainWidth/2),
-        new Translation2d(kConstants.kDriveTrainLength/2, -kConstants.kDriveTrainWidth/2),
-        new Translation2d(-kConstants.kDriveTrainLength/2, kConstants.kDriveTrainWidth/2),
-        new Translation2d(-kConstants.kDriveTrainLength/2, -kConstants.kDriveTrainWidth/2)
-    );
+    public static final RobotConfig kRobotConfig = RobotConfig.fromGUISettings();
 
   
 
@@ -135,6 +114,7 @@ public class kConstants {
     public static final int kIndexMotor = 14;
     public static final int kIndexBackLeftMotor = 16;
     public static final int kIndexBackRightMotor = 15;
+
     public static final double kIntakeAssemblyDownPoint = 17.7;
     public static final double kIntakeAssemblyBumpPoint = 16;
     public static final double kIntakeAssemblyAlgaePoint = 10.500051;
