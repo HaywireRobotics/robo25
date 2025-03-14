@@ -174,15 +174,14 @@ public class DorsalFin extends SubsystemBase {
 
   /** Updates the field relative position of the robot. */
   public void updateOdometry() {
-    Pose2d oldPose = m_fieldPose;
     m_fieldPose = m_odometry.update(
-        getRotationAroundUpAxisInRotation2d(),
-        new SwerveModulePosition[] {
-          m_frontLeft.getPosition(),
-          m_frontRight.getPosition(),
-          m_backLeft.getPosition(),
-          m_backRight.getPosition()
-        });
+      getRotationAroundUpAxisInRotation2d(),
+      new SwerveModulePosition[] {
+        m_frontLeft.getPosition(),
+        m_frontRight.getPosition(),
+        m_backLeft.getPosition(),
+        m_backRight.getPosition()
+      });
   }
 
   public ChassisSpeeds getChassisSpeeds() {
@@ -196,6 +195,11 @@ public class DorsalFin extends SubsystemBase {
 
   public void setOdometry(Pose2d newPose) {
     m_odometry.resetPose(newPose);
+    m_fieldPose = newPose;
+    System.out.println(newPose.getRotation());
+    // m_calibratedOffset = Rotation2d.kZero;
+    // m_calibratedOffset = getRotationAroundUpAxisInRotation2d().minus(newPose.getRotation());
+    // System.out.println(getRotationAroundUpAxisInRotation2d());
   }
  
   public Pose2d getFieldPose(){
@@ -244,6 +248,7 @@ public class DorsalFin extends SubsystemBase {
   }
 
   public Pose2d getPose2D() {
+    System.out.println(m_fieldPose);
     return m_fieldPose;
   }
 

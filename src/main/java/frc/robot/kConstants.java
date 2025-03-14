@@ -60,7 +60,7 @@ public class kConstants {
                 166,
                 1.3,
                 615.123841573, 
-                4),
+                1),
             150,
             4
         ),
@@ -137,7 +137,7 @@ public class kConstants {
     public static final int kIndexBackRightMotor = 15;
     public static final double kIntakeAssemblyDownPoint = 17.7;
     public static final double kIntakeAssemblyBumpPoint = 16;
-    public static final double kIntakeAssemblyAlgaePoint = 8;
+    public static final double kIntakeAssemblyAlgaePoint = 10.500051;
     public static final double kIntakeAssemblyUpPoint = 0.1;
 
     public static final double kEnableBackIndexVoltage = 2;
@@ -146,9 +146,9 @@ public class kConstants {
     // Manipulator
     public static final double kManipulatorRatio = 1.0/35.0;
     public static final int kManipulatorMotor = 18;
-    public static final double kManipulatorKP = 13;
-    public static final double kManipulatorKI = 2;
-    public static final double kManipulatorKD = 1;
+    public static final double kManipulatorKP = 15;
+    public static final double kManipulatorKI = 20;
+    public static final double kManipulatorKD = 0;
     public static final double kManipulatorMaxAcceleration = 10;
     public static final double kManipulatorMaxVelocity = 2;
     public static final double kManipulatorMaxAngle = 0.74082186;

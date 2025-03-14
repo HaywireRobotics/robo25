@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.kConstants;
@@ -20,14 +21,19 @@ public class FilterFeeder extends SubsystemBase {
   
  
   private final ProfiledPIDController m_intakeAssemblyPIDController = new ProfiledPIDController(
-      kConstants.kIntakeAssemblyKP,
-      kConstants.kIntakeAssemblyKI,
-      kConstants.kIntakeAssemblyKD,
-      new TrapezoidProfile.Constraints(
-        kConstants.kIntakeAssemblyMaxVelocity, 
-        kConstants.kIntakeAssemblyMaxAcceleration
-      )
-    );
+    kConstants.kIntakeAssemblyKP,
+    kConstants.kIntakeAssemblyKI,
+    kConstants.kIntakeAssemblyKD,
+    new TrapezoidProfile.Constraints(
+      kConstants.kIntakeAssemblyMaxVelocity, 
+      kConstants.kIntakeAssemblyMaxAcceleration
+    )
+  );
+
+  @Override
+  public void periodic() {
+    SmartDashboard.putNumber("Intake Assembly Angle", getIntakeAssemblyEncoderPosition());
+  }
   /** Creates a new FilterFeeder. */
   public FilterFeeder() {
     m_intakeAssemblyMotor = new SparkMax(kConstants.kIntakeAssemblyMotor, MotorType.kBrushless);

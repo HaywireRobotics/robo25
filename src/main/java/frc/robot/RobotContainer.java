@@ -20,6 +20,8 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.BreatheCommand;
@@ -59,6 +61,7 @@ import frc.robot.wrappers.Camera;
 import frc.robot.wrappers.Controller;
 import frc.robot.wrappers.PositionMemory;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.auto.AutoBuilder;
 
 public class RobotContainer {
   private final Controller m_driveController = new Controller(0);
@@ -93,7 +96,8 @@ public class RobotContainer {
     new Rotation3d(0, 0, 0))
   );
 
-  private static Field2d fieldPose = new Field2d();
+  private Field2d fieldPose = new Field2d();
+  private final SendableChooser<Command> autoChooser;
 
   public RobotContainer(Robot robot) {
     m_dorsalFin = new DorsalFin(robot);
@@ -124,6 +128,10 @@ public class RobotContainer {
       );
     configureBindings();
     // configureNamedCommands();
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto", autoChooser);
+
+
     exampleAutoCommand = new PathPlannerAuto("Test Auto");
   }
 
@@ -213,7 +221,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // return new MoveClawCommand(m_manipulator, 0.4).andThen(new MoveForwardCommand(m_dorsalFin, 1));
-    return exampleAutoCommand;
+    return autoChooser.getSelected();
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
@@ -228,7 +236,7 @@ public class RobotContainer {
     m_dorsalFin.updateOdometry();
     Optional<Pose2d> estimated_pose = m_camera.estimatePose(m_dorsalFin.getPose2D());
     if (estimated_pose.isPresent()) {
-      m_dorsalFin.setOdometry(estimated_pose.get());
+      m_dorsalFin.setOdometry(estimated_pose.get()); 
     }
   }
 

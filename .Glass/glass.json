@@ -35,6 +35,7 @@
     },
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Auto": "String Chooser",
       "/SmartDashboard/PathPlanner": "Alerts",
       "/SmartDashboard/SwerveDrivePID 2": "PIDController",
       "/SmartDashboard/SwerveDrivePID 20": "PIDController",
@@ -47,6 +48,11 @@
       "/SmartDashboard/fieldPose": "Field2d"
     },
     "windows": {
+      "/SmartDashboard/Auto": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Trajectory Sample": {
         "builtin": "",
         "height": 8.210550308227539,
