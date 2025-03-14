@@ -12,6 +12,8 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.io.IOException;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -109,6 +111,14 @@ public class DorsalFin extends SubsystemBase {
     );
     m_robot = robot;
 
+    RobotConfig robotConfig;
+    try {
+      robotConfig = RobotConfig.fromGUISettings();
+    } catch (Exception error) {
+      System.out.println("Could not load config from file!");
+      throw new Error("Could not load RobotConfig from file");
+    }
+
     AutoBuilder.configure(
       this::getPose2D,
       this::setOdometry,
@@ -118,7 +128,7 @@ public class DorsalFin extends SubsystemBase {
         new PIDConstants(4, 0, 0),
         new PIDConstants(4, 0.1, 0)
       ),
-      kConstants.kRobotConfig,
+      robotConfig,
       () -> {
         var alliance = DriverStation.getAlliance();
         if (alliance.isPresent()) {

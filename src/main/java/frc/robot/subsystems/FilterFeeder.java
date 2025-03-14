@@ -39,11 +39,10 @@ public class FilterFeeder extends SubsystemBase {
   /** Creates a new FilterFeeder. */
   public FilterFeeder() {
     m_intakeAssemblyMotor = new SparkMax(kConstants.kIntakeAssemblyMotor, MotorType.kBrushless);
-    m_intakeAssemblyPIDController.setTolerance(0.1, 0.25);
-    m_intakeAssemblyPIDController.enableContinuousInput(0, 1);
+    m_intakeAssemblyPIDController.setTolerance(0.1, 0.25)
     m_intakeAssemblyMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    m_encoder = new DutyCycleEncoder(2, 1, 0);
+    m_encoder = new DutyCycleEncoder(2, 1, kConstants.kIntakeAssemblyZeroPoint);
     m_encoder.setAssumedFrequency(975.6);
   }
 

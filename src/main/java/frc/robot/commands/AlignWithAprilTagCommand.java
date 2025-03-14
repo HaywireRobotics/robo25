@@ -38,6 +38,7 @@ public class AlignWithAprilTagCommand extends Command {
   private final HolonomicDriveController m_controller;
 
   private final Timer m_timer;
+  private boolean m_running;
   private final double m_xOffset;
   private final boolean m_terminateAfterTime;
 
@@ -52,6 +53,7 @@ public class AlignWithAprilTagCommand extends Command {
     m_dorsalFin = dorsalFin;
     m_camera = camera;
     m_xOffset = xOffset;
+    m_running = false;
     m_terminateAfterTime = terminateAfterTime;
 
     final ProfiledPIDController headingController = new ProfiledPIDController(5, 0.1, 0, new TrapezoidProfile.Constraints(6.28, 6.28));
@@ -70,6 +72,7 @@ public class AlignWithAprilTagCommand extends Command {
   public void initialize() {
     m_timer.reset(); // Set up the timer
     m_timer.start();
+    m_running = true;
     PhotonTrackedTarget target = m_camera.getBestAprilTag(); // Get the best april tag to get its id
 
     if (target == null) {
@@ -107,12 +110,13 @@ public class AlignWithAprilTagCommand extends Command {
     m_timer.reset();
 
     m_camera.disablePoseEstimation = false;
+    m_running = false;
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (m_terminateAfterTime) { // Terminate 1 second after the timer expires.
+    if (m_terminateAfterTime && m_running) { // Terminate 1 second after the timer expires.
       return (m_trajectory.getTotalTimeSeconds()+1) > m_timer.get();
     }
     return false;

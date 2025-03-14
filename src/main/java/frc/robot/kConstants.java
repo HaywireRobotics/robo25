@@ -47,7 +47,7 @@ public class kConstants {
     public static final double kRobotLength = 38.5 * kInchesToMeters;
 
 
-    public static final RobotConfig kRobotConfig = RobotConfig.fromGUISettings();
+    // public static final RobotConfig kRobotConfig = RobotConfig.fromGUISettings();
 
   
 
@@ -55,7 +55,7 @@ public class kConstants {
     // Swerve motors
     public static final SparkBaseConfig kNeoNominalConfig = new SparkMaxConfig().smartCurrentLimit(80).idleMode(IdleMode.kBrake).inverted(false);
     public static final SparkBaseConfig kNeoLowStallCurrentConfig = new SparkMaxConfig().smartCurrentLimit(1).idleMode(IdleMode.kBrake).inverted(false);
-    public static final SparkBaseConfig kNeoHighStallCurrentConfig = new SparkMaxConfig().smartCurrentLimit(20).idleMode(IdleMode.kBrake).inverted(false);
+    public static final SparkBaseConfig kNeoHighStallCurrentConfig = new SparkMaxConfig().smartCurrentLimit(40).idleMode(IdleMode.kBrake).inverted(false);
     public static final SparkBaseConfig kNeo550NominalConfig = new SparkMaxConfig().smartCurrentLimit(40).idleMode(IdleMode.kBrake).inverted(false);
     public static final SparkBaseConfig kNeo550LowStallCurrentConfig = new SparkMaxConfig().smartCurrentLimit(30).idleMode(IdleMode.kBrake).inverted(false);
 
@@ -72,7 +72,7 @@ public class kConstants {
     public static final int kSwerveBackRightTurnMotor = 10;
     public static final int kSwerveBackRightDriveMotor = 9;
     public static final int kSwerveBackRightEncoder = 11;
-    public static final double kSwerveBackRightOffset = -0.345459;
+    public static final double kSwerveBackRightOffset = 0.545654;
 
     public static final int kSwerveBackLeftTurnMotor = 7;
     public static final int kSwerveBackLeftDriveMotor = 6;
@@ -105,20 +105,25 @@ public class kConstants {
     public static final double kEnableIntakeVoltage = -7;
 
     public static final int kIntakeAssemblyMotor = 12;
-    public static final double kIntakeAssemblyKP = 1;
+    public static final double kIntakeAssemblyKP = 20;
     public static final double kIntakeAssemblyKI = 0;
     public static final double kIntakeAssemblyKD = 0;
-    public static final double kIntakeAssemblyMaxVelocity = 20;
-    public static final double kIntakeAssemblyMaxAcceleration = 40;
+    public static final double kIntakeAssemblyMaxVelocity = 20 * 17;
+    public static final double kIntakeAssemblyMaxAcceleration = 40 * 17;
+
+    public static final double kIntakeAssemblyZeroPoint = 0.584823;
+    public static final double kIntakeAssemblyOnePoint = 0.961015;
+    public static final double kIntakeAssemblyRange = kIntakeAssemblyOnePoint - kIntakeAssemblyZeroPoint;
+
 
     public static final int kIndexMotor = 14;
     public static final int kIndexBackLeftMotor = 16;
     public static final int kIndexBackRightMotor = 15;
 
-    public static final double kIntakeAssemblyDownPoint = 17.7;
-    public static final double kIntakeAssemblyBumpPoint = 16;
-    public static final double kIntakeAssemblyAlgaePoint = 10.500051;
-    public static final double kIntakeAssemblyUpPoint = 0.1;
+    public static final double kIntakeAssemblyDownPoint = kIntakeAssemblyRange;
+    public static final double kIntakeAssemblyBumpPoint = 0.351046;
+    public static final double kIntakeAssemblyAlgaePoint = kIntakeAssemblyRange * (10.5 / 17.7);
+    public static final double kIntakeAssemblyUpPoint = 0;
 
     public static final double kEnableBackIndexVoltage = 2;
     public static final double kEnableFrontIndexVoltage = 4;
