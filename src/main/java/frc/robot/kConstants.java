@@ -19,7 +19,7 @@ public class kConstants {
     public static final double kMaxAngularAcceleration = 20;
     public static final double kInchesToMeters = 0.0254;
 
-    public static final double kNavigationMultiplier = 1.6; // Number to multiply the left joystick by
+    public static final double kNavigationMultiplier = 3; // Number to multiply the left joystick by
     public static final double kRotationMultiplier = 5; // Number to multiply the right joystick by
 
     public static final double kSlowModeDivider = 1.5; // Number to divide both joysticks 1.5 = [1,0.3]
@@ -49,9 +49,6 @@ public class kConstants {
 
     // public static final RobotConfig kRobotConfig = RobotConfig.fromGUISettings();
 
-  
-
-
     // Swerve motors
     public static final SparkBaseConfig kNeoNominalConfig = new SparkMaxConfig().smartCurrentLimit(80).idleMode(IdleMode.kBrake).inverted(false);
     public static final SparkBaseConfig kNeoLowStallCurrentConfig = new SparkMaxConfig().smartCurrentLimit(1).idleMode(IdleMode.kBrake).inverted(false);
@@ -72,7 +69,7 @@ public class kConstants {
     public static final int kSwerveBackRightTurnMotor = 10;
     public static final int kSwerveBackRightDriveMotor = 9;
     public static final int kSwerveBackRightEncoder = 11;
-    public static final double kSwerveBackRightOffset = 0.545654;
+    public static final double kSwerveBackRightOffset = 0.550537109375;
 
     public static final int kSwerveBackLeftTurnMotor = 7;
     public static final int kSwerveBackLeftDriveMotor = 6;
@@ -130,7 +127,7 @@ public class kConstants {
     public static final double kManipulatorKI = 20;
     public static final double kManipulatorKD = 0;
     public static final double kManipulatorMaxAcceleration = 10;
-    public static final double kManipulatorMaxVelocity = 2;
+    public static final double kManipulatorMaxVelocity = 1;
     public static final double kManipulatorMaxAngle = 0.74082186;
     public static final double kManipulatorDownPoint = 0.74082186;
     public static final int kManipulatorEncoderID = 0;

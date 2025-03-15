@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.kConstants;
@@ -56,16 +57,21 @@ public class MoveClawCommand extends Command {
   public boolean isFinished() {
     boolean finished = m_manipulator.atGoal();
 
-    if (!finished) { // Reset timer if the manipulator bounced
+    if (!finished && m_timerRunning) { // Reset timer if the manipulator bounced
       m_timerRunning = false;
+      SmartDashboard.putNumber("Manipulator Hold", 0);
     }
 
     if (finished && !m_timerRunning) { // If manipulator at target AND the countdown isn't running
       m_extraTimeTimer.restart(); // Start the timer
       m_timerRunning = true;
     }
-    if (finished && m_timerRunning && m_extraTimeTimer.get() > m_extraTime) { // If we are at the goal AND the timer is running AND the timer is expired
-      return true; // End the command
+    if (finished && m_timerRunning) {
+      double time = m_extraTimeTimer.get();
+      if (m_extraTime > 0) SmartDashboard.putNumber("Manipulator Hold", time/m_extraTime);
+      if (time > m_extraTime) { // If the timer is expired
+        return true; // End the command
+      }
     }
     return false; // Keep on going
   }

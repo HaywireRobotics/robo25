@@ -231,8 +231,8 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     // return new MoveClawCommand(m_manipulator, 0.4).andThen(new MoveForwardCommand(m_dorsalFin, 1));
-    // return autoChooser.getSelected();
-    return tuneSwerveAutonomousCommand;
+    return autoChooser.getSelected();
+    // return tuneSwerveAutonomousCommand;
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {

@@ -107,11 +107,11 @@ public class SwerveModule {
    * @return the calculated position of the turningEncoder
    */
   public double getTurningEncoderPosition() {
-    // -0.5 - 0.5
-    // -pi - pi
-    // 0 - 2pi
-    // Make sure it is 0 - 2pi
-    // -pi - pi
+  //   // -0.5 - 0.5
+  //   // -pi - pi
+  //   // 0 - 2pi
+  //   // Make sure it is 0 - 2pi
+  //   // -pi - pi
     // return Statics.trueMod((((m_turningEncoder.getPosition().getValueAsDouble() - kTurningEncoderOffsetRotations)*Math.PI*2)+Math.PI), (Math.PI*2)) - Math.PI;
     return (m_turningEncoder.getPosition().getValueAsDouble()-kTurningEncoderOffsetRotations)*2*Math.PI;
   }

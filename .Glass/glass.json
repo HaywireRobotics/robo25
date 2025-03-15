@@ -62,7 +62,10 @@
         "builtin": "",
         "height": 8.210550308227539,
         "image": "C:\\Users\\robo\\Documents\\2025\\fieldimage2025.png",
-        "width": 16.541748046875
+        "width": 16.541748046875,
+        "window": {
+          "visible": true
+        }
       },
       "/SmartDashboard/TrajectoryOutput": {
         "builtin": "",
