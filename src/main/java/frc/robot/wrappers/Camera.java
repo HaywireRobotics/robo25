@@ -18,6 +18,7 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Statics;
 import frc.robot.kConstants;
 
@@ -41,6 +42,7 @@ public class Camera extends PhotonCamera {
         }
     }
     public ArrayList<Integer> getVisibleAprilTagIds() {
+        updateVisible();
         List<PhotonTrackedTarget> targets = this.getVisibleAprilTags();
         ArrayList<Integer> out = new ArrayList<Integer>();
         for (Integer i = 0; i < targets.size(); i++) {
@@ -54,8 +56,26 @@ public class Camera extends PhotonCamera {
         return m_cameraData.get(0).getTargets();
     }
 
-    public PhotonTrackedTarget getBestAprilTag() {
-        return m_cameraData.get(0).getBestTarget();
+    public Optional<PhotonTrackedTarget> getBestAprilTag() {
+        updateVisible();
+        if (m_cameraData.get(0).hasTargets()) {
+            List<PhotonTrackedTarget> output = m_cameraData.get(0).getTargets();
+            double bestAngle = 0;
+            PhotonTrackedTarget bestTarget = null;
+            for (int i = 0; i < output.size(); i++) {
+                PhotonTrackedTarget target = output.get(i);
+                Transform3d transform = target.bestCameraToTarget;
+                double angle = transform.getRotation().getZ();
+                if (Math.abs(angle) > bestAngle) {
+                    bestTarget = target;
+                    bestAngle = angle;
+                }
+            }
+            if (bestTarget != null) {
+                return Optional.of(bestTarget);
+            }
+        }
+        return Optional.empty();
     }
 
     public PhotonPipelineResult getTargets() {

@@ -13,6 +13,12 @@
         {
           "type": "named",
           "data": {
+            "name": "Stop Driving"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Align Coral"
           }
         },
@@ -31,7 +37,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Score"
+            "name": "Stop Driving"
           }
         }
       ]

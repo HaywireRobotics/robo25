@@ -10,18 +10,17 @@ import frc.robot.subsystems.DorsalFin;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ResetGyroCommand extends InstantCommand {
+public class StopDrivingCommand extends InstantCommand {
   private final DorsalFin m_dorsalFin;
 
-  public ResetGyroCommand(DorsalFin dorsalFin) {
-    m_dorsalFin = dorsalFin;
+  public StopDrivingCommand(DorsalFin dorsalFin) {
     addRequirements(dorsalFin);
+    m_dorsalFin = dorsalFin;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_dorsalFin.resetGyro();
-    System.out.println("[COMMAND] Gyro Reset!");
+    m_dorsalFin.drive(0, 0, 0, false);
   }
 }

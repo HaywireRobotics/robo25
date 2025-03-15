@@ -37,11 +37,13 @@ public class DefaultDriveCommand extends Command {
         double leftX = m_controller.getLeftX();
         double leftY = m_controller.getLeftY();
 
-        if (m_controller.getByName(kConstants.kDisableFieldCentricButton).getAsBoolean()) {
+        if (m_controller.getByName(kConstants.kDisableFieldCentricButton).getAsBoolean() && m_fieldRelative) {
             m_fieldRelative = false;
+            System.out.println("[COMMAND] Disabled Field Relative!");
         }
-        if (m_controller.getByName(kConstants.kEnableFieldCentricButton).getAsBoolean()) {
+        if (m_controller.getByName(kConstants.kEnableFieldCentricButton).getAsBoolean() && !m_fieldRelative) {
             m_fieldRelative = true;
+            System.out.println("[COMMAND] Enabled Field Relative!");
         }
 
         leftX = Statics.applyDeadband(leftX, JOYSTICK_DEADBAND);

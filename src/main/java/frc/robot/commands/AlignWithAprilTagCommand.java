@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -73,12 +74,16 @@ public class AlignWithAprilTagCommand extends Command {
     m_timer.reset(); // Set up the timer
     m_timer.start();
     m_running = true;
-    PhotonTrackedTarget target = m_camera.getBestAprilTag(); // Get the best april tag to get its id
+    Optional<PhotonTrackedTarget> targetOptional = m_camera.getBestAprilTag(); // Get the best april tag to get its id
 
-    if (target == null) {
+    if (!targetOptional.isPresent()) {
       this.cancel(); // If it doesn't see a target, skip.
+      System.out.println("[COMMAND] Can't see an april tag!");
+      m_camera.takeOutputSnapshot();
       return;
     }
+    PhotonTrackedTarget target = targetOptional.get();
+    System.out.println("[COMMAND] Found April Tag " + target.fiducialId + "!");
 
     m_trajectory = TrajectoryGenerator.generateTrajectory( // Create a trajectory from our robot to touching the reef.
       m_dorsalFin.getPose2D(), // Start position
@@ -95,7 +100,6 @@ public class AlignWithAprilTagCommand extends Command {
   public void execute() {
     Trajectory.State reference = m_trajectory.sample(m_timer.get()); // Get the wanted position of the robot
     m_position.setRobotPose(reference.poseMeters); // Display the position
-    SmartDashboard.putData("TrajectoryOutput", m_position);
     Rotation2d targetRotation = m_trajectory.sample(m_trajectory.getTotalTimeSeconds()).poseMeters.getRotation(); // Get the final rotation for the swerve to point to
     ChassisSpeeds movement = m_controller.calculate(m_dorsalFin.getPose2D(), reference, targetRotation); // Calculate which way to drive to get from the robot's position to the reference.
     movement.omegaRadiansPerSecond = -movement.omegaRadiansPerSecond; // Robot reported rotation and control rotation are opposties
@@ -117,6 +121,7 @@ public class AlignWithAprilTagCommand extends Command {
   @Override
   public boolean isFinished() {
     if (m_terminateAfterTime && m_running) { // Terminate 1 second after the timer expires.
+      m_running = false;
       return (m_trajectory.getTotalTimeSeconds()+1) > m_timer.get();
     }
     return false;

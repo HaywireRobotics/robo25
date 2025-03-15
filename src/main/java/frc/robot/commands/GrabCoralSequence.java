@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 import frc.robot.kConstants;
@@ -17,6 +18,7 @@ public class GrabCoralSequence extends SequentialCommandGroup {
   /** Grabs a coral (almost) safely. */
   public GrabCoralSequence(Elevator m_elevator, Manipulator m_manipulator) {
     addCommands(
+      new PrintCommand("[COMMAND] Grab Coral Sequence Initalized"),
       new MoveElevatorCommand(m_elevator, kConstants.kElevatorGrabCoralPosition + 10),
       new MoveClawCommand(m_manipulator, 0, 0.1),
       new MoveElevatorCommand(m_elevator, kConstants.kElevatorGrabCoralPosition),

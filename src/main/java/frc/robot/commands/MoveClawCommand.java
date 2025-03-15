@@ -57,6 +57,10 @@ public class MoveClawCommand extends Command {
   public boolean isFinished() {
     boolean finished = m_manipulator.atGoal();
 
+    if (finished && m_extraTime == 0) {
+      return true;
+    }
+
     if (!finished && m_timerRunning) { // Reset timer if the manipulator bounced
       m_timerRunning = false;
       SmartDashboard.putNumber("Manipulator Hold", 0);

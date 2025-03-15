@@ -24,6 +24,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.BreatheCommand;
 import frc.robot.commands.ChewCommand;
@@ -45,6 +47,8 @@ import frc.robot.commands.MoveElevatorCommand;
 import frc.robot.commands.OpenWideCommand;
 import frc.robot.commands.ResetGyroCommand;
 import frc.robot.commands.SpitOutCommand;
+import frc.robot.commands.StopDrivingCommand;
+import frc.robot.commands.TagIDReporterCommand;
 import frc.robot.commands.TuneSwerveAutonomousCommand;
 import frc.robot.commands.YawnCommand;
 import frc.robot.commands.AlignWithAprilTagCommand;
@@ -169,10 +173,6 @@ public class RobotContainer {
       new ResetGyroCommand(m_dorsalFin)
     );
 
-    // m_driveController.getByName("y").whileTrue(
-    //   exampleAutoCommand
-    // );
-    
     // Manipulator Controller Stuff
     m_manipulatorController.getByName(kConstants.kLowerIntakeAssemblyButton).whileTrue(
       new ChompCommand(m_filterFeeder)
@@ -209,10 +209,16 @@ public class RobotContainer {
   }
 
   private void configureNamedCommands() {
+    NamedCommands.registerCommand("Stop Driving",
+      new StopDrivingCommand(m_dorsalFin)
+    );
     NamedCommands.registerCommand("Prepare To Score Top",
       new MoveClawCommand(m_manipulator, 0.3).andThen(
         new MoveElevatorCommand(m_elevator, kConstants.kElevatorScoreL4Position),
-        new MoveClawCommand(m_manipulator, 0.5)
+        new MoveClawCommand(m_manipulator, kConstants.kManipulatorUpAngle).raceWith(
+          new WaitCommand(3)
+        ),
+        new PrintCommand("[COMMAND] Preparing to score on the top!")
       )
     );
     NamedCommands.registerCommand("Align Left Bar",
@@ -233,9 +239,12 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    // return new MoveClawCommand(m_manipulator, 0.4).andThen(new MoveForwardCommand(m_dorsalFin, 1));
     return autoChooser.getSelected();
     // return tuneSwerveAutonomousCommand;
+  }
+
+  public Command getTestCommand() {
+    return new TagIDReporterCommand(m_camera);
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
