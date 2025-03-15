@@ -159,6 +159,7 @@ public class kConstants {
     public static final String kResetGyroButton = "up";
 
     public static final String kAlignReefLeftButton = "x";
+    public static final String kAlignReefCenterButton = "y";
     public static final String kAlignReefRightButton = "b";
 
 

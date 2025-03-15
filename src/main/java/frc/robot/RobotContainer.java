@@ -159,6 +159,9 @@ public class RobotContainer {
     m_driveController.getByName(kConstants.kAlignReefLeftButton).whileTrue(
       new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera, 0.165, false)
     );
+    m_driveController.getByName(kConstants.kAlignReefCenterButton).whileTrue(
+      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera, 0, false)
+    );
     m_driveController.getByName(kConstants.kAlignReefRightButton).whileTrue(
       new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera, -0.165, false)
     );
@@ -169,7 +172,7 @@ public class RobotContainer {
     // m_driveController.getByName("y").whileTrue(
     //   exampleAutoCommand
     // );
-
+    
     // Manipulator Controller Stuff
     m_manipulatorController.getByName(kConstants.kLowerIntakeAssemblyButton).whileTrue(
       new ChompCommand(m_filterFeeder)
