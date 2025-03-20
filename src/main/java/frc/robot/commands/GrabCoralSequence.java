@@ -15,6 +15,7 @@ import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.LEDSubsystem;
 import frc.robot.subsystems.LEDSuperSystem;
 import frc.robot.subsystems.Manipulator;
+import frc.robot.wrappers.PositionMemory;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -23,7 +24,7 @@ public class GrabCoralSequence extends SequentialCommandGroup {
   private static final LEDPattern kGrabCoralPattern = LEDPattern.solid(Color.kBurlywood);
   
   /** Grabs a coral actually safely. */
-  public GrabCoralSequence(Elevator elevator, Manipulator manipulator, LEDSuperSystem led) {
+  public GrabCoralSequence(Elevator elevator, Manipulator manipulator, LEDSuperSystem led, PositionMemory elevatorPosition) {
     final LEDSubsystem m_led = led.getTopElevatorSubsystem();
     addRequirements(m_led);
     addCommands(

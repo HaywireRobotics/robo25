@@ -32,7 +32,9 @@ import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -114,10 +116,15 @@ public class RobotContainer {
   public final Command exampleAutoCommand;
   private final SysIdRoutine sysidRoutine;
 
-  private final Camera m_camera = new Camera("Camera_Module_v1", new Transform3d(
+  private final Camera m_camera1 = new Camera("Camera_Module_v1", new Transform3d(
     new Translation3d(0.17, -0.19, 0.35),
     new Rotation3d(0, 0, 0))
   );
+
+  // private final Camera m_camera2 = new Camera("Camera_Module_v1", new Transform3d(
+  //   new Translation3d(0.17, -0.19, 0.35),
+  //   new Rotation3d(0, 0, 0))
+  // );
 
   private Field2d fieldPose = new Field2d();
   private final SendableChooser<Command> autoChooser;
@@ -172,7 +179,7 @@ public class RobotContainer {
       m_driveController.a().whileTrue(new MoveForwardCommand(m_dorsalFin, 1));
     }
     if (kConstants.kEnableFollowApriltag) {
-      m_driveController.a().whileTrue(new FollowAprilTagCommand(m_dorsalFin, m_camera, m_robot));
+      m_driveController.a().whileTrue(new FollowAprilTagCommand(m_dorsalFin, m_camera1, m_robot));
     }
     if (kConstants.kEnableGoToSpecifiedPosition) {
       m_driveController.a().whileTrue(new GoToSpecifiedPosition(m_dorsalFin, m_robot, 8));
@@ -180,13 +187,13 @@ public class RobotContainer {
     }
 
     m_driveController.getByName(kConstants.kAlignReefLeftButton).whileTrue(
-      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera, 0.165, false)
+      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera1, 0.165, false)
     );
     m_driveController.getByName(kConstants.kAlignReefCenterButton).whileTrue(
-      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera, 0, false)
+      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera1, 0, false)
     );
     m_driveController.getByName(kConstants.kAlignReefRightButton).whileTrue(
-      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera, -0.165, false)
+      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera1, -0.165, false)
     );
     m_driveController.getByName(kConstants.kResetGyroButton).onTrue(
       new ResetGyroCommand(m_dorsalFin)
@@ -205,12 +212,12 @@ public class RobotContainer {
       new OpenWideCommand(m_filterFeeder)
     );
     m_manipulatorController.getByName(kConstants.kRunIntakeButton).whileTrue(
-      // new DigestionCommand(m_stomach, m_coralLimitSwitch)
-      new AlternatingDigestionCommand(m_stomach, m_coralLimitSwitch, 0.2, 0.05).andThen(
-        new GrabCoralSequence(m_elevator, m_manipulator, m_led)
+      new ParallelRaceGroup(
+        new AlternatingDigestionCommand(m_stomach, m_coralLimitSwitch, 0.2, 0.05),
+        new ChewCommand(m_teeth)
+      ).andThen(
+        new GrabCoralSequence(m_elevator, m_manipulator, m_led, m_elevatorPositionMemory)
       )
-    ).whileTrue(
-      new ChewCommand(m_teeth)
     );
     m_manipulatorController.getByName(kConstants.kReverseIntakeButton).whileTrue(
       new SpitOutCommand(m_teeth)
@@ -226,7 +233,7 @@ public class RobotContainer {
     );
 
     m_manipulatorController.getByName(kConstants.kGrabCoralButton).whileTrue(
-      new GrabCoralSequence(m_elevator, m_manipulator, m_led)
+      new GrabCoralSequence(m_elevator, m_manipulator, m_led, m_elevatorPositionMemory)
     );
     m_manipulatorController.getByName(kConstants.kStowManipulatorButton).whileTrue(
       new SequentialCommandGroup(
@@ -251,10 +258,10 @@ public class RobotContainer {
       )
     );
     NamedCommands.registerCommand("Align Left Bar",
-      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera, 0.165, true)
+      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera1, 0.165, true)
     );
     NamedCommands.registerCommand("Align Right Bar",
-      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera, -0.165, true)
+      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera1, -0.165, true)
     );
     NamedCommands.registerCommand("Score",
       new MoveClawCommand(m_manipulator, 0)
@@ -262,7 +269,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Align Coral",
       new MoveElevatorCommand(m_elevator, kConstants.kElevatorGrabCoralPosition + 10).andThen(
         new DigestionCommand(m_stomach, m_coralLimitSwitch),
-        new GrabCoralSequence(m_elevator, m_manipulator, m_led)
+        new GrabCoralSequence(m_elevator, m_manipulator, m_led, m_elevatorPositionMemory)
       )
     );
   }
@@ -273,7 +280,7 @@ public class RobotContainer {
   }
 
   public Command getTestCommand() {
-    return new TagIDReporterCommand(m_camera);
+    return new TagIDReporterCommand(m_camera1);
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
@@ -286,10 +293,17 @@ public class RobotContainer {
 
   public void updateOdometry() {
     m_dorsalFin.updateOdometry();
-    Optional<Pose2d> estimated_pose = m_camera.estimatePose(m_dorsalFin.getPose2D());
-    if (estimated_pose.isPresent()) {
-      m_dorsalFin.setOdometry(estimated_pose.get());
+    Optional<Pose2d> estimated_pose1 = m_camera1.estimatePose(m_dorsalFin.getPose2D());
+    // Optional<Pose2d> estimated_pose2 = m_camera2.estimatePose(m_dorsalFin.getPose2D());
+    if (estimated_pose1.isPresent()/* && estimated_pose2.isEmpty() */) {
+      m_dorsalFin.setOdometry(estimated_pose1.get());
     }
+    if (estimated_pose1.isEmpty()/* && estimated_pose2.isPresent() */) {
+      // m_dorsalFin.setOdometry(estimated_pose2.get());
+    }
+    // if (estimated_pose1.isPresent() && estimated_pose2.isPresent()) {
+    //   m_dorsalFin.setOdometry(estimated_pose2.get().interpolate(estimated_pose1.get(), 0.5));
+    // }
   }
 
   public Pose2d getFieldPose(){
@@ -304,6 +318,7 @@ public class RobotContainer {
   public void putAllSmartDashboardData(){
     SmartDashboard.putNumber("Intake Current", m_pdp.getCurrent(13));
     SmartDashboard.putNumber("Front Index Current", m_pdp.getCurrent(14));
+    SmartDashboard.putBoolean("Limit Switch", m_coralLimitSwitch.get());
   }
 
   public void reset() {
@@ -312,7 +327,14 @@ public class RobotContainer {
     m_manipulator.reset();
   }
 
-  public void rainbow() {
-    m_led.setPattern(LEDPattern.rainbow(255, 128).scrollAtAbsoluteSpeed(MetersPerSecond.of(1), Meters.of(0.025)).atBrightness(Percent.of(25)));
+  public void disabledLED() {
+    // m_led.setPattern(
+    //   LEDPattern.rainbow(255, 128)
+    //   .scrollAtAbsoluteSpeed(MetersPerSecond.of(1), Meters.of(0.025))
+    //   .atBrightness(Percent.of(25))
+    // );
+    m_led.setPattern(
+      LEDPattern.solid(Color.kOrange)
+    );
   }
 }

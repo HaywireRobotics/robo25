@@ -30,8 +30,8 @@ public class DefaultDriveCommand extends Command {
     private static final double JOYSTICK_DEADBAND = 0.1;
     public double teleopSpeedMultiplier = 1.6;
 
-    private static final LEDPattern kFieldCentricDisabledPattern = LEDPattern.solid(Color.kLightGoldenrodYellow);
-    private static final LEDPattern kFieldCentricEnabledPattern = LEDPattern.solid(Color.kDeepPink);
+    private static final LEDPattern kFieldCentricDisabledPattern = LEDPattern.solid(Color.kDarkRed);
+    private static final LEDPattern kFieldCentricEnabledPattern = LEDPattern.solid(Color.kLightBlue);
 
     public DefaultDriveCommand(DorsalFin subsystem, Controller xboxController, LEDSuperSystem led) {
         this.m_subsystem = subsystem;

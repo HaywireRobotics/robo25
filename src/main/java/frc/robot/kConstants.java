@@ -129,7 +129,7 @@ public class kConstants {
     public static final double kManipulatorMaxAcceleration = 10;
     public static final double kManipulatorMaxVelocity = 1;
     public static final double kManipulatorMaxAngle = 0.74082186;
-    public static final double kManipulatorDownPoint = 0.74082186;
+    public static final double kManipulatorDownPoint = 0.74282186;
     public static final double kManipulatorUpAngle = kManipulatorDownPoint - 0.251;
     public static final int kManipulatorEncoderID = 0;
 
