@@ -1,6 +1,7 @@
 {
   "download": {
     "localDir": "C:\\Users\\robo\\Documents\\Robot Logs",
+    "remoteDir": "/opt/photonvision/photonvision_config/imgSaves",
     "serverTeam": "10.15.69.2"
   },
   "output": {

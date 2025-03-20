@@ -4,6 +4,10 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Percent;
+
 import java.util.Optional;
 import java.util.ResourceBundle.Control;
 
@@ -20,11 +24,17 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.LEDPattern;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.BreatheCommand;
@@ -46,17 +56,21 @@ import frc.robot.commands.MoveClawCommand;
 import frc.robot.commands.MoveElevatorCommand;
 import frc.robot.commands.OpenWideCommand;
 import frc.robot.commands.ResetGyroCommand;
+import frc.robot.commands.SetPositionCommand;
 import frc.robot.commands.SpitOutCommand;
 import frc.robot.commands.StopDrivingCommand;
 import frc.robot.commands.TagIDReporterCommand;
 import frc.robot.commands.TuneSwerveAutonomousCommand;
+import frc.robot.commands.WaitForElevatorCommand;
 import frc.robot.commands.YawnCommand;
 import frc.robot.commands.AlignWithAprilTagCommand;
+import frc.robot.commands.AlternatingDigestionCommand;
 import frc.robot.commands.AntacidCommand;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.DorsalFin;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.FilterFeeder;
+import frc.robot.subsystems.LEDSuperSystem;
 import frc.robot.subsystems.Manipulator;
 import frc.robot.subsystems.Stomach;
 import frc.robot.subsystems.Teeth;
@@ -75,6 +89,7 @@ public class RobotContainer {
   private final DigitalInput m_coralLimitSwitch = new DigitalInput(1);
 
   private final Robot m_robot;
+  private final PowerDistribution m_pdp;
 
   // define SUBSYSTEMS!!!
   private final DorsalFin m_dorsalFin;
@@ -84,6 +99,7 @@ public class RobotContainer {
   private final Teeth m_teeth;
   private final Stomach m_stomach;
   private final Climb m_climb;
+  private final LEDSuperSystem m_led;
 
   private final PositionMemory m_elevatorPositionMemory = new PositionMemory(0, 3);
 
@@ -114,13 +130,16 @@ public class RobotContainer {
     m_teeth = new Teeth();
     m_stomach = new Stomach();
     m_climb = new Climb();
+    m_led = new LEDSuperSystem();
     m_robot = robot;
+    
+    m_pdp = new PowerDistribution(50, ModuleType.kRev);
 
-    defaultDriveCommand = new DefaultDriveCommand(m_dorsalFin, m_driveController);
-    defaultElevatorCommand = new DefaultElevatorCommand(m_elevator, m_elevatorPositionMemory);
+    defaultDriveCommand = new DefaultDriveCommand(m_dorsalFin, m_driveController, m_led);
+    defaultElevatorCommand = new DefaultElevatorCommand(m_elevator, m_elevatorPositionMemory, m_led);
     defaultFilterFeederCommand = new DefaultFilterFeederCommand(m_filterFeeder);
     defaultManipulatorCommand = new DefaultManipulatorCommand(m_manipulator, m_manipulatorController, m_elevator);
-    defaultClimbCommand = new DefaultClimbCommand(m_climb, m_manipulatorController);
+    defaultClimbCommand = new DefaultClimbCommand(m_climb, m_driveController);
 
     m_dorsalFin.setDefaultCommand(defaultDriveCommand);
     m_elevator.setDefaultCommand(defaultElevatorCommand);
@@ -186,7 +205,10 @@ public class RobotContainer {
       new OpenWideCommand(m_filterFeeder)
     );
     m_manipulatorController.getByName(kConstants.kRunIntakeButton).whileTrue(
-      new DigestionCommand(m_stomach, m_coralLimitSwitch)
+      // new DigestionCommand(m_stomach, m_coralLimitSwitch)
+      new AlternatingDigestionCommand(m_stomach, m_coralLimitSwitch, 0.2, 0.05).andThen(
+        new GrabCoralSequence(m_elevator, m_manipulator, m_led)
+      )
     ).whileTrue(
       new ChewCommand(m_teeth)
     );
@@ -204,7 +226,14 @@ public class RobotContainer {
     );
 
     m_manipulatorController.getByName(kConstants.kGrabCoralButton).whileTrue(
-      new GrabCoralSequence(m_elevator, m_manipulator)
+      new GrabCoralSequence(m_elevator, m_manipulator, m_led)
+    );
+    m_manipulatorController.getByName(kConstants.kStowManipulatorButton).whileTrue(
+      new SequentialCommandGroup(
+        new SetPositionCommand(m_elevatorPositionMemory, 2),
+        new WaitForElevatorCommand(m_elevator),
+        new MoveClawCommand(m_manipulator, 0)
+      )
     );
   }
 
@@ -233,7 +262,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Align Coral",
       new MoveElevatorCommand(m_elevator, kConstants.kElevatorGrabCoralPosition + 10).andThen(
         new DigestionCommand(m_stomach, m_coralLimitSwitch),
-        new GrabCoralSequence(m_elevator, m_manipulator)
+        new GrabCoralSequence(m_elevator, m_manipulator, m_led)
       )
     );
   }
@@ -273,12 +302,17 @@ public class RobotContainer {
   }
 
   public void putAllSmartDashboardData(){
-    //TODO
+    SmartDashboard.putNumber("Intake Current", m_pdp.getCurrent(13));
+    SmartDashboard.putNumber("Front Index Current", m_pdp.getCurrent(14));
   }
 
   public void reset() {
     m_filterFeeder.reset();
     m_elevator.reset();
     m_manipulator.reset();
+  }
+
+  public void rainbow() {
+    m_led.setPattern(LEDPattern.rainbow(255, 128).scrollAtAbsoluteSpeed(MetersPerSecond.of(1), Meters.of(0.025)).atBrightness(Percent.of(25)));
   }
 }

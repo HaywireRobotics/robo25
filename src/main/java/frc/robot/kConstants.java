@@ -110,10 +110,10 @@ public class kConstants {
 
     public static final int kIndexMotor = 14;
     public static final int kIndexBackLeftMotor = 16;
-    public static final int kIndexBackRightMotor = 15;
+    public static final int kIndexRightMotor = 15;
 
     public static final double kIntakeAssemblyDownPoint = 17.7;
-    public static final double kIntakeAssemblyBumpPoint = 16;
+    public static final double kIntakeAssemblyBumpPoint = 14; // 16
     public static final double kIntakeAssemblyAlgaePoint = 10.500051;
     public static final double kIntakeAssemblyUpPoint = 0.1;
 
@@ -157,14 +157,19 @@ public class kConstants {
     // Driver
     public static final String kDisableFieldCentricButton = "back";
     public static final String kEnableFieldCentricButton = "start";
-    public static final String kResetGyroButton = "up";
+    public static final String kResetGyroButton = "left";
 
     public static final String kAlignReefLeftButton = "x";
     public static final String kAlignReefCenterButton = "y";
     public static final String kAlignReefRightButton = "b";
 
+    // Climb
+    public static final String kClimbUpButton = "up";
+    public static final String kClimbDownButton = "down";
+
 
     // Manipulator
+    // Intake
     public static final String kLowerIntakeAssemblyButton = "a";
     public static final String kRaiseIntakeAssemblyButton = "b";
     public static final String kRunIntakeButton = "rt";
@@ -174,13 +179,12 @@ public class kConstants {
     public static final String kReverseIntakeButton = "rb";
 
     public static final String kGrabCoralButton = "x";
+    public static final String kStowManipulatorButton = "stick_left";
 
     public static final String kElevatorUpButton = "lb";
     public static final String kElevatorDownButton = "lt";
     
-    // Climb
-    public static final String kClimbUpButton = "up";
-    public static final String kClimbDownButton = "down";
+    
 
     // Joystick is part of a different system
     // public static final String kManipulatorAngleJoystick = "left_stick";

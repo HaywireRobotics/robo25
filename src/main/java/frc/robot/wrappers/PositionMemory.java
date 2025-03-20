@@ -32,4 +32,9 @@ public class PositionMemory {
     public int get() {
         return m_point;
     }
+
+    public int set(int value) {
+        m_point = Math.min(m_max, Math.max(m_min, value));
+        return m_point;
+    }
 }

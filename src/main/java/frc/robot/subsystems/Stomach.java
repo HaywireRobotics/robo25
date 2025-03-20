@@ -14,39 +14,39 @@ import frc.robot.kConstants;
 
 public class Stomach extends SubsystemBase {
   private final SparkMax m_frontIndexMotor;
-  private final SparkMax m_backLeftIndexMotor;
-  private final SparkMax m_backRightIndexMotor;
+  // private final SparkMax m_backLeftIndexMotor;
+  private final SparkMax m_backIndexMotor;
 
   private boolean isIndexEnabled = false;
 
   /** Creates a new Stomach. */
   public Stomach() {
     m_frontIndexMotor = new SparkMax(kConstants.kIndexMotor, MotorType.kBrushless);
-    m_backLeftIndexMotor = new SparkMax(kConstants.kIndexBackLeftMotor, MotorType.kBrushless);
-    m_backRightIndexMotor = new SparkMax(kConstants.kIndexBackRightMotor, MotorType.kBrushless);
+    // m_backLeftIndexMotor = new SparkMax(kConstants.kIndexBackLeftMotor, MotorType.kBrushless);
+    m_backIndexMotor = new SparkMax(kConstants.kIndexRightMotor, MotorType.kBrushless);
     m_frontIndexMotor.configure(kConstants.kNeo550NominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_backLeftIndexMotor.configure(kConstants.kNeo550NominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_backRightIndexMotor.configure(kConstants.kNeo550NominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    // m_backLeftIndexMotor.configure(kConstants.kNeo550NominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_backIndexMotor.configure(kConstants.kNeo550NominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public void enableIndexMotor() {
     m_frontIndexMotor.setVoltage(kConstants.kEnableFrontIndexVoltage);
-    m_backLeftIndexMotor.setVoltage(-kConstants.kEnableBackIndexVoltage);
-    m_backRightIndexMotor.setVoltage(kConstants.kEnableBackIndexVoltage);
+    // m_backLeftIndexMotor.setVoltage(-kConstants.kEnableBackIndexVoltage);
+    m_backIndexMotor.setVoltage(kConstants.kEnableBackIndexVoltage);
     isIndexEnabled = true;
   }
 
   public void reverseIndexMotor() {
     m_frontIndexMotor.setVoltage(-kConstants.kEnableFrontIndexVoltage);
-    m_backLeftIndexMotor.setVoltage(kConstants.kEnableBackIndexVoltage);
-    m_backRightIndexMotor.setVoltage(-kConstants.kEnableBackIndexVoltage);
+    // m_backLeftIndexMotor.setVoltage(kConstants.kEnableBackIndexVoltage);
+    m_backIndexMotor.setVoltage(-kConstants.kEnableBackIndexVoltage);
     isIndexEnabled = true;
   }
 
   public void disableIndexMotor() {
     m_frontIndexMotor.setVoltage(0);
-    m_backLeftIndexMotor.setVoltage(0);
-    m_backRightIndexMotor.setVoltage(0);
+    // m_backLeftIndexMotor.setVoltage(0);
+    m_backIndexMotor.setVoltage(0);
     isIndexEnabled = false;
   }
 

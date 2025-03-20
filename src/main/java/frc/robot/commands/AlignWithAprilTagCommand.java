@@ -79,7 +79,6 @@ public class AlignWithAprilTagCommand extends Command {
     if (!targetOptional.isPresent()) {
       this.cancel(); // If it doesn't see a target, skip.
       System.out.println("[COMMAND] Can't see an april tag!");
-      m_camera.takeOutputSnapshot();
       return;
     }
     PhotonTrackedTarget target = targetOptional.get();

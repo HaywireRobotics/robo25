@@ -24,15 +24,17 @@ public class Robot extends TimedRobot {
   public void robotPeriodic() {
     m_robotContainer.updateOdometry();
     SmartDashboard.putData("fieldPose", m_robotContainer.updateFieldPose());
+    m_robotContainer.putAllSmartDashboardData();
     CommandScheduler.getInstance().run();
-    
   }
 
   @Override
   public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    m_robotContainer.rainbow();
+  }
 
   @Override
   public void disabledExit() {}
