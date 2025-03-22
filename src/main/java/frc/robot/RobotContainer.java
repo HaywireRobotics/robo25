@@ -6,8 +6,11 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Minutes;
 import static edu.wpi.first.units.Units.Percent;
+import static edu.wpi.first.units.Units.Seconds;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle.Control;
 
@@ -19,9 +22,11 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -34,6 +39,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -58,9 +66,11 @@ import frc.robot.commands.MoveClawCommand;
 import frc.robot.commands.MoveElevatorCommand;
 import frc.robot.commands.OpenWideCommand;
 import frc.robot.commands.ResetGyroCommand;
+import frc.robot.commands.SetElevatorPositionAndWaitCommand;
 import frc.robot.commands.SetPositionCommand;
 import frc.robot.commands.SpitOutCommand;
 import frc.robot.commands.StopDrivingCommand;
+import frc.robot.commands.StowCommand;
 import frc.robot.commands.TagIDReporterCommand;
 import frc.robot.commands.TuneSwerveAutonomousCommand;
 import frc.robot.commands.WaitForElevatorCommand;
@@ -81,6 +91,8 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import frc.robot.wrappers.Camera;
 import frc.robot.wrappers.Controller;
 import frc.robot.wrappers.PositionMemory;
+import frc.robot.wrappers.WithoutRequirements;
+
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -89,6 +101,8 @@ public class RobotContainer {
   private final Controller m_manipulatorController = new Controller(1);
 
   private final DigitalInput m_coralLimitSwitch = new DigitalInput(1);
+
+  private final SendableChooser<LEDPattern> m_sendableChooserForLEDs = new SendableChooser<>();
 
   private final Robot m_robot;
   private final PowerDistribution m_pdp;
@@ -103,7 +117,7 @@ public class RobotContainer {
   private final Climb m_climb;
   private final LEDSuperSystem m_led;
 
-  private final PositionMemory m_elevatorPositionMemory = new PositionMemory(0, 3);
+  private final PositionMemory m_elevatorPositionMemory = new PositionMemory(0, 3,1);
 
   // DEFINE default COMMAND?
   public final DefaultDriveCommand defaultDriveCommand;
@@ -121,10 +135,10 @@ public class RobotContainer {
     new Rotation3d(0, 0, 0))
   );
 
-  // private final Camera m_camera2 = new Camera("Camera_Module_v1", new Transform3d(
-  //   new Translation3d(0.17, -0.19, 0.35),
-  //   new Rotation3d(0, 0, 0))
-  // );
+  private final Camera m_camera2 = new Camera("Logitech_Webcam_C930e", new Transform3d(
+    new Translation3d(0.17, -0.19, 0.35),
+    new Rotation3d(0, 0, 0))
+  );
 
   private Field2d fieldPose = new Field2d();
   private final SendableChooser<Command> autoChooser;
@@ -166,6 +180,23 @@ public class RobotContainer {
 
 
     exampleAutoCommand = new PathPlannerAuto("Test Auto");
+
+    m_sendableChooserForLEDs.setDefaultOption("Haywire Yellow", LEDPattern.solid(Color.kOrange));
+    m_sendableChooserForLEDs.addOption("Rainbow", LEDPattern.rainbow(255, 128).scrollAtAbsoluteSpeed(MetersPerSecond.of(1), Meters.of(0.025)).atBrightness(Percent.of(25)));
+    m_sendableChooserForLEDs.addOption("Red", LEDPattern.solid(Color.kRed));
+    m_sendableChooserForLEDs.addOption("Blue", LEDPattern.solid(Color.kBlue));
+    m_sendableChooserForLEDs.addOption("Red and Blue Scroll", 
+      LEDPattern.gradient(LEDPattern.GradientType.kContinuous, Color.kRed, Color.kBlue)
+      .scrollAtAbsoluteSpeed(MetersPerSecond.of(1), Meters.of(0.025))
+      .atBrightness(Percent.of(25))
+    );
+    m_sendableChooserForLEDs.addOption("Red and Blue Solid", 
+      LEDPattern.steps(Map.of(0, Color.kRed, 0.5, Color.kBlue))
+    );
+
+
+    
+    SmartDashboard.putData("LED", m_sendableChooserForLEDs);
   }
 
   private void configureBindings() {
@@ -212,11 +243,13 @@ public class RobotContainer {
       new OpenWideCommand(m_filterFeeder)
     );
     m_manipulatorController.getByName(kConstants.kRunIntakeButton).whileTrue(
-      new ParallelRaceGroup(
-        new AlternatingDigestionCommand(m_stomach, m_coralLimitSwitch, 0.2, 0.05),
-        new ChewCommand(m_teeth)
-      ).andThen(
-        new GrabCoralSequence(m_elevator, m_manipulator, m_led, m_elevatorPositionMemory)
+      new SequentialCommandGroup(
+        new ParallelRaceGroup(
+          new AlternatingDigestionCommand(m_stomach, m_coralLimitSwitch, 0.2, 0.05),
+          // new DigestionCommand(m_stomach, m_coralLimitSwitch),
+          new ChewCommand(m_teeth)
+        ),
+        new GrabCoralSequence(m_elevator, m_manipulator, m_led, m_elevatorPositionMemory).asProxy()
       )
     );
     m_manipulatorController.getByName(kConstants.kReverseIntakeButton).whileTrue(
@@ -242,19 +275,31 @@ public class RobotContainer {
         new MoveClawCommand(m_manipulator, 0)
       )
     );
+    m_manipulatorController.getByName(kConstants.kElevatorStowButton).onTrue(
+      new StowCommand(m_elevator, m_manipulator, m_manipulatorController)
+    );
   }
 
   private void configureNamedCommands() {
     NamedCommands.registerCommand("Stop Driving",
-      new StopDrivingCommand(m_dorsalFin)
+      new SequentialCommandGroup(
+        new StopDrivingCommand(m_dorsalFin),
+        new PrintCommand("Stopped Driving")
+      )
     );
     NamedCommands.registerCommand("Prepare To Score Top",
-      new MoveClawCommand(m_manipulator, 0.3).andThen(
-        new MoveElevatorCommand(m_elevator, kConstants.kElevatorScoreL4Position),
-        new MoveClawCommand(m_manipulator, kConstants.kManipulatorUpAngle).raceWith(
-          new WaitCommand(3)
+      new SequentialCommandGroup(
+        new PrintCommand("A"),
+        new MoveClawCommand(m_manipulator, 0.3).raceWith(
+          new WaitCommand(2)
         ),
-        new PrintCommand("[COMMAND] Preparing to score on the top!")
+        new PrintCommand("B"),
+        new MoveElevatorCommand(m_elevator, kConstants.kElevatorScoreL4Position),
+        new PrintCommand("C"),
+        new MoveClawCommand(m_manipulator, kConstants.kManipulatorUpAngle).raceWith(
+          new WaitCommand(2)
+        ),
+        new PrintCommand("D")
       )
     );
     NamedCommands.registerCommand("Align Left Bar",
@@ -266,11 +311,40 @@ public class RobotContainer {
     NamedCommands.registerCommand("Score",
       new MoveClawCommand(m_manipulator, 0)
     );
-    NamedCommands.registerCommand("Align Coral",
-      new MoveElevatorCommand(m_elevator, kConstants.kElevatorGrabCoralPosition + 10).andThen(
-        new DigestionCommand(m_stomach, m_coralLimitSwitch),
-        new GrabCoralSequence(m_elevator, m_manipulator, m_led, m_elevatorPositionMemory)
+    NamedCommands.registerCommand("Prepare To Grab",
+      new SequentialCommandGroup(
+        new SetPositionCommand(m_elevatorPositionMemory, 2),
+        new WaitForElevatorCommand(m_elevator),
+        new MoveClawCommand(m_manipulator, 0)
       )
+    );
+    NamedCommands.registerCommand("Align Coral",
+      new SequentialCommandGroup(
+        new PrintCommand("Starting to Align Coral"),
+        new SetElevatorPositionAndWaitCommand(m_elevator, m_elevatorPositionMemory, 2),
+        new PrintCommand("Moved Elevator"),
+        new AlternatingDigestionCommand(m_stomach, m_coralLimitSwitch, 0.2, 0.05),
+        new PrintCommand("Indexed Coral"),
+        new GrabCoralSequence(m_elevator, m_manipulator, m_led, m_elevatorPositionMemory),
+        new PrintCommand("Aligned Coral")
+      )
+    );
+    NamedCommands.registerCommand("Back Up A Little",
+      new ParallelDeadlineGroup(
+        new WaitCommand(Seconds.of(1)),
+        Commands.run(() -> {
+          m_dorsalFin.drive(
+            new ChassisSpeeds(-1.0, 0.0, 0.0)
+          );
+        }, m_dorsalFin)
+      ).andThen(
+        Commands.run(() -> {
+          m_dorsalFin.drive(
+            new ChassisSpeeds(0.0, 0.0, 0.0)
+          );
+        }, m_dorsalFin)
+      )
+      
     );
   }
 
@@ -294,16 +368,16 @@ public class RobotContainer {
   public void updateOdometry() {
     m_dorsalFin.updateOdometry();
     Optional<Pose2d> estimated_pose1 = m_camera1.estimatePose(m_dorsalFin.getPose2D());
-    // Optional<Pose2d> estimated_pose2 = m_camera2.estimatePose(m_dorsalFin.getPose2D());
-    if (estimated_pose1.isPresent()/* && estimated_pose2.isEmpty() */) {
+    Optional<Pose2d> estimated_pose2 = m_camera2.estimatePose(m_dorsalFin.getPose2D());
+    if (estimated_pose1.isPresent() && estimated_pose2.isEmpty() ) {
       m_dorsalFin.setOdometry(estimated_pose1.get());
     }
-    if (estimated_pose1.isEmpty()/* && estimated_pose2.isPresent() */) {
-      // m_dorsalFin.setOdometry(estimated_pose2.get());
+    if (estimated_pose1.isEmpty() && estimated_pose2.isPresent() ) {
+      m_dorsalFin.setOdometry(estimated_pose2.get());
     }
-    // if (estimated_pose1.isPresent() && estimated_pose2.isPresent()) {
-    //   m_dorsalFin.setOdometry(estimated_pose2.get().interpolate(estimated_pose1.get(), 0.5));
-    // }
+    if (estimated_pose1.isPresent() && estimated_pose2.isPresent()) {
+      m_dorsalFin.setOdometry(estimated_pose2.get().interpolate(estimated_pose1.get(), 0.5));
+    }
   }
 
   public Pose2d getFieldPose(){
@@ -328,13 +402,8 @@ public class RobotContainer {
   }
 
   public void disabledLED() {
-    // m_led.setPattern(
-    //   LEDPattern.rainbow(255, 128)
-    //   .scrollAtAbsoluteSpeed(MetersPerSecond.of(1), Meters.of(0.025))
-    //   .atBrightness(Percent.of(25))
-    // );
     m_led.setPattern(
-      LEDPattern.solid(Color.kOrange)
+      m_sendableChooserForLEDs.getSelected()
     );
   }
 }

@@ -53,8 +53,9 @@ public class kConstants {
     public static final SparkBaseConfig kNeoNominalConfig = new SparkMaxConfig().smartCurrentLimit(80).idleMode(IdleMode.kBrake).inverted(false);
     public static final SparkBaseConfig kNeoLowStallCurrentConfig = new SparkMaxConfig().smartCurrentLimit(1).idleMode(IdleMode.kBrake).inverted(false);
     public static final SparkBaseConfig kNeoHighStallCurrentConfig = new SparkMaxConfig().smartCurrentLimit(40).idleMode(IdleMode.kBrake).inverted(false);
-    public static final SparkBaseConfig kNeo550NominalConfig = new SparkMaxConfig().smartCurrentLimit(40).idleMode(IdleMode.kBrake).inverted(false);
-    public static final SparkBaseConfig kNeo550LowStallCurrentConfig = new SparkMaxConfig().smartCurrentLimit(30).idleMode(IdleMode.kBrake).inverted(false);
+    public static final SparkBaseConfig kNeo550HighStallCurrentConfig = new SparkMaxConfig().smartCurrentLimit(30).idleMode(IdleMode.kBrake).inverted(false);
+    public static final SparkBaseConfig kNeo550NominalConfig = new SparkMaxConfig().smartCurrentLimit(20).idleMode(IdleMode.kBrake).inverted(false);
+    public static final SparkBaseConfig kNeo550LowStallCurrentConfig = new SparkMaxConfig().smartCurrentLimit(15).idleMode(IdleMode.kBrake).inverted(false);
 
     public static final int kSwerveFrontRightTurnMotor = 4;
     public static final int kSwerveFrontRightDriveMotor = 3;
@@ -102,20 +103,20 @@ public class kConstants {
     public static final double kEnableIntakeVoltage = -7;
 
     public static final int kIntakeAssemblyMotor = 12;
-    public static final double kIntakeAssemblyKP = 1;
+    public static final double kIntakeAssemblyKP = 20;
     public static final double kIntakeAssemblyKI = 0;
     public static final double kIntakeAssemblyKD = 0;
-    public static final double kIntakeAssemblyMaxVelocity = 20;
-    public static final double kIntakeAssemblyMaxAcceleration = 40;
+    public static final double kIntakeAssemblyMaxVelocity = 30;
+    public static final double kIntakeAssemblyMaxAcceleration = 30;
 
     public static final int kIndexMotor = 14;
     public static final int kIndexBackLeftMotor = 16;
     public static final int kIndexRightMotor = 15;
 
-    public static final double kIntakeAssemblyDownPoint = 17.7;
-    public static final double kIntakeAssemblyBumpPoint = 14; // 16
-    public static final double kIntakeAssemblyAlgaePoint = 10.500051;
-    public static final double kIntakeAssemblyUpPoint = 0.1;
+    public static final double kIntakeAssemblyDownPoint = 0.950;
+    public static final double kIntakeAssemblyBumpPoint = 0.875;
+    public static final double kIntakeAssemblyAlgaePoint = 0.820;
+    public static final double kIntakeAssemblyUpPoint = 0.584;
 
     public static final double kEnableBackIndexVoltage = 2;
     public static final double kEnableFrontIndexVoltage = 4;
@@ -128,7 +129,6 @@ public class kConstants {
     public static final double kManipulatorKD = 0;
     public static final double kManipulatorMaxAcceleration = 10;
     public static final double kManipulatorMaxVelocity = 1;
-    public static final double kManipulatorMaxAngle = 0.74082186;
     public static final double kManipulatorDownPoint = 0.74282186;
     public static final double kManipulatorUpAngle = kManipulatorDownPoint - 0.251;
     public static final int kManipulatorEncoderID = 0;
@@ -183,6 +183,8 @@ public class kConstants {
 
     public static final String kElevatorUpButton = "lb";
     public static final String kElevatorDownButton = "lt";
+    public static final String kElevatorStowButton = "back";
+    public static final String kStopElevatorStowButton = "start";
     
     
 

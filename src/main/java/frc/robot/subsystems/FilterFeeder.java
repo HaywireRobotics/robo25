@@ -34,12 +34,14 @@ public class FilterFeeder extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Intake Assembly Angle", getIntakeAssemblyEncoderPosition());
+    SmartDashboard.putNumber("Intake Assembly Encoder Angle", getIntakeAssemblyEncoderPosition());
+    SmartDashboard.putNumber("Intake Setpoint", m_intakeAssemblyPIDController.getGoal().position);
   }
   /** Creates a new FilterFeeder. */
   public FilterFeeder() {
     m_intakeAssemblyMotor = new SparkMax(kConstants.kIntakeAssemblyMotor, MotorType.kBrushless);
-    m_intakeAssemblyPIDController.setTolerance(0.1, 0.25);
+    m_intakeAssemblyPIDController.setTolerance(0.001, 0.001);
+    m_intakeAssemblyPIDController.setGoal(kConstants.kIntakeAssemblyUpPoint);
     m_intakeAssemblyMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_encoder = new DutyCycleEncoder(2, 1, 0);
@@ -89,7 +91,6 @@ public class FilterFeeder extends SubsystemBase {
   }
 
   public double getIntakeAssemblyEncoderPosition() {
-    return m_intakeAssemblyMotor.getEncoder().getPosition();
-    // return m_encoder.get();
+    return m_encoder.get();
   }
 }

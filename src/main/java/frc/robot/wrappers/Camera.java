@@ -25,6 +25,7 @@ import frc.robot.kConstants;
 /** Add your docs here. */
 public class Camera extends PhotonCamera {
     private List<PhotonPipelineResult> m_cameraData;
+    private boolean m_cameraDataRecent = false;
     private Transform3d m_cameraOffset;
     private AprilTagFieldLayout aprilTagFieldLayout;
 
@@ -84,54 +85,47 @@ public class Camera extends PhotonCamera {
     }
 
     public Optional<Pose2d> estimatePose(Pose2d robotPose) {
-        updateVisible();
-        if (disablePoseEstimation) {
+        if (updateVisible()) {
+            if (disablePoseEstimation) {
+                return Optional.empty();
+            }
+            if (m_cameraData.size() == 0 || m_cameraData.get(0) == null) {
+                return Optional.empty();
+            }
+            if (!m_cameraData.get(0).hasTargets()) {
+                return Optional.empty();
+            }
+            PhotonTrackedTarget target = m_cameraData.get(0).getBestTarget();
+            if (target == null) {
+                return Optional.empty();
+            }
+            
+            Transform3d targetTransform3d = target.bestCameraToTarget;
+            // System.out.print("Input ");
+            // System.out.print(targetTransform3d);
+            if (target.poseAmbiguity > kConstants.kMaxPoseAmbiguity) {
+                return Optional.empty();
+            }
+            if (target.bestCameraToTarget.getX() > kConstants.kMaxTagDistance) {
+                return Optional.empty();
+            }
+            int target_id = target.fiducialId;
+            Pose3d field_target_pose = aprilTagFieldLayout.getTagPose(target_id).get();
+            Pose3d camera_pose = field_target_pose.plus(targetTransform3d.inverse());
+            Pose3d calculatedRobotPose = camera_pose.plus(m_cameraOffset.inverse());
+            return Optional.of(calculatedRobotPose.toPose2d().interpolate(robotPose, Math.min(target.poseAmbiguity*10 + 0.2,1)));
+        } else {
             return Optional.empty();
         }
-        if (m_cameraData.size() == 0 || m_cameraData.get(0) == null) {
-            return Optional.empty();
-        }
-        if (!m_cameraData.get(0).hasTargets()) {
-            return Optional.empty();
-        }
-        PhotonTrackedTarget target = m_cameraData.get(0).getBestTarget();
-        if (target == null) {
-            return Optional.empty();
-        }
-        
-        Transform3d targetTransform3d = target.bestCameraToTarget;
-        // System.out.print("Input ");
-        // System.out.print(targetTransform3d);
-        if (target.poseAmbiguity > kConstants.kMaxPoseAmbiguity) {
-            return Optional.empty();
-        }
-        if (target.bestCameraToTarget.getX() > kConstants.kMaxTagDistance) {
-            return Optional.empty();
-        }
-        // System.out.print(" Previous ");
-        // System.out.print(m_previousTransform);
-        // targetTransform3d = new Transform3d(
-        //     Statics.interpolate(m_previousTransform.getX(), targetTransform3d.getX(), 0.8), 
-        //     Statics.interpolate(m_previousTransform.getY(), targetTransform3d.getY(), 0.8), 
-        //     Statics.interpolate(m_previousTransform.getZ(), targetTransform3d.getZ(), 0.8),
-        //     m_previousTransform.getRotation().interpolate(targetTransform3d.getRotation(), 0.8)
-        // );
-        // System.out.print(" Output ");
-        // System.out.println(targetTransform3d);
-        // m_previousTransform = targetTransform3d;
-        int target_id = target.fiducialId;
-        Pose3d field_target_pose = aprilTagFieldLayout.getTagPose(target_id).get();
-        Pose3d camera_pose = field_target_pose.plus(targetTransform3d.inverse());
-        Pose3d calculatedRobotPose = camera_pose.plus(m_cameraOffset.inverse());
-        return Optional.of(calculatedRobotPose.toPose2d().interpolate(robotPose, Math.min(target.poseAmbiguity*10 + 0.2,1)));
     }
 
-    private void updateVisible() {
+    private boolean updateVisible() {
         List<PhotonPipelineResult> results = this.getAllUnreadResults();
         if (results.isEmpty()) {
-            return;
-        } else {
-            m_cameraData = results;
+            return false;
         }
+        m_cameraData = results;
+        m_cameraDataRecent = true;
+        return true;
     }
 }

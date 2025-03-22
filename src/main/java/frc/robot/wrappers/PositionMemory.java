@@ -10,9 +10,10 @@ public class PositionMemory {
     private final int m_min;
     private final int m_max;
 
-    public PositionMemory(int min, int max) {
+    public PositionMemory(int min, int max, int start) {
         m_min = min;
         m_max = max;
+        m_point = start;
     }
 
     public void raise() {

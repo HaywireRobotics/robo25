@@ -71,8 +71,7 @@ public class AlignWithAprilTagCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_timer.reset(); // Set up the timer
-    m_timer.start();
+    m_timer.restart();
     m_running = true;
     Optional<PhotonTrackedTarget> targetOptional = m_camera.getBestAprilTag(); // Get the best april tag to get its id
 
@@ -119,9 +118,9 @@ public class AlignWithAprilTagCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    System.out.println(m_timer.get() + " " + m_trajectory.getTotalTimeSeconds()+1);
     if (m_terminateAfterTime && m_running) { // Terminate 1 second after the timer expires.
-      m_running = false;
-      return (m_trajectory.getTotalTimeSeconds()+1) > m_timer.get();
+      return (m_trajectory.getTotalTimeSeconds()+1) < m_timer.get();
     }
     return false;
   }

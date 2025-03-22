@@ -8,6 +8,8 @@ import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -33,7 +35,7 @@ public class Manipulator extends SubsystemBase {
   /** Creates a new Manipulator. */
   public Manipulator() {
     m_manipulatorMotor = new SparkMax(kConstants.kManipulatorMotor, MotorType.kBrushless);
-    m_manipulatorMotor.configure(kConstants.kNeo550NominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_manipulatorMotor.configure(kConstants.kNeo550HighStallCurrentConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_manipulatorPIDController.setTolerance(0.01, 0.01);
     m_manipulatorPIDController.setGoal(kConstants.kManipulatorDownPoint - 0.375);
 
@@ -64,11 +66,11 @@ public class Manipulator extends SubsystemBase {
   }
 
   public void setPIDTarget(double position){
-    if (position > kConstants.kManipulatorMaxAngle){
-      position = kConstants.kManipulatorMaxAngle;
+    if (position > kConstants.kManipulatorDownPoint){
+      position = kConstants.kManipulatorDownPoint;
     }
-    if (position < kConstants.kManipulatorMaxAngle - 0.5){
-      position = kConstants.kManipulatorMaxAngle - 0.5;
+    if (position < kConstants.kManipulatorDownPoint - 0.5){
+      position = kConstants.kManipulatorDownPoint - 0.5;
     }
     m_manipulatorPIDController.setGoal(position);
   }
@@ -85,13 +87,17 @@ public class Manipulator extends SubsystemBase {
     double power = m_manipulatorPIDController.calculate(this.getManipulatorPos());
     double position = this.getManipulatorPos();
 
-    if (position > kConstants.kManipulatorMaxAngle) {
+    if (position > kConstants.kManipulatorDownPoint) {
       power = Math.min(0, power);
     }
-    if (position < kConstants.kManipulatorMaxAngle - 0.4444) {
+    if (position < kConstants.kManipulatorDownPoint - 0.4444) {
       power = Math.max(0, power);
     }
 
     this.setMotorPower(power);
+  }
+
+  public void configure(SparkBaseConfig config) {
+    m_manipulatorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 }

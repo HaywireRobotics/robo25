@@ -5,9 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "race",
           "data": {
-            "pathName": "Blue to 20"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Blue to 20"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Prepare To Grab"
+                }
+              }
+            ]
           }
         },
         {
@@ -37,7 +50,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Stop Driving"
+            "name": "Score"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Back Up A Little"
           }
         }
       ]
