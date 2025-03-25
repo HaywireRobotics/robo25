@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDSuperSystem extends SubsystemBase {
   private static final int kPort = 0;
-  private static final int kLength = 70;
+  private static final int kLength = 95;
 
   private final AddressableLED m_led;
   private final AddressableLEDBuffer m_buffer;

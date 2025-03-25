@@ -57,6 +57,7 @@ import frc.robot.commands.DefaultElevatorCommand;
 import frc.robot.commands.DefaultFilterFeederCommand;
 import frc.robot.commands.DefaultManipulatorCommand;
 import frc.robot.commands.DigestionCommand;
+import frc.robot.commands.DriveAtSpeedCommand;
 import frc.robot.commands.FollowAprilTagCommand;
 import frc.robot.commands.GoToSpecifiedPosition;
 import frc.robot.commands.GrabCoralSequence;
@@ -131,12 +132,12 @@ public class RobotContainer {
   private final SysIdRoutine sysidRoutine;
 
   private final Camera m_camera1 = new Camera("Camera_Module_v1", new Transform3d(
-    new Translation3d(0.17, -0.19, 0.35),
+    new Translation3d(0.325, -0.275, 0.15),
     new Rotation3d(0, 0, 0))
   );
 
   private final Camera m_camera2 = new Camera("Logitech_Webcam_C930e", new Transform3d(
-    new Translation3d(0.17, -0.19, 0.35),
+    new Translation3d(0.325, 0.225, 0.14),
     new Rotation3d(0, 0, 0))
   );
 
@@ -191,7 +192,7 @@ public class RobotContainer {
       .atBrightness(Percent.of(25))
     );
     m_sendableChooserForLEDs.addOption("Red and Blue Solid", 
-      LEDPattern.steps(Map.of(0, Color.kRed, 0.5, Color.kBlue))
+      LEDPattern.steps(Map.of(0, Color.kRed, 0.37, Color.kBlue))
     );
 
 
@@ -287,64 +288,45 @@ public class RobotContainer {
         new PrintCommand("Stopped Driving")
       )
     );
-    NamedCommands.registerCommand("Prepare To Score Top",
+    // --- Coral Stored under Intake
+    // NamedCommands.registerCommand("At Start",
+    //   new SequentialCommandGroup(
+    //     new SetElevatorPositionAndWaitCommand(m_elevator, m_elevatorPositionMemory, 2),
+    //     new ParallelCommandGroup(
+    //       new AlternatingDigestionCommand(m_stomach, m_coralLimitSwitch, 0.2, 0.05),
+    //       new MoveClawCommand(m_manipulator, 0)
+    //     ),
+    //     new GrabCoralSequence(m_elevator, m_manipulator, m_led, m_elevatorPositionMemory),
+    //     new MoveClawCommand(m_manipulator, 0.3).raceWith(
+    //       new WaitCommand(0.5)
+    //     ),
+    //     new MoveElevatorCommand(m_elevator, kConstants.kElevatorScoreL4Position),
+    //     new MoveClawCommand(m_manipulator, kConstants.kManipulatorUpAngle).raceWith(
+    //       new WaitCommand(0.5)
+    //     )
+    //   )
+    // );
+    // NamedCommands.registerCommand("After Arrive",
+    //   new SequentialCommandGroup(
+    //     new StopDrivingCommand(m_dorsalFin),
+    //     new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera1, 0.165, true),
+    //     new MoveClawCommand(m_manipulator, 0),
+    //     new DriveAtSpeedCommand(m_dorsalFin, new ChassisSpeeds(-1, 0, 0)).withTimeout(0.5)
+    //   )
+    // );
+    NamedCommands.registerCommand("At Start",
       new SequentialCommandGroup(
-        new PrintCommand("A"),
-        new MoveClawCommand(m_manipulator, 0.3).raceWith(
-          new WaitCommand(2)
-        ),
-        new PrintCommand("B"),
-        new MoveElevatorCommand(m_elevator, kConstants.kElevatorScoreL4Position),
-        new PrintCommand("C"),
-        new MoveClawCommand(m_manipulator, kConstants.kManipulatorUpAngle).raceWith(
-          new WaitCommand(2)
-        ),
-        new PrintCommand("D")
+        new MoveClawCommand(m_manipulator, 0.35),
+        new SetElevatorPositionAndWaitCommand(m_elevator, m_elevatorPositionMemory, 3),
+        new MoveClawCommand(m_manipulator, kConstants.kManipulatorUpAngle)
       )
     );
-    NamedCommands.registerCommand("Align Left Bar",
-      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera1, 0.165, true)
-    );
-    NamedCommands.registerCommand("Align Right Bar",
-      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera1, -0.165, true)
-    );
-    NamedCommands.registerCommand("Score",
-      new MoveClawCommand(m_manipulator, 0)
-    );
-    NamedCommands.registerCommand("Prepare To Grab",
+    NamedCommands.registerCommand("After Arrive",
       new SequentialCommandGroup(
-        new SetPositionCommand(m_elevatorPositionMemory, 2),
-        new WaitForElevatorCommand(m_elevator),
-        new MoveClawCommand(m_manipulator, 0)
+        new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera1, 0.165, true),
+        new MoveClawCommand(m_manipulator, 0).withTimeout(0.3),
+        new DriveAtSpeedCommand(m_dorsalFin, new ChassisSpeeds(-1, 0, 0)).withTimeout(0.5)
       )
-    );
-    NamedCommands.registerCommand("Align Coral",
-      new SequentialCommandGroup(
-        new PrintCommand("Starting to Align Coral"),
-        new SetElevatorPositionAndWaitCommand(m_elevator, m_elevatorPositionMemory, 2),
-        new PrintCommand("Moved Elevator"),
-        new AlternatingDigestionCommand(m_stomach, m_coralLimitSwitch, 0.2, 0.05),
-        new PrintCommand("Indexed Coral"),
-        new GrabCoralSequence(m_elevator, m_manipulator, m_led, m_elevatorPositionMemory),
-        new PrintCommand("Aligned Coral")
-      )
-    );
-    NamedCommands.registerCommand("Back Up A Little",
-      new ParallelDeadlineGroup(
-        new WaitCommand(Seconds.of(1)),
-        Commands.run(() -> {
-          m_dorsalFin.drive(
-            new ChassisSpeeds(-1.0, 0.0, 0.0)
-          );
-        }, m_dorsalFin)
-      ).andThen(
-        Commands.run(() -> {
-          m_dorsalFin.drive(
-            new ChassisSpeeds(0.0, 0.0, 0.0)
-          );
-        }, m_dorsalFin)
-      )
-      
     );
   }
 

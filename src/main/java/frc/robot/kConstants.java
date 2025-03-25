@@ -119,7 +119,10 @@ public class kConstants {
     public static final double kIntakeAssemblyUpPoint = 0.584;
 
     public static final double kEnableBackIndexVoltage = 2;
-    public static final double kEnableFrontIndexVoltage = 4;
+    public static final double kEnableFrontIndexVoltage = 8;
+
+    public static final double kReverseBackIndexVoltage = 1.75;
+    public static final double kReverseFrontIndexVoltage = 7;
 
     // Manipulator
     public static final double kManipulatorRatio = 1.0/35.0;

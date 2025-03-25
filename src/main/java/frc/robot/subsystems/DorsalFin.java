@@ -150,9 +150,7 @@ public class DorsalFin extends SubsystemBase {
    */
   public void drive(
       double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    SmartDashboard.putNumber("X Speed", xSpeed);
-    SmartDashboard.putNumber("Y Speed", ySpeed);
-    SmartDashboard.putNumber("Rotations", rot);
+    
     drive(fieldRelative ? 
       ChassisSpeeds.fromFieldRelativeSpeeds(ySpeed, xSpeed, rot, getRotationAroundUpAxisInRotation2d())
       :
@@ -161,6 +159,9 @@ public class DorsalFin extends SubsystemBase {
   }
 
   public void drive(ChassisSpeeds speed) {
+    SmartDashboard.putNumber("X Speed", speed.vxMetersPerSecond);
+    SmartDashboard.putNumber("Y Speed", speed.vyMetersPerSecond);
+    SmartDashboard.putNumber("Rotations", speed.omegaRadiansPerSecond);
     var swerveModuleStates =
         m_kinematics.toSwerveModuleStates(
             ChassisSpeeds.discretize(
@@ -192,6 +193,13 @@ public class DorsalFin extends SubsystemBase {
         m_backLeft.getPosition(),
         m_backRight.getPosition()
       });
+  }
+
+  public void stopAll() {
+    m_frontLeft.driveMotorsAtVoltage(0, 0);
+    m_frontRight.driveMotorsAtVoltage(0, 0);
+    m_backLeft.driveMotorsAtVoltage(0, 0);
+    m_backRight.driveMotorsAtVoltage(0, 0);
   }
 
   public ChassisSpeeds getChassisSpeeds() {

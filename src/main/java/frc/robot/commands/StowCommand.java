@@ -40,7 +40,7 @@ public class StowCommand extends Command {
   @Override
   public void execute() {
     if (m_state == 0) {
-      m_claw.setPIDTarget(kConstants.kManipulatorDownPoint - kConstants.kManipulatorUpAngle);
+      m_claw.setPIDTarget((kConstants.kManipulatorDownPoint - kConstants.kManipulatorUpAngle)+0.1);
       if (m_claw.atGoal()) {
         m_state = 1;
       }

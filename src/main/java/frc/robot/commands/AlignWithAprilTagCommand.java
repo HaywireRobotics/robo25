@@ -59,8 +59,8 @@ public class AlignWithAprilTagCommand extends Command {
 
     final ProfiledPIDController headingController = new ProfiledPIDController(5, 0.1, 0, new TrapezoidProfile.Constraints(6.28, 6.28));
     m_controller = new HolonomicDriveController(
-      new PIDController(1, 0, 0),
-      new PIDController(1, 0, 0),
+      new PIDController(2, 0, 0),
+      new PIDController(2, 0, 0),
       headingController
     );
     m_timer = new Timer();
@@ -118,7 +118,6 @@ public class AlignWithAprilTagCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println(m_timer.get() + " " + m_trajectory.getTotalTimeSeconds()+1);
     if (m_terminateAfterTime && m_running) { // Terminate 1 second after the timer expires.
       return (m_trajectory.getTotalTimeSeconds()+1) < m_timer.get();
     }

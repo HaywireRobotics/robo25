@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.DorsalFin;
 
@@ -21,6 +22,6 @@ public class StopDrivingCommand extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_dorsalFin.drive(0, 0, 0, false);
+    m_dorsalFin.stopAll();
   }
 }

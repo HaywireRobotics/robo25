@@ -201,7 +201,7 @@ public class SwerveModule {
     return output;
   }
 
-  private void driveMotorsAtVoltage(double driveOutput, double turnOutput) {
+  public void driveMotorsAtVoltage(double driveOutput, double turnOutput) {
     if (kConstants.kEnableFeedforwardTuning) appliedDriveVoltage = driveOutput;
     driveOutput = m_accelerator.calculate(driveOutput);
     m_driveMotor.setVoltage(driveOutput);

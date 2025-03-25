@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -36,18 +37,16 @@ public class GrabCoralSequence extends SequentialCommandGroup {
       new InstantCommand(() -> m_led.setPattern(kGrabCoralPattern)),
       new PrintCommand("[COMMAND] Grab Coral Sequence Initalized"),
       new MoveElevatorCommand(elevator, kConstants.kElevatorGrabCoralPosition + 10),
-      new PrintCommand("Elevator Up"),
       new MoveClawCommand(manipulator, 0, 0.1),
-      new PrintCommand("Claw Down"),
+      Commands.runOnce(() -> {
+        manipulator.setMotorPower(0.5);
+      }),
       new MoveElevatorCommand(elevator, kConstants.kElevatorGrabCoralPosition),
-      new PrintCommand("Elevator Down"),
       new MoveElevatorCommand(elevator, kConstants.kElevatorGrabCoralPosition + 10),
-      new PrintCommand("Elevator Up"),
       new ParallelDeadlineGroup(
-        new WaitCommand(Seconds.of(1)),
+        new WaitCommand(Seconds.of(0.3)),
         new MoveClawCommand(manipulator, 0.3)
-      ),
-      new PrintCommand("Claw Up")
+      )
     );
   }
 }
