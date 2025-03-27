@@ -58,7 +58,7 @@ public class kConstants {
     public static final SparkBaseConfig kNeo550LowStallCurrentConfig = new SparkMaxConfig().smartCurrentLimit(15).idleMode(IdleMode.kBrake).inverted(false);
 
     public static final SparkBaseConfig kBrakeMode = new SparkMaxConfig().idleMode(IdleMode.kBrake);
-    public static final SparkBaseConfig kDriftMode = new SparkMaxConfig().idleMode(IdleMode.kDrift);
+    public static final SparkBaseConfig kDriftMode = new SparkMaxConfig().idleMode(IdleMode.kCoast);
 
     public static final int kSwerveFrontRightTurnMotor = 4;
     public static final int kSwerveFrontRightDriveMotor = 3;

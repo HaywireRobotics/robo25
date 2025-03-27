@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle.Control;
 
+import com.revrobotics.spark.config.SparkBaseConfig;
+
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -117,7 +119,8 @@ public class RobotContainer {
     LEDPattern.gradient(LEDPattern.GradientType.kContinuous, Color.kRed, Color.kBlue)
       .scrollAtAbsoluteSpeed(MetersPerSecond.of(1), Meters.of(0.025))
       .atBrightness(Percent.of(25)),
-    LEDPattern.steps(Map.of(0, Color.kRed, 0.37, Color.kBlue))
+    LEDPattern.steps(Map.of(0, Color.kRed, 0.37, Color.kBlue)),
+    LEDPattern.solid(Color.kPurple)
   };
   private int patternId = 0;
 
@@ -208,7 +211,7 @@ public class RobotContainer {
 
     m_sendableChooserForLEDs.onChange(this::setLEDPattern);
 
-    m_climbEncoder = new DutyCycleEncoder(3, 1, 0);
+    m_climbEncoder = new DutyCycleEncoder(3, 1, kConstants.kClimbDownAbsolutePosition);
     m_climbEncoder.setAssumedFrequency(975.6);
 
     SmartDashboard.putData("LED", m_sendableChooserForLEDs);
@@ -399,23 +402,60 @@ public class RobotContainer {
   }
 
 
-  private boolean m_climbEncoderDown = false;
+  private boolean m_climbEncoderDown = true;
   private boolean m_configuredDrift = false;
-  private static SparkBaseConfig m_driftConfig = new SparkMaxConfig().set;
+  private double m_lastPosition;
+  private int prevPatternId = 0;
   public void disabledPeriodic() {
     m_led.setPattern(
       patterns[patternId]
     );
-    SmartDashboard.putNumber("Climb Encoder", m_climbEncoder.get());
-    if (m_climbEncoder.get() > 0.25) {
+    final double position = m_climbEncoder.get();
+    SmartDashboard.putNumber("Climb Encoder", position);
+    if (position - m_lastPosition > 0.10) {
       if (!m_climbEncoderDown) {
         m_configuredDrift = !m_configuredDrift;
-        m_climb.configure();
+        final SparkBaseConfig config = m_configuredDrift ? kConstants.kDriftMode : kConstants.kBrakeMode;
+        m_climb.configure(config);
+        m_dorsalFin.configure(config);
+        m_elevator.configure(config);
+        m_filterFeeder.configure(config);
+        m_manipulator.configure(config);
+        m_stomach.configure(config);
+        m_teeth.configure(config);
+        patternId = m_configuredDrift ? 6 : prevPatternId;
+        prevPatternId = patternId;
         m_climbEncoderDown = true;
       }
     } else {
       m_climbEncoderDown = false;
     }
+    m_lastPosition = Math.min(m_lastPosition, position);
+
+    if (m_coralLimitSwitch.get()) {
+      m_lastPosition = m_climbEncoder.get();
+    }
+  }
+
+  public void endDisabled() {
+    final SparkBaseConfig config = kConstants.kBrakeMode;
+    m_climb.configure(config);
+    m_dorsalFin.configure(config);
+    m_elevator.configure(config);
+    m_filterFeeder.configure(config);
+    m_manipulator.configure(config);
+    m_stomach.configure(config);
+    m_teeth.configure(config);
+  }
+
+  public void startDisabled() {
+    m_lastPosition = m_climbEncoder.get();
+  }
+
+  public void endTeleop() {
+    m_climbEncoderDown = true;
+    m_configuredDrift = false;
+    patternId = m_configuredDrift ? 6 : 3;
   }
 
   public void setLEDPattern(int id) {

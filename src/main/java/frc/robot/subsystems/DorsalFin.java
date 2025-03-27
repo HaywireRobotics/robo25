@@ -41,6 +41,10 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.config.PIDConstants;
 import com.kauailabs.navx.frc.AHRS;
 
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+
 /** Represents a swerve drive style drivetrain. */
 public class DorsalFin extends SubsystemBase {
   public static final double kMaxSpeed = 3.0; // 3 meters per second
@@ -284,9 +288,9 @@ public class DorsalFin extends SubsystemBase {
   }
 
   public void configure(SparkBaseConfig config) {
-    m_frontLeft.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-    m_frontRight.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-    m_backLeft.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
-    m_backRight.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    m_frontLeft.configure(config);
+    m_frontRight.configure(config);
+    m_backLeft.configure(config);
+    m_backRight.configure(config);
   }
 }
