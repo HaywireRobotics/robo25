@@ -423,8 +423,10 @@ public class RobotContainer {
         m_manipulator.configure(config);
         m_stomach.configure(config);
         m_teeth.configure(config);
+        if (patternId != 6) {
+          prevPatternId = patternId;
+        }
         patternId = m_configuredDrift ? 6 : prevPatternId;
-        prevPatternId = patternId;
         m_climbEncoderDown = true;
       }
     } else {

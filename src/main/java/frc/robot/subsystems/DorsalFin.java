@@ -133,11 +133,7 @@ public class DorsalFin extends SubsystemBase {
         new PIDConstants(4, 0.1, 0)
       ),
       robotConfig,
-      () -> {
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent()) {
-          return alliance.get() == DriverStation.Alliance.Red;
-        }
+      () -> { // Flip Auto reporter
         return false;
       },
       this
