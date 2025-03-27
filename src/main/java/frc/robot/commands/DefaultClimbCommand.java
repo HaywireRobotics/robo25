@@ -19,6 +19,7 @@ public class DefaultClimbCommand extends Command {
   public DefaultClimbCommand(Climb climb, Controller controller) {
     m_climb = climb;
     m_controller = controller;
+    m_position = m_climb.getPosition();
     addRequirements(climb);
   }
 
@@ -40,7 +41,9 @@ public class DefaultClimbCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    m_climb.setMotorVoltage(0);
+  }
 
   // Returns true when the command should end.
   @Override

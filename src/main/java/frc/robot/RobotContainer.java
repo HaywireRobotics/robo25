@@ -10,6 +10,8 @@ import static edu.wpi.first.units.Units.Minutes;
 import static edu.wpi.first.units.Units.Percent;
 import static edu.wpi.first.units.Units.Seconds;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle.Control;
@@ -30,6 +32,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Timer;
@@ -103,7 +106,22 @@ public class RobotContainer {
 
   private final DigitalInput m_coralLimitSwitch = new DigitalInput(1);
 
-  private final SendableChooser<LEDPattern> m_sendableChooserForLEDs = new SendableChooser<>();
+  private final SendableChooser<Integer> m_sendableChooserForLEDs = new SendableChooser<>();
+  private final LEDPattern[] patterns = {
+    LEDPattern.solid(Color.kOrange),
+    LEDPattern.rainbow(255, 128)
+      .scrollAtAbsoluteSpeed(MetersPerSecond.of(1), Meters.of(0.025))
+      .atBrightness(Percent.of(25)),
+    LEDPattern.solid(Color.kRed),
+    LEDPattern.solid(Color.kBlue),
+    LEDPattern.gradient(LEDPattern.GradientType.kContinuous, Color.kRed, Color.kBlue)
+      .scrollAtAbsoluteSpeed(MetersPerSecond.of(1), Meters.of(0.025))
+      .atBrightness(Percent.of(25)),
+    LEDPattern.steps(Map.of(0, Color.kRed, 0.37, Color.kBlue))
+  };
+  private int patternId = 0;
+
+  private final DutyCycleEncoder m_climbEncoder;
 
   private final Robot m_robot;
   private final PowerDistribution m_pdp;
@@ -137,7 +155,7 @@ public class RobotContainer {
   );
 
   private final Camera m_camera2 = new Camera("Logitech_Webcam_C930e", new Transform3d(
-    new Translation3d(0.325, 0.225, 0.14),
+    new Translation3d(0.405, 0.250, 0.220),
     new Rotation3d(0, 0, 0))
   );
 
@@ -179,24 +197,20 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto", autoChooser);
 
-
     exampleAutoCommand = new PathPlannerAuto("Test Auto");
 
-    m_sendableChooserForLEDs.setDefaultOption("Haywire Yellow", LEDPattern.solid(Color.kOrange));
-    m_sendableChooserForLEDs.addOption("Rainbow", LEDPattern.rainbow(255, 128).scrollAtAbsoluteSpeed(MetersPerSecond.of(1), Meters.of(0.025)).atBrightness(Percent.of(25)));
-    m_sendableChooserForLEDs.addOption("Red", LEDPattern.solid(Color.kRed));
-    m_sendableChooserForLEDs.addOption("Blue", LEDPattern.solid(Color.kBlue));
-    m_sendableChooserForLEDs.addOption("Red and Blue Scroll", 
-      LEDPattern.gradient(LEDPattern.GradientType.kContinuous, Color.kRed, Color.kBlue)
-      .scrollAtAbsoluteSpeed(MetersPerSecond.of(1), Meters.of(0.025))
-      .atBrightness(Percent.of(25))
-    );
-    m_sendableChooserForLEDs.addOption("Red and Blue Solid", 
-      LEDPattern.steps(Map.of(0, Color.kRed, 0.37, Color.kBlue))
-    );
+    m_sendableChooserForLEDs.setDefaultOption("Haywire Yellow", 0);
+    m_sendableChooserForLEDs.addOption("Rainbow", 1);
+    m_sendableChooserForLEDs.addOption("Red", 2);
+    m_sendableChooserForLEDs.addOption("Blue", 3);
+    m_sendableChooserForLEDs.addOption("Red and Blue Scroll", 4);
+    m_sendableChooserForLEDs.addOption("Red and Blue Solid", 5);
 
+    m_sendableChooserForLEDs.onChange(this::setLEDPattern);
 
-    
+    m_climbEncoder = new DutyCycleEncoder(3, 1, 0);
+    m_climbEncoder.setAssumedFrequency(975.6);
+
     SmartDashboard.putData("LED", m_sendableChooserForLEDs);
   }
 
@@ -219,13 +233,13 @@ public class RobotContainer {
     }
 
     m_driveController.getByName(kConstants.kAlignReefLeftButton).whileTrue(
-      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera1, 0.165, false)
+      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera1, 0.165, false, m_driveController)
     );
     m_driveController.getByName(kConstants.kAlignReefCenterButton).whileTrue(
-      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera1, 0, false)
+      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera1, 0, false, m_driveController)
     );
     m_driveController.getByName(kConstants.kAlignReefRightButton).whileTrue(
-      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera1, -0.165, false)
+      new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera1, -0.165, false, m_driveController)
     );
     m_driveController.getByName(kConstants.kResetGyroButton).onTrue(
       new ResetGyroCommand(m_dorsalFin)
@@ -316,6 +330,7 @@ public class RobotContainer {
     // );
     NamedCommands.registerCommand("At Start",
       new SequentialCommandGroup(
+        new MoveElevatorCommand(m_elevator, kConstants.kElevatorScoreL2Position - 5),
         new MoveClawCommand(m_manipulator, 0.35),
         new SetElevatorPositionAndWaitCommand(m_elevator, m_elevatorPositionMemory, 3),
         new MoveClawCommand(m_manipulator, kConstants.kManipulatorUpAngle)
@@ -324,7 +339,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("After Arrive",
       new SequentialCommandGroup(
         new AlignWithAprilTagCommand(m_dorsalFin, m_robot, m_camera1, 0.165, true),
-        new MoveClawCommand(m_manipulator, 0).withTimeout(0.3),
+        new MoveClawCommand(m_manipulator, 0).withTimeout(Seconds.of(1)),
         new DriveAtSpeedCommand(m_dorsalFin, new ChassisSpeeds(-1, 0, 0)).withTimeout(0.5)
       )
     );
@@ -383,9 +398,31 @@ public class RobotContainer {
     m_manipulator.reset();
   }
 
-  public void disabledLED() {
+
+  private boolean m_climbEncoderDown = false;
+  private boolean m_configuredDrift = false;
+  private static SparkBaseConfig m_driftConfig = new SparkMaxConfig().set;
+  public void disabledPeriodic() {
     m_led.setPattern(
-      m_sendableChooserForLEDs.getSelected()
+      patterns[patternId]
     );
+    SmartDashboard.putNumber("Climb Encoder", m_climbEncoder.get());
+    if (m_climbEncoder.get() > 0.25) {
+      if (!m_climbEncoderDown) {
+        m_configuredDrift = !m_configuredDrift;
+        m_climb.configure();
+        m_climbEncoderDown = true;
+      }
+    } else {
+      m_climbEncoderDown = false;
+    }
+  }
+
+  public void setLEDPattern(int id) {
+    patternId = id;
+  }
+
+  public void periodic() {
+    m_driveController.periodic();
   }
 }

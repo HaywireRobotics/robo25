@@ -8,6 +8,7 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.kConstants;
 import frc.robot.subsystems.Elevator;
@@ -27,6 +28,7 @@ public class StowCommand extends Command {
     m_elevator = elevator;
     m_claw = claw;
     m_controller = controller;
+
     addRequirements(elevator, claw);
   }
 
@@ -40,29 +42,29 @@ public class StowCommand extends Command {
   @Override
   public void execute() {
     if (m_state == 0) {
-      m_claw.setPIDTarget((kConstants.kManipulatorDownPoint - kConstants.kManipulatorUpAngle)+0.1);
+      m_claw.setPIDTarget((kConstants.kManipulatorDownPoint - kConstants.kManipulatorUpAngle));
       if (m_claw.atGoal()) {
         m_state = 1;
       }
       m_claw.assemblyPeriodic();
     }
     if (m_state == 1) {
-      m_elevator.setPIDTarget(0);
+      m_elevator.setPIDTarget(kConstants.kElevatorStowPosition);
+      m_claw.setMotorPower(0);
       if (m_elevator.atGoal()) {
         m_state = 2;
       }
       m_elevator.assemblyPeriodic();
     }
     if (m_state == 2) {
-      m_claw.configure(new SparkMaxConfig().idleMode(IdleMode.kCoast));
+      m_elevator.assemblyPeriodic();
+      m_claw.assemblyPeriodic();
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    m_claw.configure(new SparkMaxConfig().idleMode(IdleMode.kBrake));
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override

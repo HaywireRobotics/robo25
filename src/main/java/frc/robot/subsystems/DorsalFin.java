@@ -282,4 +282,11 @@ public class DorsalFin extends SubsystemBase {
       return Commands.none();
     }
   }
+
+  public void configure(SparkBaseConfig config) {
+    m_frontLeft.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    m_frontRight.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    m_backLeft.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    m_backRight.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
 }

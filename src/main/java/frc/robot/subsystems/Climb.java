@@ -14,6 +14,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Statics;
 import frc.robot.kConstants;
 
 public class Climb extends SubsystemBase {
@@ -30,10 +31,12 @@ public class Climb extends SubsystemBase {
     m_climbMotor.configure(kConstants.kNeoNominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_climbController.setTolerance(0.1, 0.1);
+
+    m_climbController.setSetpoint(getPosition());
   }
 
   public double getPosition() {
-    return m_climbMotor.getEncoder().getPosition() * kConstants.kClimbRatio;
+    return m_climbMotor.getEncoder().getPosition()*kConstants.kClimbRatio - kConstants.kClimbDownAbsolutePosition;
   }
 
   public void setPIDTarget(double target) {
@@ -41,7 +44,12 @@ public class Climb extends SubsystemBase {
   }
 
   public void assemblyPeriodic() {
-    m_climbMotor.setVoltage(m_climbController.calculate(getPosition()));
+    setMotorVoltage(m_climbController.calculate(getPosition()));
+  }
+
+  public void setMotorVoltage(double volts) {
+    SmartDashboard.putNumber("Climb Voltage", volts);
+    m_climbMotor.setVoltage(volts);
   }
 
   public boolean atGoal() {
@@ -51,5 +59,9 @@ public class Climb extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Climb Position: ", getPosition());
+  }
+
+  public void configure(SparkBaseConfig config) {
+    m_climbMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 }

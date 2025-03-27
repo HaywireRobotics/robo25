@@ -227,4 +227,8 @@ public class SwerveModule {
   public double getDriveVoltage(){
     return appliedDriveVoltage;
   }
+  public void configure(SparkBaseConfig config) {
+    m_driveMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    m_turningMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
 }

@@ -12,14 +12,16 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.kConstants;
 
-public class Teeth extends SubsystemBase {
+public class 
+
+Teeth extends SubsystemBase {
   private final SparkMax m_intakeMotor;
   private boolean m_isEnabled = false;
   
   /** Creates a new Teeth. */
   public Teeth() {
     m_intakeMotor = new SparkMax(kConstants.kIntakeMotor, MotorType.kBrushless);
-    m_intakeMotor.configure(kConstants.kNeo550NominalConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_intakeMotor.configure(kConstants.kNeo550HighStallCurrentConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
   public void runIntake() {
@@ -39,5 +41,9 @@ public class Teeth extends SubsystemBase {
 
   public boolean isIntakeEnabled() {
     return m_isEnabled;
+  }
+
+  public void configure(SparkBaseConfig config) {
+    m_intakeMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
   }
 }

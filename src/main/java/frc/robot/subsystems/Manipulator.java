@@ -79,8 +79,8 @@ public class Manipulator extends SubsystemBase {
     return m_manipulatorPIDController.atGoal();
   }
 
-  public void setMotorPower(double power) {
-    m_manipulatorMotor.setVoltage(power * kConstants.kManipulatorPowerMultiplier);
+  public void setMotorPower(double volts) {
+    m_manipulatorMotor.setVoltage(volts * kConstants.kManipulatorPowerMultiplier);
   }
   
   public void assemblyPeriodic() {

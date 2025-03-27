@@ -33,7 +33,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    m_robotContainer.disabledLED();
+    m_robotContainer.disabledPeriodic();
   }
 
   @Override
@@ -64,7 +64,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    m_robotContainer.periodic();
+  }
 
   @Override
   public void teleopExit() {}

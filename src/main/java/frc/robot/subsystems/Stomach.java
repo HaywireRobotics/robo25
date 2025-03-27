@@ -48,4 +48,9 @@ public class Stomach extends SubsystemBase {
   public boolean isIndexMotorEnabled() {
     return isIndexEnabled;
   }
+
+  public void configure(SparkBaseConfig config) {
+    m_frontIndexMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    m_backIndexMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
 }

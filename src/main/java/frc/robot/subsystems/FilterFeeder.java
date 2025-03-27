@@ -93,4 +93,8 @@ public class FilterFeeder extends SubsystemBase {
   public double getIntakeAssemblyEncoderPosition() {
     return m_encoder.get();
   }
+
+  public void configure(SparkBaseConfig config) {
+    m_intakeAssemblyMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+  }
 }

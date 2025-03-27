@@ -4,14 +4,27 @@
 
 package frc.robot.wrappers;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /** Add your docs here. */
 public class Controller extends CommandXboxController {
+    private Pattern m_pattern = new Pattern(0);
+
     /** Create a new Controller wrapper */
     public Controller(Integer port) {
         super(port);
+        m_pattern.restart();
+    }
+
+    public void periodic() {
+        this.setRumble(RumbleType.kBothRumble, m_pattern.getState() ? 1 : 0);
+    }
+
+    public void setRumblePattern(Pattern pattern) {
+        m_pattern = pattern;
+        m_pattern.restart();
     }
     /**
      * @param name the name of the button. One of a, b, x, y, start, back, up, down, left, right, lb, rb, stick_left, stick_right

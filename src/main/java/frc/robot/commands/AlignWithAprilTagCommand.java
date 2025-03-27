@@ -30,7 +30,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.wrappers.Camera;
+import frc.robot.wrappers.Controller;
 import frc.robot.wrappers.FieldLayout;
+import frc.robot.wrappers.Pattern;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlignWithAprilTagCommand extends Command {
@@ -42,6 +44,9 @@ public class AlignWithAprilTagCommand extends Command {
   private boolean m_running;
   private final double m_xOffset;
   private final boolean m_terminateAfterTime;
+
+  private final boolean m_vibrate;
+  private Controller m_vibratableController;
 
 
   private final FieldLayout m_fieldLayout = new FieldLayout(kConstants.kFieldAprilTagJSON);
@@ -66,6 +71,30 @@ public class AlignWithAprilTagCommand extends Command {
     m_timer = new Timer();
     m_timer.stop();
     m_timer.reset();
+
+    m_vibrate = false;
+  }
+
+  public AlignWithAprilTagCommand(DorsalFin dorsalFin, Robot robot, Camera camera, double xOffset, boolean terminateAfterTime, Controller controller) {
+    addRequirements(dorsalFin);
+    m_dorsalFin = dorsalFin;
+    m_camera = camera;
+    m_xOffset = xOffset;
+    m_running = false;
+    m_terminateAfterTime = terminateAfterTime;
+
+    final ProfiledPIDController headingController = new ProfiledPIDController(5, 0.1, 0, new TrapezoidProfile.Constraints(6.28, 6.28));
+    m_controller = new HolonomicDriveController(
+      new PIDController(2, 0, 0),
+      new PIDController(2, 0, 0),
+      headingController
+    );
+    m_timer = new Timer();
+    m_timer.stop();
+    m_timer.reset();
+
+    m_vibrate = true;
+    m_vibratableController = controller;
   }
 
   // Called when the command is initially scheduled.
@@ -83,6 +112,10 @@ public class AlignWithAprilTagCommand extends Command {
     PhotonTrackedTarget target = targetOptional.get();
     System.out.println("[COMMAND] Found April Tag " + target.fiducialId + "!");
 
+    if (m_vibrate) {
+      m_vibratableController.setRumblePattern(new Pattern(500, 500, 500, 500));
+    }
+
     m_trajectory = TrajectoryGenerator.generateTrajectory( // Create a trajectory from our robot to touching the reef.
       m_dorsalFin.getPose2D(), // Start position
       new ArrayList<Translation2d>(0), // Waypoints (none means straight line)
@@ -96,12 +129,17 @@ public class AlignWithAprilTagCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    try {
     Trajectory.State reference = m_trajectory.sample(m_timer.get()); // Get the wanted position of the robot
     m_position.setRobotPose(reference.poseMeters); // Display the position
     Rotation2d targetRotation = m_trajectory.sample(m_trajectory.getTotalTimeSeconds()).poseMeters.getRotation(); // Get the final rotation for the swerve to point to
     ChassisSpeeds movement = m_controller.calculate(m_dorsalFin.getPose2D(), reference, targetRotation); // Calculate which way to drive to get from the robot's position to the reference.
     movement.omegaRadiansPerSecond = -movement.omegaRadiansPerSecond; // Robot reported rotation and control rotation are opposties
     m_dorsalFin.drive(movement); // Drive with ChassisSpeeds.
+    } catch (Error err) {
+      System.err.println("[COMMAND] Align With April Tag Command Crashed! ");
+      System.err.println(err);
+    }
   }
 
   // Called once the command ends or is interrupted.

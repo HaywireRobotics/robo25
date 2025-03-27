@@ -57,6 +57,9 @@ public class kConstants {
     public static final SparkBaseConfig kNeo550NominalConfig = new SparkMaxConfig().smartCurrentLimit(20).idleMode(IdleMode.kBrake).inverted(false);
     public static final SparkBaseConfig kNeo550LowStallCurrentConfig = new SparkMaxConfig().smartCurrentLimit(15).idleMode(IdleMode.kBrake).inverted(false);
 
+    public static final SparkBaseConfig kBrakeMode = new SparkMaxConfig().idleMode(IdleMode.kBrake);
+    public static final SparkBaseConfig kDriftMode = new SparkMaxConfig().idleMode(IdleMode.kDrift);
+
     public static final int kSwerveFrontRightTurnMotor = 4;
     public static final int kSwerveFrontRightDriveMotor = 3;
     public static final int kSwerveFrontRightEncoder = 5;
@@ -90,6 +93,8 @@ public class kConstants {
     public static final double kElevatorRemoveAlgaeLowPosition = 21.721669;
     public static final double kManipulatorRemoveAlgaePosition = 0.426240;
     public static final double kElevatorRemoveAlgaeHighPosition = 45.464669;
+
+    public static final double kElevatorStowPosition = 7.936800782272435;
     
     public static final double kElevatorKP = 4;
     public static final double kElevatorKI = 0;
@@ -142,13 +147,18 @@ public class kConstants {
     public static final int kClimbMotor = 19;
     public static final double kClimbRatio = 1.0/90.0;
 
-    public static final double kClimbKP = 25;
+    public static final double kClimbDownAbsolutePosition = 0.682;
+    public static final double kClimbUpPosition = 0.5;
+    public static final double kClimbOutPosition = 0.25;
+    public static final double kClimbInPosition = 0.75;
+
+    public static final double kClimbKP = 100;
     public static final double kClimbKI = 0;
     public static final double kClimbKD = 0;
     public static final double kClimbMaxVelocity = 1;
     public static final double kClimbMaxAcceleration = 1;
 
-    public static final double kClimbChangeAmount = (0.1)/50.0;
+    public static final double kClimbChangeAmount = (0.4)/50.0;
     
     // Feature Flags
     public static final boolean kEnableFeedforwardTuning = false; // A, B, X, Y run feedforward tuning code for the Sysid tool
@@ -195,5 +205,5 @@ public class kConstants {
     // public static final String kManipulatorAngleJoystick = "left_stick";
 
     // Files
-    public static final String kFieldAprilTagJSON = Filesystem.getDeployDirectory() + "/fields/2025-reefscape-andymark.json";
+    public static final String kFieldAprilTagJSON = Filesystem.getDeployDirectory() + "/fields/2025-reefscape-welded.json";
 }
