@@ -390,8 +390,9 @@ public class RobotContainer {
   }
 
   public void putAllSmartDashboardData(){
-    SmartDashboard.putNumber("Intake Current", m_pdp.getCurrent(13));
-    SmartDashboard.putNumber("Front Index Current", m_pdp.getCurrent(14));
+    SmartDashboard.putNumber("Current - Intake", m_pdp.getCurrent(13));
+    SmartDashboard.putNumber("Current - Front Index", m_pdp.getCurrent(14));
+    SmartDashboard.putNumber("Current - Elevator", m_pdp.getCurrent(17));
     SmartDashboard.putBoolean("Limit Switch", m_coralLimitSwitch.get());
   }
 

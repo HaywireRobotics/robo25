@@ -36,13 +36,13 @@ public class GrabCoralSequence extends SequentialCommandGroup {
     addCommands(
       new InstantCommand(() -> m_led.setPattern(kGrabCoralPattern)),
       new PrintCommand("[COMMAND] Grab Coral Sequence Initalized"),
-      new MoveElevatorCommand(elevator, kConstants.kElevatorGrabCoralPosition + 10),
+      new MoveElevatorCommand(elevator, kConstants.kElevatorGrabCoralPosition + 15),
       new MoveClawCommand(manipulator, 0, 0.1),
       Commands.runOnce(() -> {
         manipulator.setMotorPower(0.5);
       }),
       new MoveElevatorCommand(elevator, kConstants.kElevatorGrabCoralPosition),
-      new MoveElevatorCommand(elevator, kConstants.kElevatorGrabCoralPosition + 10),
+      new MoveElevatorCommand(elevator, kConstants.kElevatorGrabCoralPosition + 15),
       new ParallelDeadlineGroup(
         new WaitCommand(Seconds.of(0.3)),
         new MoveClawCommand(manipulator, 0.3)
